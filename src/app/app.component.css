@@ -1,0 +1,159 @@
+/* YT Creator - Main Application Styles */
+/* Brand: Blue Glowing Theme - "Ignite Your Ideas. Amplify Your Influence." */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Root Scroll Fix */
+/*html, body {
+  height: 100%;
+  overflow: hidden;
+}*/
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto; /* ✅ ONLY BODY SCROLLS */
+}
+
+/* Main App Container */
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0A0E1A;
+  background-image: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.06) 0%, transparent 50%);
+  position: relative;
+  overflow: hidden;
+}
+
+  /* Decorative Glow Orbs */
+  .app-container::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  .app-container::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: float 10s ease-in-out infinite reverse;
+    z-index: 0;
+  }
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-30px) scale(1.05);
+  }
+}
+
+/* Sticky Header - stays at top */
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Main Content Area (Scrollable) - includes footer */
+main {
+  flex: 1;
+  /*overflow-y: auto;*/
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+  scroll-behavior: smooth;
+  min-height: 75vh; /* Important for flex child scrolling */
+  display: flex;
+  flex-direction: column;
+}
+main {
+  min-height: calc(100vh - 160px) !important; /* header + footer space */
+  display: block !important;
+}
+
+  /* Custom Scrollbar for Main */
+  main::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  main::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+
+  main::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.35);
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+
+    main::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.6);
+    }
+
+/* Footer - scrolls with content */
+/*app-footer {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}*/
+
+app-footer {
+  display: block;
+}
+
+/* Content Wrapper - Side by Side Layout */
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+  
+
+  .app-container::before,
+  .app-container::after {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container::before,
+  .app-container::after {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+}
+
+
+

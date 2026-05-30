@@ -1,0 +1,94 @@
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-left">
+      <i class="fa fa-envelope"></i> support&#64;ytcreator.in
+    </div>
+    <div class="top-right">
+      <a href="https://www.facebook.com/ytcreator.in" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="https://whatsapp.com/channel/0029Vb6jlyA2Jl8IVFZUZX3M" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="https://www.instagram.com/yt.creator.in/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://x.com/ytcreator_in/" target="_blank"><i class="fa-brands fa-x"></i></a>
+      <a href="https://www.youtube.com/@ytcreator_in" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+      <a href="https://www.linkedin.com/company/ytcreator/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <div class="site-header header-inner">
+    <!-- LOGO -->
+    <div class="logo" routerLink="/">
+      <img src="assets/Yt Creator Icon.png" alt="YT Creator">
+      <span>YT Creator</span>
+    </div>
+
+    <!-- HAMBURGER -->
+    <button class="hamburger" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- NAVIGATION -->
+    <nav class="nav" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/aboutus" routerLinkActive="active">About Us</a>
+      <a routerLink="/youtubeseo" routerLinkActive="active">YouTube SEO</a>
+      <div class="nav-item">
+        <a routerLink="/socialmedia" class="has-sub">
+          Social Media <span>▾</span>
+        </a>
+        <div class="submenu">
+          <a routerLink="/socialmedia/captiongenerator">Caption Generator</a>
+          <!--<a routerLink="/socialmedia/trendingmusicfinder">Trending Music Finder</a>
+      <a routerLink="/socialmedia/socialmediabiogenerator">Social Bio Generator</a>-->
+        </div>
+      </div>
+
+      <!--<div class="nav-item">
+    <a routerLink="/competitoranalysis" class="has-sub">
+      Competitor Analysis <span>▾</span>
+    </a>
+    <div class="submenu">
+      <a routerLink="/competitoranalysis/competitoranalysisyoutube">Competitor Analysis YouTube</a>
+      <a routerLink="/competitoranalysis/competitoranalysisinstagram">Competitor Analysis Instagram</a>
+      <a routerLink="/competitoranalysis/competitoranalysislinkedin">Competitor Analysis LinkedIn</a>
+    </div>
+  </div>
+
+  <div class="nav-item">
+    <a routerLink="/contentideas" class="has-sub">
+      Content Ideas <span>▾</span>
+    </a>
+    <div class="submenu">
+      <a routerLink="/contentideas/youtubecontentsuggestions">YouTube Ideas</a>
+      <a routerLink="/contentideas/instagramcontentsuggestions">Instagram Ideas</a>
+      <a routerLink="/contentideas/youtubestrategysuggestions">Strategy Session</a>
+      <a routerLink="/contentideas/shortvideossuggestions">Short Videos</a>
+    </div>
+  </div>-->
+
+      <div class="nav-item">
+        <a routerLink="/learninghub" class="has-sub">
+          Learning Hub <span>▾</span>
+        </a>
+        <div class="submenu">
+          <!--<a routerLink="/learninghub/monetization">Monetization</a>
+      <a routerLink="/learninghub/equipment">Equipment</a>
+      <a routerLink="/learninghub/community">Community</a>-->
+          <a routerLink="/learninghub/faqs">FAQs</a>
+          <!--<a routerLink="/learninghub/youtubeissues">YouTube Issues</a>-->
+        </div>
+      </div>
+
+      <!--<div class="nav-item">
+    <a routerLink="/analysis" class="has-sub">
+      Analysis <span>▾</span>
+    </a>
+    <div class="submenu">
+      <a routerLink="/analysis/socialmediastats">Social Media Stats</a>
+      <a routerLink="/analysis/youtubeanalysis">YouTube Analysis</a>
+    </div>
+  </div>-->
+      <!--<a routerLink="/analysis" routerLinkActive="active">Analysis</a>-->
+
+      <a routerLink="/blog" routerLinkActive="active">YTC blog</a>

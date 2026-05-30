@@ -1,0 +1,136 @@
+<div class="admin-wrapper">
+
+  <h1 class="page-title">Equipment List</h1>
+
+  <div class="card">
+
+    <!-- ================= FILTER BAR ================= -->
+    <div class="filter-bar">
+
+      <input type="text"
+             placeholder="Search by title..."
+             [(ngModel)]="searchText" />
+
+      <select [(ngModel)]="selectedCategory">
+        <option value="">All Categories</option>
+        <option *ngFor="let c of categories" [value]="c">
+          {{ c }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="selectedSubCategory">
+        <option value="">All Sub Categories</option>
+        <option *ngFor="let sc of subCategories" [value]="sc">
+          {{ sc }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="selectedStatus">
+        <option value="">All Status</option>
+        <option *ngFor="let s of statuses" [value]="s">
+          {{ s }}
+        </option>
+      </select>
+
+      <input type="date" [(ngModel)]="fromDate" title="From date" />
+      <input type="date" [(ngModel)]="toDate" title="To date" />
+
+      <button class="btn secondary" (click)="resetFilters()">
+        Reset
+      </button>
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+    <table class="admin-table">
+
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Main Category</th>
+          <th>Sub Category</th>
+          <th>Status</th>
+          <th>Publish Date</th>
+          <th>URL</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let item of paginatedEquipments">
+
+          <td data-label="Title">
+            <strong>{{ item.title }}</strong>
+          </td>
+
+          <td data-label="Main Category">
+            {{ item.mainCategory }}
+          </td>
+
+          <td data-label="Sub Category">
+            {{ item.subCategory }}
+          </td>
+
+          <td data-label="Status">
+            <span class="status-badge {{ item.status | lowercase }}">
+              {{ item.status }}
+            </span>
+          </td>
+
+          <td data-label="Publish Date">
+            {{ item.publishDate || '—' }}
+          </td>
+
+          <td data-label="URL">
+            <a href="/equipment/{{ item.slug }}" target="_blank">
+              /equipment/{{ item.slug }}
+            </a>
+          </td>
+
+          <td data-label="Actions" class="actions-cell">
+            <a class="btn btn-primary btn-sm"
+               [routerLink]="['/admin/equipment/edit', item.id]">
+              Edit
+            </a>
+
+            <button class="btn secondary btn-sm"
+                    (click)="deleteEquipment(item.id)">
+              Delete
+            </button>
+          </td>
+
+        </tr>
+
+        <tr *ngIf="paginatedEquipments.length === 0">
+          <td colspan="7" class="no-results">
+            No equipment found
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- ================= PAGINATION ================= -->
+    <div class="pagination" *ngIf="totalPages > 1">
+
+      <button (click)="changePage(currentPage - 1)"
+              [disabled]="currentPage === 1">
+        ‹ Prev
+      </button>
+
+      <button *ngFor="let p of [].constructor(totalPages); let i = index"
+              (click)="changePage(i + 1)"
+              [class.active]="currentPage === i + 1">
+        {{ i + 1 }}
+      </button>
+
+      <button (click)="changePage(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+        Next ›
+      </button>
+
+    </div>
+
+  </div>
+</div>

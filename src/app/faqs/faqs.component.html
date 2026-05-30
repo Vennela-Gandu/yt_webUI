@@ -1,0 +1,103 @@
+<!-- ===== FAQ CONTENT ===== -->
+<!--<div class="faq-container">-->
+  <!--<h1>Frequently Asked Questions</h1>
+  <p class="faq-intro">Popular YouTube growth and monetization questions for Indian creators.</p>-->
+
+  <!-- ALL YOUR FAQ ITEMS (UNCHANGED CONTENT) -->
+  <!-- (Your questions appear exactly as you wrote earlier) -->
+  <!-- FAQ TOGGLE SCRIPT -->
+  <!-- FAQ: Grow YouTube Channel Fast -->
+  <!--<div class="search-box">
+    <input type="text"
+           [(ngModel)]="searchQuery"
+           placeholder="Search faq..."
+           (keyup.enter)="onSearch()" />
+    <button (click)="onSearch()">Search</button>
+    <button (click)="clear()">Clear</button>
+  </div>-->
+
+  <!--<div class="faq-item" *ngFor="let faq of faqs">
+    <div class="faq-question"> {{faq.question}} <i class="fa fa-chevron-down icon"></i> </div>
+    <div class="faq-answer" [innerHTML]="makeLinksClickable(faq.answer)"></div>
+  </div>-->
+
+  
+
+<!--</div>-->
+
+<div class="search-box">
+  <input type="text"
+         [(ngModel)]="searchQuery"
+         placeholder="Search FAQ..."
+         (keyup.enter)="onSearch()" />
+  <button (click)="onSearch()">Search</button>
+  <button (click)="clear()">Clear</button>
+</div>
+<div class="blog-layout">
+  <section class="faq">
+    <h1>Frequently Asked Questions</h1>
+    <p class="faq-intro">Popular YouTube growth and monetization questions for Indian creators.</p>
+
+
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs">
+        <button class="faq-question" (click)="toggleFAQ(faq)">
+          <span><b>{{ faq.question }}</b></span>
+          <span class="faq-icon">{{ faq.isOpen ? '−' : '+' }}</span>
+        </button>
+        <div class="faq-answer" [class.open]="faq.isOpen">
+          <p [innerHTML]="makeLinksClickable(faq.answer)"></p>
+        </div>
+        <button *ngIf="isAdmin"
+                class="edit-btn"
+                (click)="editFAQ(faq.faqid)">
+          ✏ Edit
+        </button>
+      </div>
+    </div>
+  </section>
+  <aside class="blog-sidebar">
+
+
+    <h3>Categories</h3>
+
+    <ul>
+      <li *ngFor="let c of categories"
+          [class.active]="c.categoryID === selectedCategoryId"
+          (click)="onCategoryClick(c.slug)">
+        {{ c.name }}
+      </li>
+    </ul>
+
+  </aside>
+</div>
+
+<div class="pagination" *ngIf="totalPages > 1">
+
+  <button (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <button *ngFor="let p of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i + 1)"
+          [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages">
+    Next
+  </button>
+</div>
+<div class="faq-contact-wrapper">
+  <h2>Still Have Questions?</h2>
+  <p>
+    We're here to help! Contact us and we'll get back to you within 24 hours.
+  </p>
+
+  <a routerLink="/contactus" class="contact-btn">
+    Contact Us
+  </a>
+</div>
+

@@ -1,0 +1,144 @@
+/* ================================
+   CONTACT PAGE – COMPLETE CSS
+   Matches ytcreator.in style
+   ================================ */
+
+/* Page Wrapper */
+.policy-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px 60px;
+  font-family: inherit;
+}
+
+/* Page Header */
+.policy-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+  .policy-header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .policy-header p {
+    font-size: 16px;
+    color: #475569;
+  }
+
+/* Content Boxes */
+.policy-box {
+  background: #ffffff;
+  padding: 20px 22px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+  /* Box Headings */
+  .policy-box h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+    /* Heading Icons */
+    .policy-box h2 i {
+      font-size: 15px;
+      color: #4f46e5;
+    }
+
+  /* Paragraph Text */
+  .policy-box p {
+    font-size: 15.5px;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  /* Highlight Section (Trust Box) */
+  .policy-box.highlight {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  }
+
+    .policy-box.highlight h2,
+    .policy-box.highlight p,
+    .policy-box.highlight h2 i {
+      color: #ffffff;
+    }
+
+/* ================================
+   CONTACT INFO LIST
+   ================================ */
+
+.contact-info {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+  .contact-info li {
+    font-size: 15.5px;
+    color: #334155;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+    .contact-info li i {
+      font-size: 15px;
+      color: #4f46e5;
+      min-width: 18px;
+    }
+
+  .contact-info a {
+    color: #4f46e5;
+    text-decoration: none;
+  }
+
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+
+/* Extra Contact Note */
+.contact-extra {
+  margin-top: 12px;
+  font-size: 15.5px;
+  color: #334155;
+}
+
+/* ================================
+   MOBILE RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  .policy-header h1 {
+    font-size: 28px;
+  }
+
+  .policy-header p {
+    font-size: 15px;
+  }
+
+  .policy-box {
+    padding: 18px 18px;
+  }
+
+    .policy-box h2 {
+      font-size: 19px;
+    }
+
+    .policy-box p,
+    .contact-info li,
+    .contact-extra {
+      font-size: 15px;
+    }
+}

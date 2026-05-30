@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Stop-Process -Id 56164 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(\"Killed PID 56164\")"
+    ]
+  }
+}

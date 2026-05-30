@@ -1,0 +1,144 @@
+:host {
+  display: block;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  color: #000;
+}
+
+/* SEARCH */
+.equipment-search-top {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+  .equipment-search-top input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+  }
+
+/* LAYOUT */
+.equipment-page {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+/* CONTENT */
+.equipment-content {
+  flex: 1;
+}
+
+  .equipment-content h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+/* GRID */
+.equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.equipment-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+  .equipment-card h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .equipment-card a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .equipment-card p {
+    font-size: 14px;
+    color: #444;
+  }
+
+/* SIDEBAR */
+.equipment-sidebar {
+  width: 280px;
+}
+
+.sidebar-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.category-title {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* TOGGLE ICON */
+.toggle-icon::before {
+  content: '▸';
+}
+
+.toggle-icon.open {
+  transform: rotate(90deg);
+}
+
+/* SUB CATEGORIES */
+.subcategory-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 6px;
+}
+
+  .subcategory-list li {
+    padding: 6px;
+    cursor: pointer;
+  }
+
+    .subcategory-list li.active {
+      background: #2563eb;
+      color: #fff;
+      border-radius: 6px;
+    }
+
+/* PAGINATION */
+.pagination {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+  .pagination button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+  }
+
+    .pagination button.active {
+      background: #2563eb;
+      color: #fff;
+    }
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .equipment-page {
+    flex-direction: column;
+  }
+
+  .equipment-sidebar {
+    width: 100%;
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,39 @@
+
+
+
+/* ===============================
+   Pagination
+================================ */
+/*.pagination {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+  .pagination button {
+    padding: 6px 14px;
+    font-size: 14px;
+    border: none;
+    background-color: #343a40;
+    color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+    .pagination button:hover:not(:disabled) {
+      background-color: #23272b;
+    }
+
+    .pagination button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+  .pagination span {
+    font-size: 14px;
+    font-weight: 500;
+  }*/
+
+

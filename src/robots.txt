@@ -1,0 +1,11 @@
+# Allow all crawlers to access the site
+User-agent: *
+Allow: /
+
+# Block sensitive or private paths (update these based on your .NET routes)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login/
+
+# Point to your sitemap (Crucial for SEO)
+Sitemap: https://www.ytcreator.in/sitemap.xml

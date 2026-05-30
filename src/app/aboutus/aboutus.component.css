@@ -1,0 +1,138 @@
+.about-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px 60px;
+}
+
+/* Header */
+.about-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+  .about-header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .about-header p {
+    font-size: 16px;
+    color: #475569;
+  }
+
+/* Boxes */
+.about-box {
+  background: #ffffff;
+  padding: 20px 22px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+  .about-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+    .about-box h2 i {
+      font-size: 16px;
+      color: #4f46e5;
+    }
+
+  .about-box p {
+    font-size: 15.5px;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  /* Highlight */
+  .about-box.highlight {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  }
+
+    .about-box.highlight h2,
+    .about-box.highlight p,
+    .about-box.highlight h2 i {
+      color: #ffffff;
+    }
+
+/* List */
+.about-list {
+  list-style: disc;
+  padding-left: 20px;
+  margin-top: 6px;
+}
+
+  .about-list li {
+    font-size: 15.5px;
+    color: #334155;
+    margin-bottom: 4px;
+  }
+
+/* CTA */
+.about-cta {
+  background: #f6f8ff;
+  padding: 30px 22px;
+  border-radius: 14px;
+  text-align: center;
+  margin-top: 35px;
+}
+
+  .about-cta h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .about-cta p {
+    font-size: 16px;
+    color: #475569;
+    margin-bottom: 20px;
+  }
+
+/* Buttons */
+.about-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.about-btn {
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+
+  .about-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .about-btn.outline {
+    background: transparent;
+    color: #4f46e5;
+    border: 2px solid #4f46e5;
+  }
+
+/* Mobile */
+@media (max-width: 768px) {
+  .about-header h1 {
+    font-size: 28px;
+  }
+
+  .about-box h2 {
+    font-size: 20px;
+  }
+}

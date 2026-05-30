@@ -1,0 +1,117 @@
+<div class="admin-wrapper">
+
+  <h1 class="page-title">
+    {{ post.postID ? 'Edit Blog Post' : 'Add New Blog Post' }}
+  </h1>
+
+  <div class="card">
+
+    <!-- ERROR MESSAGE -->
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    <div *ngIf="successMessage" class="alert success">
+      {{ successMessage }}
+    </div>
+
+    <!-- TITLE -->
+    <div class="form-group">
+      <label>Post Title <span class="required">*</span></label>
+      <input type="text"
+             [(ngModel)]="post.title"
+             class="form-control"
+             placeholder="Enter post title" />
+    </div>
+
+    <!-- CATEGORY -->
+    <div class="form-group">
+      <label>Category <span class="required">*</span></label>
+      <div class="checkbox-group">
+        <label *ngFor="let c of categories">
+          <input type="checkbox"
+                 [checked]="post.categoryIDs.includes(c.categoryID)"
+                 (change)="onCategoryToggle(c.categoryID, $event)" />
+          {{ c.name }}
+        </label>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="form-group">
+      <label>Publish Date</label>
+      <input type="datetime-local"
+             [(ngModel)]="post.publishedDate" />
+      <small class="hint">
+        Leave empty to publish immediately
+      </small>
+    </div>
+
+    <!-- KEYWORDS (OPTIONAL) -->
+    <div class="form-group">
+      <label>SEO Keywords (optional)</label>
+      <input type="text"
+             [(ngModel)]="post.keywords"
+             class="form-control"
+             placeholder="keyword1, keyword2" />
+      <small class="hint">
+        Comma-separated keywords for SEO (optional)
+      </small>
+    </div>
+    <div class="form-group">
+      <label>Short Description <span>*</span></label>
+      <textarea rows="3"
+                maxlength="500"
+                [(ngModel)]="post.shortDescription"
+                placeholder="Brief summary shown in blog listing"></textarea>
+      <small class="hint">
+        {{ post.shortDescription?.length || 0 }}/500 characters
+      </small>
+    </div>
+    <!-- DESCRIPTION -->
+    <div class="form-group">
+      <label>Post Content <span class="required">*</span></label>
+      <!--<textarea rows="8"
+              [(ngModel)]="post.description"
+              class="form-control"
+              placeholder="Write your post content..."></textarea>-->
+
+      <ckeditor *ngIf="Editor; else editorLoading"
+                [editor]="Editor"
+                [(ngModel)]="post.description"
+                [config]="editorConfig">
+      </ckeditor>
+      <ng-template #editorLoading>
+        <p class="hint">Loading editor…</p>
+      </ng-template>
+
+    </div>
+
+    <!-- ACTION BUTTON -->
+    <div class="actions">
+      <button class="btn secondary"
+              type="button"
+              (click)="resetForm()">
+        Reset
+      </button>
+      <button class="btn btn-primary"
+              [disabled]="!isFormValid() || isSubmitting"
+              (click)="save()">
+
+        <span *ngIf="!isSubmitting">
+          {{
+ post.publishedDate ? 'Schedule Post' :
+             post.postID ? 'Update Post' : 'Publish Now'
+          }}
+        </span>
+
+        <span *ngIf="isSubmitting">
+          Saving...
+        </span>
+
+      </button>
+    </div>
+
+  </div>
+</div>

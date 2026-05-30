@@ -1,0 +1,180 @@
+
+<title>Caption & Hashtag Generator</title>
+
+<div class="generator-container">
+  <!-- LEFT PANEL -->
+  <div class="panel left-panel">
+    <h2>✨ Caption & Hashtag Generator</h2>
+    <p class="subtitle">Enter your topic and let AI create engaging captions and trending hashtags for your social media posts.</p>
+
+    <label>Your Topic</label>
+
+
+    <input type="text"
+           placeholder="Enter your topic (e.g. YouTube SEO, Travel Vlog)"
+           [(ngModel)]="topic" />
+
+    <button class="generate-btn" (click)="generateContent()" [disabled]="isLoading">
+      {{ isLoading ? 'Generating...' : 'Generate' }}
+    </button>
+
+    <p class="error" id="errorMessage"></p>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel right-panel">
+    <!-- Empty State (Initial View) -->
+    <div class="empty-state" id="emptyState" *ngIf="captions && captions.length<=0">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+      </svg>
+      <h3>Your Results Will Appear Here</h3>
+      <p>Enter a topic and click generate to see your captions and hashtags</p>
+      
+    </div>
+
+    <!-- Results Section -->
+    <div class="result-section" id="resultsSection" *ngIf="captions && captions.length>0">
+      <!-- Captions -->
+      <div class="result-card">
+        <h3>📝 Caption Suggestions</h3>
+
+        <div class="result-item" *ngFor="let caption of captions">
+          <p>{{ caption }}</p>
+          <button (click)="copy(caption)">Copy</button>
+        </div>
+
+      </div>
+
+      <!-- Hashtags -->
+      <div class="result-card">
+        <h3>#️⃣ Trending Hashtags</h3>
+        <p class="hashtags">
+          <span *ngFor="let tag of hashtags">{{ tag }}</span>
+        </p>
+        <button (click)="copyAll()">Copy All</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="YouTube-Seo">
+  <h4>If Your are working on YouTube You Can try our <a routerLink="/youtubeseo" routerLinkActive="active">SEO Tool</a></h4>
+  
+</div>
+<div>
+  <section class="tool-content">
+
+    <h2>Caption & Hashtag Generator – Write Better Social Media Captions</h2>
+
+    <p>
+      The <strong>Caption and Hashtag Generator by ytcreator.in</strong> helps you create engaging captions and relevant hashtags
+      for social media platforms like Instagram, YouTube Shorts, Facebook, and more.
+      This tool is designed to help your posts reach the right audience while keeping captions natural,
+      readable, and platform-friendly.
+    </p>
+
+
+    <h3>What This Tool Helps You Generate</h3>
+    <ul>
+      <li>Engaging social media captions</li>
+      <li>Relevant and topic-based hashtags</li>
+      <li>Platform-friendly caption styles</li>
+      <li>Clean, readable text for posts</li>
+      <li>Hashtags that improve discoverability</li>
+    </ul>
+    <p>Suitable for reels, shorts, posts, and stories.</p>
+
+
+    <h3>How to Use the Caption Generator</h3>
+    <ol>
+      <li>Enter your post idea, topic, or keyword</li>
+      <li>Choose the content type or platform</li>
+      <li>Generate captions and hashtags</li>
+      <li>Copy and use them in your post</li>
+    </ol>
+    <p>No login or writing experience required.</p>
+
+
+    <h3>Why Captions and Hashtags Matter</h3>
+    <p>Captions and hashtags help social platforms understand:</p>
+    <ul>
+      <li>What your content is about</li>
+      <li>Who should see your post</li>
+      <li>How to categorize it correctly</li>
+    </ul>
+
+    <p>Well-written captions and relevant hashtags can:</p>
+    <ul>
+      <li>Improve reach and engagement</li>
+      <li>Increase post visibility</li>
+      <li>Attract the right audience</li>
+      <li>Support organic growth</li>
+    </ul>
+
+    <p>
+      This tool focuses on clarity, relevance, and quality, not spam.
+    </p>
+
+
+    <h3>Designed for Creators and Businesses</h3>
+    <p>This tool is useful for:</p>
+    <ul>
+      <li>Content creators and influencers</li>
+      <li>Small businesses and brands</li>
+      <li>Social media managers</li>
+      <li>Beginners who struggle with writing captions</li>
+    </ul>
+
+    <p>
+      It helps save time while keeping your content consistent and professional.
+    </p>
+
+
+    <h3>Create Captions for Any Content</h3>
+    <p>Use this tool to generate captions for:</p>
+    <ul>
+      <li>Instagram posts and reels</li>
+      <li>YouTube Shorts</li>
+      <li>Facebook posts</li>
+      <li>Promotional and informational content</li>
+    </ul>
+
+    <p>
+      You can edit or customize the generated captions to match your voice.
+    </p>
+
+
+    <h3>Start Creating Better Captions</h3>
+    <p>
+      Use the Caption and Hashtag Generator on <strong>ytcreator.in</strong> to write captions that are clear,
+      engaging, and optimized for social platforms. Enter your content idea above and generate captions instantly.
+    </p>
+
+  </section>
+
+</div>
+<!-- FAQ Section -->
+<section class="faq">
+  <h2>Frequently Asked Questions</h2>
+  <p class="section-subtitle">
+    Find answers to common questions about content creation and growth strategies.
+  </p>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of faqs">
+      <button class="faq-question" (click)="toggleFAQ(faq)">
+        <span>{{ faq.question }}</span>
+        <span class="faq-icon">{{ faq.isOpen ? '−' : '+' }}</span>
+      </button>
+      <div class="faq-answer" [class.open]="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+    <div class="home-faq-btn-wrapper">
+      <a routerLink="/learninghub/faqs" class="view-faq-btn">
+        View All FAQs →
+      </a>
+    </div>
+  </div>
+</section>
+

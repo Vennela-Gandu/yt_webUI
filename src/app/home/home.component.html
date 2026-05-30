@@ -1,0 +1,94 @@
+<section class="hero">
+  <h1>Welcome to YT Creator</h1>
+  <p class="subtitle">
+    Empowering YouTube creators with the best tools and strategies to grow
+    your channel and reach your goals.
+  </p>
+  </section>
+  <section class="hero">
+    <h2>Everything a Creator Needs — From Idea to Growth</h2>
+    <p>
+      YTCreator.in is a complete support platform built for YouTube and social media creators.
+      From content ideas and SEO optimization to competitor analysis and performance tracking,
+      we help creators grow smarter and faster.
+    </p>
+  </section>
+  <section class="section">
+    <h2>🚀 All-in-One Creator Support</h2>
+    <p>
+      Whether you are a beginner or an experienced creator, YTCreator.in provides powerful
+      tools and insights to help you create better content, optimize performance, and grow
+      across platforms.
+    </p>
+  </section>
+  <div class="container">
+    <!-- Hero Section -->
+    <!-- Feature Buttons Grid -->
+    <section>
+      <div class="button-grid">
+        <button class="feature-btn" (click)="navigateTo('/youtubeseo')">
+          YouTube SEO
+        </button>
+        <button class="feature-btn" (click)="navigateTo('socialmedia')">
+          Social Media
+        </button>
+        <!--<button class="feature-btn" (click)="navigateTo('competitor-analysis')">
+        Competitor Analysis
+      </button>
+      <button class="feature-btn" (click)="navigateTo('content-ideas')">
+        Content Idea Generator
+      </button>-->
+        <button class="feature-btn" (click)="navigateTo('earning-hub')">
+          Learning Hub
+        </button>
+        <!--<button class="feature-btn" (click)="navigateTo('analyze')">
+        Analyze
+      </button>-->
+        <button class="learn-more-btn" (click)="scrollToSection('features')">
+          Learn More
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="features" id="features">
+      <h2>Why Choose Us</h2>
+      <p class="section-subtitle">
+        Discover the features that make our solution stand out from the rest.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+      <h2>Frequently Asked Questions</h2>
+      <p class="faq-intro">
+        Find answers to common questions about content creation and growth strategies.
+      </p>
+
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs">
+          <button class="faq-question" (click)="toggleFAQ(faq)">
+            <span><b>{{ faq.question }}</b></span>
+            <span class="faq-icon">{{ faq.isOpen ? '−' : '+' }}</span>
+          </button>
+          <div class="faq-answer" [class.open]="faq.isOpen">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+        <div class="home-faq-btn-wrapper">
+          <a routerLink="/learninghub/faqs" class="view-faq-btn">
+            View All FAQs →
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>

@@ -1,0 +1,100 @@
+import { APP_BASE_HREF } from '@angular/common';
+import { CommonEngine, isMainModule } from '@angular/ssr/node';
+import express from 'express';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
+import https from 'node:https';
+import http from 'node:http';
+import AppServerModule from './main.server';
+
+const serverDistFolder = dirname(fileURLToPath(import.meta.url));
+const browserDistFolder = resolve(serverDistFolder, '../browser');
+const indexHtml = join(serverDistFolder, 'index.server.html');
+
+const app = express();
+const commonEngine = new CommonEngine();
+
+// Resolve API base once (runtime override via env var). Prefer explicit API_BASE or API_URL set by hosting.
+const RUNTIME_API_BASE = (process.env['API_BASE'] || process.env['API_URL'] || process.env['apiBaseUrl'] || 'https://localhost:7000').replace(/\/+$|$/, '');
+
+// Proxy sitemap requests to the API backend so /sitemap.xml works from the site root.
+// It must be registered before the catch-all SSR route.
+app.get(['/sitemap.xml', '/sitemap-pages.xml', '/sitemap-tools.xml', '/sitemap-blog.xml'], (req, res) => {
+  try {
+    const apiBase = RUNTIME_API_BASE;
+    const target = new URL(req.path, apiBase).toString();
+    const client = target.startsWith('https:') ? https : http;
+
+    const request = client.get(target, { rejectUnauthorized: false }, (apiRes) => {
+      res.statusCode = apiRes.statusCode || 200;
+      // copy useful headers
+      Object.entries(apiRes.headers).forEach(([k, v]) => {
+        if (v) res.setHeader(k, v as string);
+      });
+      apiRes.pipe(res);
+    });
+
+    request.on('error', (err) => {
+      console.error('Sitemap proxy error:', err);
+      res.sendStatus(502);
+    });
+  } catch (err) {
+    console.error('Sitemap proxy failed:', err);
+    res.sendStatus(500);
+  }
+});
+
+// ✅ FIXED static serving
+app.use(
+  express.static(browserDistFolder, {
+    maxAge: '1y',
+    index: false,
+  })
+);
+
+// ✅ FIXED SSR route
+app.get('*', (req, res, next) => {
+  const { protocol, originalUrl, baseUrl, headers } = req;
+
+  commonEngine
+    .render({
+      bootstrap: AppServerModule,
+      documentFilePath: indexHtml,
+      url: `${protocol}://${headers.host}${originalUrl}`,
+      publicPath: browserDistFolder,
+      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+    })
+    .then((html) => res.send(html))
+    .catch((err) => next(err));
+});
+
+// ✅ Correct port binding
+if (isMainModule(import.meta.url)) {
+  const port = Number(process.env['PORT'] || 8080);
+  const host = process.env['HOST'] || '0.0.0.0';
+
+  // Sanity check: warn if the server-side index file is missing
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // (just a soft check; avoid throwing)
+  } catch {}
+
+  const server = app.listen(port, host, () => {
+    console.log(`Node Express server listening on http://${host}:${port}`);
+    console.log(`Serving browser files from: ${browserDistFolder}`);
+    console.log(`Runtime API base: ${RUNTIME_API_BASE}`);
+  });
+
+  server.on('error', (err: any) => {
+    if (err && (err.code === 'EADDRINUSE' || err.code === 'EACCES')) {
+      console.error(
+        `Failed to bind to ${host}:${port} — ${err.code}. Is the port already in use or do you lack permissions?`
+      );
+      process.exit(1);
+    }
+    console.error('Server error:', err);
+    process.exit(1);
+  });
+}
+
+export default app;

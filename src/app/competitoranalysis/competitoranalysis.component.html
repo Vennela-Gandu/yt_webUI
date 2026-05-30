@@ -1,0 +1,85 @@
+<title>Competitor Analysis Tool for YouTube, Instagram & LinkedIn | YTcreator.in</title>
+
+<meta name="description"
+      content="YTcreator.in offers a powerful competitor analysis tool for YouTube, Instagram, and LinkedIn. Analyze competitor performance using public data and improve your social media growth strategy." />
+
+<meta name="keywords"
+      content="competitor analysis tool, youtube competitor analysis, instagram competitor analysis, linkedin competitor analysis, social media competitor analysis" />
+
+<div class="container" *ngIf="!isChildRouteActive">
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1> Competitor Analysis Tool for YouTube, Instagram & LinkedIn</h1>
+    <p class="subtitle">
+      <strong>Competitor Analysis Tool on YTcreator.in</strong> helps creators,
+      marketers, and businesses analyze the public performance of competitor
+      social media channels and accounts.
+    </p>
+    <!-- Feature Buttons Grid -->
+    <div class="button-grid">
+      <button class="feature-btn" (click)="navigateTo('competitoranalysisyoutube')">
+        Competitor Anlysis YouTube
+      </button>
+      <button class="feature-btn" (click)="navigateTo('competitoranalysisinstagram')">
+        Competitor Analysis Instagram
+      </button>
+      <button class="feature-btn" (click)="navigateTo('competitoranalysislinkedin')">
+        Competitor Analysis Linkedin
+      </button>
+
+    </div>
+  </section>
+  <section class="competitor-analysis-tools">
+    <h1>Competitor Analysis Tool for YouTube, Instagram & LinkedIn</h1>
+
+    <p>
+      The <strong>Competitor Analysis Tool on YTcreator.in</strong> helps creators,
+      marketers, and businesses analyze the public performance of competitor
+      social media channels and accounts. This tool provides valuable insights
+      that help you understand what works in your niche and improve your
+      content strategy for organic growth.
+    </p>
+
+    <p>
+      By simply entering a competitor’s profile or channel link, YTcreator.in
+      analyzes publicly available data to give you meaningful performance
+      insights. The tool respects platform privacy policies and does
+      <strong>not access any private or restricted data</strong>.
+    </p>
+
+    <h2>Competitor Analysis for YouTube</h2>
+    <p>
+      Our <strong>YouTube Competitor Analysis</strong> tool allows you to analyze
+      competitor YouTube channels by entering a specific channel link. It
+      provides insights based on publicly available information such as content
+      performance, posting patterns, and engagement trends to help you refine
+      your YouTube growth strategy.
+    </p>
+
+    <h2>Competitor Analysis for Instagram</h2>
+    <p>
+      The <strong>Instagram Competitor Analysis</strong> tool helps you evaluate
+      competitor Instagram accounts using their public profile data. By
+      analyzing content activity and engagement patterns, you can identify
+      successful strategies and improve your own Instagram presence
+      organically.
+    </p>
+
+    <h2>Competitor Analysis for LinkedIn</h2>
+    <p>
+      With our <strong>LinkedIn Competitor Analysis</strong> tool, you can analyze
+      competitor LinkedIn company pages or profiles by providing a valid public
+      LinkedIn link. The tool uses publicly available information to help you
+      understand content performance and audience engagement trends.
+    </p>
+
+    <ul>
+      <p>✔ Analyze competitor performance across multiple platforms</p>
+      <p>✔ Works with publicly available data only</p>
+      <p>✔ No access to private or restricted information</p>
+      <p>✔ Improve content and growth strategy using insights</p>
+      <p>✔ Easy-to-use tool for creators and marketers</p>
+    </ul>
+  </section>
+</div>
+<router-outlet> </router-outlet>

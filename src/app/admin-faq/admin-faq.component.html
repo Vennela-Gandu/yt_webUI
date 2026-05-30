@@ -1,0 +1,37 @@
+<div class="admin-faq">
+
+  <h1>{{ isEdit ? 'Edit FAQ' : 'Add FAQ' }}</h1>
+  <div class="form-group">
+    <label>Category <span class="required">*</span></label>
+    <div class="checkbox-group">
+      <label *ngFor="let c of categories">
+        <input type="checkbox"
+               [checked]="faq.categoryIDs.includes(c.categoryID)"
+               (change)="onCategoryToggle(c.categoryID, $event)" />
+        {{ c.name }}
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Question</label>
+    <input type="text"
+           [(ngModel)]="faq.question"
+           placeholder="Enter FAQ question" />
+  </div>
+
+  <div class="form-group">
+    <label>Answer</label>
+    <!--<textarea [(ngModel)]="faq.answer"
+            placeholder="Enter FAQ answer"></textarea>-->
+    <ckeditor [editor]="Editor"
+              [(ngModel)]="faq.answer"
+              [config]="editorConfig">
+    </ckeditor>
+  </div>
+
+  <button class="save-btn"
+          (click)="save()">
+    {{ isEdit ? 'Update FAQ' : 'Save FAQ' }}
+  </button>
+
+</div>

@@ -1,0 +1,103 @@
+<!-- SEARCH (ALWAYS ON TOP) -->
+<div class="equipment-search-top">
+  <input type="text"
+         placeholder="Search equipment..."
+         [(ngModel)]="searchText" />
+</div>
+
+<div class="equipment-page">
+
+  <!-- CONTENT FIRST -->
+  <main class="equipment-content">
+
+    <h1>Creator Equipment</h1>
+
+    <div class="equipment-grid">
+
+      <div class="equipment-card"
+           *ngFor="let item of paginatedEquipments">
+
+        <h2>
+          <a [routerLink]="['/equipment', item.slug]">
+            {{ item.title }}
+          </a>
+        </h2>
+
+        <p>{{ item.shortDescription }}</p>
+
+        <a class="read-more"
+           [routerLink]="['/equipment', item.slug]">
+          Read More →
+        </a>
+
+      </div>
+
+    </div>
+
+    <p *ngIf="paginatedEquipments.length === 0"
+       class="no-results">
+      No equipment found.
+    </p>
+
+    <!-- PAGINATION -->
+    <div class="pagination" *ngIf="totalPages > 1">
+
+      <button (click)="changePage(currentPage - 1)"
+              [disabled]="currentPage === 1">
+        ‹ Prev
+      </button>
+
+      <button *ngFor="let p of [].constructor(totalPages); let i = index"
+              (click)="changePage(i + 1)"
+              [class.active]="currentPage === i + 1">
+        {{ i + 1 }}
+      </button>
+
+      <button (click)="changePage(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+        Next ›
+      </button>
+
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="equipment-sidebar">
+
+    <div class="sidebar-box">
+      <h3>Categories</h3>
+
+      <div class="category-block"
+           *ngFor="let cat of categories">
+
+        <div class="category-title"
+             (click)="selectMainCategory(cat.id)">
+          {{ cat.name }}
+          <span class="toggle-icon"
+                [class.open]="selectedMainCategoryId === cat.id"></span>
+        </div>
+
+        <ul class="subcategory-list"
+            *ngIf="selectedMainCategoryId === cat.id">
+
+          <li *ngFor="let sub of cat.subs"
+              (click)="selectSubCategory(sub.id)"
+              [class.active]="selectedSubCategoryId === sub.id">
+            {{ sub.name }}
+          </li>
+
+        </ul>
+
+      </div>
+
+      <button class="clear-btn"
+              *ngIf="searchText || selectedSubCategoryId"
+              (click)="clearFilters()">
+        Clear Filters
+      </button>
+    </div>
+
+  </aside>
+
+</div>

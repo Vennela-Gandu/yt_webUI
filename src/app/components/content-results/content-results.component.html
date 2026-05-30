@@ -1,0 +1,82 @@
+<div class="results-container">
+  <div *ngIf="!content" class="default-message">
+    <ul class="precontent">
+      <li>1. Select your category.</li>
+      <li>2. Enter your details (topic, audience, etc.)</li>
+      <li>3. Generate instant results: Receive five optimized titles, a full description, targeted keywords, hashtags, and FAQs.</li>
+    </ul>
+    <div class="icon">✨</div>
+    <h2>Ready to Create Amazing Content?</h2>
+    <p class="message">Enter your topic and let AI help you generate engaging YouTube content ideas, titles, descriptions, and more!</p>
+    <div class="features">
+      <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <span class="feature-text">Catchy Video Titles</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">📝</span>
+        <span class="feature-text">SEO-Optimized Descriptions</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🔑</span>
+        <span class="feature-text">Relevant Keywords</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">#️⃣</span>
+        <span class="feature-text">Trending Hashtags</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">❓</span>
+        <span class="feature-text">FAQ Suggestions</span>
+      </div>
+    </div>
+    <p class="cta-text">Fill out the form to get started!</p>
+  </div>
+
+  <div *ngIf="content">
+    <h2>Generated Content</h2>
+
+    <div class="section">
+      <h3>Video Title Suggestions</h3>
+      <div class="title-list">
+        <div class="title-item" *ngFor="let title of content.titles; let i = index">
+          <span class="title-number">{{ i + 1 }}.</span>
+          <span class="title-text">{{ title }}</span>
+          <button class="copy-btn" (click)="copyToClipboard(title)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Video Description</h3>
+      <div class="description-box">
+        <p>{{ content.description }}</p>
+        <button class="copy-btn" (click)="copyToClipboard(content.description)">Copy Description</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Keywords <button class="copy-btn-sm" (click)="copyAllKeywords()">Copy All</button></h3>
+      <div class="tag-container">
+        <span class="tag keyword-tag" *ngFor="let keyword of content.keywords">{{ keyword }}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Hashtags <button class="copy-btn-sm" (click)="copyAllHashtags()">Copy All</button></h3>
+      <div class="tag-container">
+        <span class="tag hashtag-tag" *ngFor="let hashtag of content.hashtags">{{ hashtag }}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Frequently Asked Questions <button class="copy-btn-sm" (click)="copyAllHashtags()">Copy All</button></h3>
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of content.faqs">
+          <div class="faq-question">{{ faq }}</div>
+          <!--<div class="faq-answer">{{ faq.answer }}</div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

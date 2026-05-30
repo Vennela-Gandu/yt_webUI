@@ -1,0 +1,50 @@
+/* PAGE WRAPPER */
+.admin-faq {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+}
+
+  /* TITLE */
+  .admin-faq h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #000;
+  }
+
+
+
+/* ACTION BUTTON */
+.save-btn {
+  background: #000;
+  color: #fff;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+  .save-btn:hover {
+    opacity: 0.9;
+  }
+
+  /* DISABLED BUTTON */
+  .save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .admin-faq {
+    padding: 15px;
+  }
+
+    .admin-faq h1 {
+      font-size: 22px;
+    }
+}

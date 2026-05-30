@@ -1,0 +1,40 @@
+<div class="equipment-detail-page" *ngIf="equipment">
+
+  <!-- BREADCRUMB -->
+  <nav class="breadcrumb">
+    <a routerLink="/">Home</a>
+    <span>›</span>
+    <a routerLink="/equipment">Equipment</a>
+    <span>›</span>
+    <span>{{ equipment.title }}</span>
+  </nav>
+
+  <!-- CONTENT -->
+  <article class="equipment-article">
+
+    <h1>{{ equipment.title }}</h1>
+
+    <p class="short-description">
+      {{ equipment.shortDescription }}
+    </p>
+
+    <div class="meta">
+      <span>{{ equipment.category }}</span>
+      <span>•</span>
+      <span>{{ equipment.subCategory }}</span>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content"
+         [innerHTML]="equipment.content">
+    </div>
+
+  </article>
+
+</div>
+
+<!-- NOT FOUND -->
+<div class="not-found" *ngIf="!equipment">
+  <h2>Equipment not found</h2>
+  <a routerLink="/equipment">← Back to Equipment</a>
+</div>

@@ -1,0 +1,97 @@
+
+<div class="blog-layout">
+  <div class="blog-detail-wrapper" *ngIf="post">
+
+    <!-- TITLE -->
+    <h1 class="blog-title">
+      {{ post.title }}
+    </h1>
+    <span>{{post.publishedDate| date:'dd MMM yyyy, hh:mm a'}}</span>
+    <!-- KEYWORDS -->
+    <!--<div class="keywords" *ngIf="post.keywords">
+    <span class="keyword"
+          *ngFor="let key of post.keywords.split(',')">
+      #{{ key.trim() }}
+    </span>
+  </div>-->
+    <!-- DIVIDER -->
+    <div class="divider"></div>
+
+    <!-- CONTENT -->
+    <div class="blog-content"
+         [innerHTML]="content">
+    </div>
+
+    <!-- Social Share -->
+    <div class="social-share">
+      <span>Share:</span>
+
+      <a (click)="share('facebook')" title="Share on Facebook" class="pointer">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+
+      <a (click)="share('twitter')" title="Share on Twitter" class="pointer">
+        <i class="fab fa-x-twitter"></i>
+      </a>
+
+      <a (click)="share('linkedin')" title="Share on LinkedIn" class="pointer">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+
+      <a (click)="share('whatsapp')" title="Share on WhatsApp" class="pointer">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a (click)="copyLink()" title="Copy Link" class="copy-link">
+        <i class="fas fa-link"></i>
+        <span class="copy-status" *ngIf="copied">Copied!</span>
+      </a>
+    </div>
+
+    <div class="related-posts" *ngIf="relatedPosts.length">
+      <h3>Related Posts</h3>
+
+      <ul>
+        <li *ngFor="let p of relatedPosts">
+          <a (click)="openRelatedPost(p.slug)">
+            {{ p.title }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Post Navigation -->
+    <!--<div class="post-navigation">
+    <a *ngIf="prevPost" [routerLink]="['/post', prevPost.slug]">
+      ← {{ prevPost.title }}
+    </a>
+  <a *ngIf="nextPost" [routerLink]="['/post', nextPost.slug]">
+    {{ nextPost.title }} →
+  </a>
+  </div>-->
+    <!-- Latest Posts -->
+    <!--<div class="Latest-posts">
+    <h3>Latest Posts</h3>
+
+    <div class="Latest-item" *ngFor="let post of latestPosts">
+      <a [routerLink]="['/post', post.slug]">
+        {{ post.title }}
+      </a>
+    </div>
+  </div>-->
+
+  </div>
+  <!-- RIGHT: CATEGORIES -->
+  <aside class="blog-sidebar">
+
+    <h3>Categories</h3>
+
+    <ul>
+      <li *ngFor="let c of categories"
+          [class.active]="c.categoryID === selectedCategoryId"
+          (click)="loadPosts(c.slug)">
+        {{ c.name }}
+      </li>
+    </ul>
+
+  </aside>
+</div>

@@ -1,0 +1,44 @@
+<div class="music-container">
+
+  <h2>🎵 Trending Music Finder</h2>
+
+  <div class="controls">
+
+    <!-- Platform -->
+    <select [(ngModel)]="selectedPlatform">
+      <option value="">Select Platform</option>
+      <option *ngFor="let platform of platforms" [value]="platform">
+        {{ platform }}
+      </option>
+    </select>
+
+    <!-- Type -->
+    <select [(ngModel)]="selectedType">
+      <option value="">Select Type</option>
+      <option *ngFor="let t of types" [value]="t.value">
+        {{ t.label }}
+      </option>
+    </select>
+
+    <button (click)="getTrendingMusic()" [disabled]="isLoading">
+      {{ isLoading ? 'Loading...' : 'Get Trends' }}
+    </button>
+
+  </div>
+
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <div class="music-list" *ngIf="trendingMusic.length">
+
+    <div class="music-card" *ngFor="let song of trendingMusic">
+      <div>
+        <h4>{{ song.title }}</h4>
+        <p>{{ song.artist }}</p>
+      </div>
+
+      <a [href]="song.url" target="_blank">▶ Listen</a>
+    </div>
+
+  </div>
+
+</div>

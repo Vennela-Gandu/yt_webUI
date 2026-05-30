@@ -1,0 +1,79 @@
+<div class="search-box">
+  <input type="text"
+         [(ngModel)]="searchQuery"
+         placeholder="Search blog..."
+         (keyup.enter)="onSearch()" />
+  <button (click)="onSearch()">Search</button>
+  <button (click)="clear()">Clear</button>
+</div>
+<div class="blog-layout">
+
+  
+  <!-- LEFT: BLOG POSTS -->
+  <div class="blog-posts">
+
+    <div *ngFor="let post of posts" class="post-card" (click)="openPost(post.slug)">
+
+      <h2 class="post-title"><span [innerHTML]="post.title"></span></h2>
+
+      <p class="post-desc">
+        <span [innerHTML]="post.shortDescription"></span>
+      </p>
+
+      <div class="post-footer">
+        <span class="category" *ngFor="let c of post.categoryNames">
+          {{ c.name }}
+        </span>
+
+        <!-- ADMIN EDIT BUTTON -->
+        <button *ngIf="isAdmin"
+                class="edit-btn"
+                (click)="editPost(post.postID)">
+          ✏ Edit
+        </button>
+      </div>
+
+    </div>
+
+    <p *ngIf="posts.length === 0" class="empty">
+      No posts found for this category
+    </p>
+
+  </div>
+  
+
+  <!-- RIGHT: CATEGORIES -->
+  <aside class="blog-sidebar">
+  
+
+    <h3>Categories</h3>
+
+    <ul>
+      <li *ngFor="let c of categories"
+          [class.active]="c.categoryID === selectedCategoryId"
+          (click)="onCategoryClick(c.slug)">
+        {{ c.name }}
+      </li>
+    </ul>
+
+  </aside>
+
+</div>
+<div class="pagination" *ngIf="totalPages > 1">
+
+  <button (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <button *ngFor="let p of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i + 1)"
+          [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages">
+    Next
+  </button>
+</div>

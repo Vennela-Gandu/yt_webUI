@@ -1,0 +1,126 @@
+<div class="form-container">
+  <h2>YouTube Content Generator</h2>
+  <p class="subtitle">Generate AI-powered content ideas for your YouTube videos</p>
+
+  <!-- Step Indicator -->
+  <div class="step-indicator">
+    <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+      <div class="step-number">1</div>
+      <div class="step-label">Category</div>
+    </div>
+    <div class="step-line" [class.completed]="currentStep > 1"></div>
+    <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+      <div class="step-number">2</div>
+      <div class="step-label">Details</div>
+    </div>
+    <div class="step-line" [class.completed]="currentStep > 2"></div>
+    <div class="step" [class.active]="currentStep === 3">
+      <div class="step-number">3</div>
+      <div class="step-label">Results</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Category Selection -->
+  <div *ngIf="currentStep === 1" class="step-content">
+    <div class="form-group">
+      <label for="category">Select Content Category *</label>
+      <select
+        id="category"
+        name="category"
+        [(ngModel)]="selectedCategory"
+        (change)="onCategorySelect()"
+        class="category-select"
+      >
+        <option value="" disabled>Choose a category...</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="button-group">
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Next Step &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: Content Details Form -->
+  <div *ngIf="currentStep === 2" class="step-content">
+    <div class="category-badge">
+      <span class="badge-icon">{{ getCategoryIcon(selectedCategory) }}</span>
+      <span class="badge-text">{{ selectedCategory }}</span>
+    </div>
+
+    <!-- Dynamic Content Form -->
+    <form (ngSubmit)="onSubmit()" #contentForm="ngForm" novalidate>
+      <!-- Dynamic form fields based on category -->
+      <div class="form-group" *ngFor="let field of currentFields">
+        <label [attr.for]="field.name">
+          {{ field.label }}
+          <span class="required-mark" *ngIf="field.required">*</span>
+          <span class="optional-mark" *ngIf="!field.required">(Optional)</span>
+        </label>
+
+        <!-- Text input -->
+        <input
+          *ngIf="field.type === 'text'"
+          type="text"
+          [id]="field.name"
+          [name]="field.name"
+          [(ngModel)]="formData[field.name]"
+          [placeholder]="field.placeholder || ''"
+          [required]="field.required"
+        />
+
+        <!-- Select dropdown -->
+        <select
+          *ngIf="field.type === 'select'"
+          [id]="field.name"
+          [name]="field.name"
+          [(ngModel)]="formData[field.name]"
+          [required]="field.required"
+        >
+          <option value="" disabled selected>Choose {{ field.label.toLowerCase() }}...</option>
+          <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+        </select>
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" (click)="previousStep()" [disabled]="isLoading">
+          &larr; Back
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Generate Content</span>
+          <span *ngIf="isLoading" class="loading-text">
+            <span class="spinner"></span>
+            Generating...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 3: Results (handled by parent component) -->
+  <div *ngIf="currentStep === 3" class="step-content">
+    <div class="success-message">
+      <div class="success-icon">✅</div>
+      <h3>Content Generated Successfully!</h3>
+      <p>Scroll down to see your AI-generated content.</p>
+
+      <div class="button-group">
+        <button type="button" class="btn btn-primary" (click)="resetForm()">
+          Generate New Content
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

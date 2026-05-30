@@ -1,0 +1,88 @@
+:host {
+  display: block;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  color: #000;
+}
+
+/* PAGE */
+.equipment-detail-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+/* BREADCRUMB */
+.breadcrumb {
+  font-size: 13px;
+  margin-bottom: 16px;
+  color: #555;
+}
+
+  .breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .breadcrumb span {
+    margin: 0 4px;
+  }
+
+/* ARTICLE */
+.equipment-article h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.short-description {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+/* META */
+.meta {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* CONTENT */
+.content {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+  .content h2 {
+    margin-top: 24px;
+    font-size: 20px;
+  }
+
+  .content ul {
+    padding-left: 20px;
+    margin: 12px 0;
+  }
+
+  .content p {
+    margin-bottom: 12px;
+  }
+
+/* NOT FOUND */
+.not-found {
+  max-width: 800px;
+  margin: 80px auto;
+  text-align: center;
+}
+
+  .not-found a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .equipment-article h1 {
+    font-size: 24px;
+  }
+}

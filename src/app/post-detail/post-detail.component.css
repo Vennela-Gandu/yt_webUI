@@ -29,6 +29,20 @@
   font-size: 1.05rem;
   background-color: #ffffff;
 }
+
+/* Keep the content column from blowing out the grid track */
+.blog-detail-wrapper {
+  min-width: 0;
+}
+
+/* Constrain images injected via [innerHTML] so they don't overflow
+   the column and overlap the Categories sidebar */
+.blog-content ::ng-deep img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px auto;
+}
 .blog-title {
   max-width: 820px;
   margin: 0 auto;

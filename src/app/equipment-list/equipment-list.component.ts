@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { EquipmentService } from '../services/equipment.service';
+import { toSlug } from '../utils/slug.util';
 
 @Component({
   selector: 'app-equipment-list',
@@ -6,74 +8,57 @@ import { Component } from '@angular/core';
   styleUrls: ['./equipment-list.component.css'],
   standalone: false
 })
-export class EquipmentListComponent {
+export class EquipmentListComponent implements OnInit {
 
   /* ================= FILTERS ================= */
   searchText = '';
   selectedCategory = '';
   selectedSubCategory = '';
   selectedStatus = '';
-  fromDate = '';
-  toDate = '';
 
   /* ================= PAGINATION ================= */
   pageSize = 5;
   currentPage = 1;
 
-  /* ================= DATA ================= */
-  equipments = [
-    {
-      id: 1,
-      title: 'Best Ring Lights for YouTube',
-      mainCategory: 'Lighting Equipment',
-      subCategory: 'Ring Lights',
-      status: 'Published',
-      publishDate: '2026-01-20',
-      slug: 'best-ring-lights-for-youtube'
-    },
-    {
-      id: 2,
-      title: 'USB Microphones Under ₹10,000',
-      mainCategory: 'Audio Equipment',
-      subCategory: 'USB Microphones',
-      status: 'Scheduled',
-      publishDate: '2026-02-05',
-      slug: 'usb-microphones-under-10000'
-    },
-    {
-      id: 3,
-      title: 'DSLR vs Mirrorless Cameras',
-      mainCategory: 'Camera Equipment',
-      subCategory: 'DSLR / Mirrorless Cameras',
-      status: 'Draft',
-      publishDate: '',
-      slug: 'dslr-vs-mirrorless'
-    },
-    {
-      id: 4,
-      title: 'Best Webcams for Online Classes',
-      mainCategory: 'Camera Equipment',
-      subCategory: 'Webcams',
-      status: 'Published',
-      publishDate: '2026-01-10',
-      slug: 'best-webcams-online-classes'
-    }
-  ];
-
-  categories = [
-    'Camera Equipment',
-    'Audio Equipment',
-    'Lighting Equipment'
-  ];
-
-  subCategories = [
-    'Ring Lights',
-    'USB Microphones',
-    'DSLR / Mirrorless Cameras',
-    'Webcams'
-  ];
-
+  /* ================= DATA (loaded from API) ================= */
+  equipments: any[] = [];
+  categories: string[] = [];
+  subCategories: string[] = [];
   statuses = ['Published', 'Scheduled', 'Draft'];
+
+  constructor(private service: EquipmentService) { }
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadEquipments();
+  }
+
+  loadCategories() {
+    this.service.getCategories().subscribe(res => {
+      this.categories = (res || []).filter((c: any) => !c.parentCategoryID).map((c: any) => c.name);
+      this.subCategories = (res || []).filter((c: any) => c.parentCategoryID).map((c: any) => c.name);
+    });
+  }
+
+  loadEquipments() {
+    // Admin sees everything (drafts/scheduled too); filter/paginate client-side.
+    this.service.getList(1, 1000, '', null, false).subscribe(res => {
+      this.equipments = (res.equipments || []).map((e: any) => {
+        const cats = e.categories || [];
+        const main = cats.find((c: any) => !c.parentCategoryID);
+        const sub = cats.find((c: any) => c.parentCategoryID);
+        return {
+          id: e.equipmentID,
+          title: e.title,
+          mainCategory: main?.name || '',
+          subCategory: sub?.name || '',
+          status: e.status,
+          publishDate: e.publishedDate ? e.publishedDate.substring(0, 10) : '',
+          slug: toSlug(e.title)
+        };
+      });
+    });
+  }
 
   /* ================= FILTER LOGIC ================= */
   get filteredEquipments() {
@@ -92,19 +77,11 @@ export class EquipmentListComponent {
       const matchesStatus =
         !this.selectedStatus || e.status === this.selectedStatus;
 
-      const matchesFromDate =
-        !this.fromDate || (e.publishDate && e.publishDate >= this.fromDate);
-
-      const matchesToDate =
-        !this.toDate || (e.publishDate && e.publishDate <= this.toDate);
-
       return (
         matchesTitle &&
         matchesCategory &&
         matchesSubCategory &&
-        matchesStatus &&
-        matchesFromDate &&
-        matchesToDate
+        matchesStatus
       );
     });
   }
@@ -130,14 +107,14 @@ export class EquipmentListComponent {
     this.selectedCategory = '';
     this.selectedSubCategory = '';
     this.selectedStatus = '';
-    this.fromDate = '';
-    this.toDate = '';
     this.currentPage = 1;
   }
 
   deleteEquipment(id: number) {
     if (confirm('Are you sure you want to delete this equipment?')) {
-      this.equipments = this.equipments.filter(e => e.id !== id);
+      this.service.delete(id).subscribe(() => {
+        this.equipments = this.equipments.filter(e => e.id !== id);
+      });
     }
   }
 }

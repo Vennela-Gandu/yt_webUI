@@ -36,6 +36,19 @@ export class PostService {
     return this.http.get<any>(`${this.api}/post/${id}`);
   }
 
+  getTrendingPosts(page: number, pageSize: number, search: string) {
+    let params: any = {
+      page,
+      pageSize
+    };
+    if (search) params.search = search;
+    return this.http.get<any>(`${this.api}/post/trending`, { params });
+  }
+
+  recordView(id: number) {
+    return this.http.post(`${this.api}/post/${id}/view`, {});
+  }
+
   getAllFAQs(page: number,
     pageSize: number,
     search: string,

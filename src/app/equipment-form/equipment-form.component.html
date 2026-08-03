@@ -6,6 +6,10 @@
 
   <div class="card">
 
+    <!-- ERROR / SUCCESS MESSAGES -->
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+
     <!-- TITLE -->
     <div class="form-group">
       <label>Equipment Title <span class="required">*</span></label>
@@ -82,17 +86,18 @@
       </small>
     </div>
 
-    <!--CONTENT (PLAIN TEXTAREA – NO CKEDITOR)-->
+    <!--CONTENT (CKEDITOR)-->
     <div class="form-group">
       <label>Equipment Content <span class="required">*</span></label>
-      <ckeditor [editor]="Editor"
+      <ckeditor *ngIf="Editor; else editorLoading"
+                [editor]="Editor"
+                [disableWatchdog]="true"
                 [(ngModel)]="equipment.description"
                 [config]="editorConfig">
       </ckeditor>
-      <!--<textarea rows="12"
-              [(ngModel)]="equipment.description"
-              placeholder="Write full equipment review / article here">
-    </textarea>-->
+      <ng-template #editorLoading>
+        <p class="hint">Loading editor…</p>
+      </ng-template>
     </div>
 
 

@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Base64UploadPlugin } from '../utils/base64-upload.adapter';
+import { EquipmentService } from '../services/equipment.service';
 
 @Component({
   selector: 'app-equipment-form',
@@ -11,7 +13,11 @@ import { Base64UploadPlugin } from '../utils/base64-upload.adapter';
 export class EquipmentFormComponent implements OnInit {
 
   public Editor: any = null;
-  public editorConfig = {
+  // Config is completed at runtime once the modular CKEditor build is
+  // dynamically imported (plugins are class references from the 'ckeditor5'
+  // package and must only be loaded in the browser to keep SSR safe).
+  public editorConfig: any = {
+    licenseKey: 'GPL',
     toolbar: {
       items: [
         'heading',
@@ -28,7 +34,7 @@ export class EquipmentFormComponent implements OnInit {
         'numberedList',
         '|',
         'blockQuote',
-        'imageUpload',
+        'uploadImage',
         '|',
         'undo',
         'redo'
@@ -69,51 +75,8 @@ export class EquipmentFormComponent implements OnInit {
     subCategoryIDs: []
   };
 
-  // MAIN + SUB CATEGORY STRUCTURE
-  categories = [
-    {
-      id: 1,
-      name: 'Camera Equipment',
-      subs: [
-        { id: 101, name: 'Smartphone' },
-        { id: 102, name: 'DSLR / Mirrorless Cameras' },
-        { id: 103, name: 'Webcams' },
-        { id: 104, name: 'Video Cameras' },
-        { id: 105, name: 'Others' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Audio Equipment',
-      subs: [
-        { id: 201, name: 'Lavalier Microphones' },
-        { id: 202, name: 'USB Microphones' },
-        { id: 203, name: 'Shotgun Microphones' },
-        { id: 204, name: 'Wireless Microphones' },
-        { id: 205, name: 'Others' }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Lighting Equipment',
-      subs: [
-        { id: 301, name: 'Ring Lights' },
-        { id: 302, name: 'Softbox Lights' },
-        { id: 303, name: 'LED Panels' },
-        { id: 304, name: 'Others' }
-      ]
-    },
-    {
-      id: 4,
-      name: 'Accessories & Support Gear',
-      subs: [
-        { id: 401, name: 'Tripods' },
-        { id: 402, name: 'Gimbals' },
-        { id: 403, name: 'Green Screens' },
-        { id: 404, name: 'Others' }
-      ]
-    }
-  ];
+  // MAIN + SUB CATEGORY STRUCTURE (loaded from the API)
+  categories: any[] = [];
 
   // MAIN CATEGORY TOGGLE
   toggleMainCategory(catId: number, event: any) {
@@ -121,7 +84,7 @@ export class EquipmentFormComponent implements OnInit {
       // Prevent unchecking if any sub category exists
       const hasSub = this.categories
         .find(c => c.id === catId)!
-        .subs.some(s => this.equipment.subCategoryIDs.includes(s.id));
+        .subs.some((s: any) => this.equipment.subCategoryIDs.includes(s.id));
 
       if (hasSub) {
         event.target.checked = true;
@@ -152,29 +115,79 @@ export class EquipmentFormComponent implements OnInit {
 
   isFormValid(): boolean {
     return (
-      this.equipment.title.trim() !== '' &&
-      this.equipment.shortDescription.trim() !== '' &&
-      this.equipment.description.trim() !== '' &&
-      this.equipment.subcategoryIDs.length > 0
+      (this.equipment.title || '').trim() !== '' &&
+      (this.equipment.shortDescription || '').trim() !== '' &&
+      (this.equipment.description || '').trim() !== '' &&
+      this.equipment.subCategoryIDs.length > 0
     );
   }
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private service: EquipmentService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.service.getCategories().subscribe(res => {
+      this.categories = this.service.buildCategoryTree(res);
+    });
+
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (id) {
+      this.loadEquipment(id);
+    }
+
     if (isPlatformBrowser(this.platformId)) {
-      import('@ckeditor/ckeditor5-build-classic').then((m) => {
-        this.Editor = m?.default || m;
-      }).catch(() => {
-        // optional: keep Editor null if import fails on server or build
+      // Load the modular CKEditor build only in the browser (it touches
+      // `window`/`document` and would break server-side rendering).
+      import('ckeditor5').then((CK: any) => {
+        const {
+          ClassicEditor, Essentials, Paragraph, Heading,
+          Bold, Italic, Underline, Link, List, BlockQuote,
+          Image, ImageUpload, FontFamily, FontSize,
+          Autoformat, PasteFromOffice
+        } = CK;
+
+        this.editorConfig.plugins = [
+          Essentials, Paragraph, Heading, Bold, Italic, Underline,
+          Link, List, BlockQuote, Image, ImageUpload, FontFamily, FontSize,
+          Autoformat, PasteFromOffice
+        ];
+
+        // Set the editor class last so the template only renders the
+        // <ckeditor> once the config (incl. plugins) is ready.
+        this.Editor = ClassicEditor;
+      }).catch((err) => {
+        console.error('Failed to load the equipment editor', err);
+        this.errorMessage = 'The editor failed to load. Please refresh the page.';
       });
     }
+  }
+
+  loadEquipment(id: number) {
+    this.service.getById(id).subscribe(res => {
+      if (!res) { return; }
+      const cats = res.categories || [];
+      this.equipment = {
+        equipmentID: res.equipmentID,
+        title: res.title || '',
+        keywords: res.keywords || '',
+        shortDescription: res.shortDescription || '',
+        description: res.description || '',
+        // datetime-local needs 'yyyy-MM-ddTHH:mm'
+        publishedDate: res.publishedDate ? res.publishedDate.substring(0, 16) : '',
+        mainCategoryIDs: cats.filter((c: any) => !c.parentCategoryID).map((c: any) => c.categoryID),
+        subCategoryIDs: cats.filter((c: any) => c.parentCategoryID).map((c: any) => c.categoryID)
+      };
+    });
   }
 
   resetForm() {
     this.equipment = {
       equipmentID: null,
       title: '',
+      keywords: '',
       shortDescription: '',
       description: '',
       publishedDate: '',
@@ -190,14 +203,40 @@ export class EquipmentFormComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // UI ONLY – just testing
-    console.log('EQUIPMENT DATA:', this.equipment);
+    const payload = {
+      // New equipment has no ID yet; send 0 (C# int default) instead of null
+      // so the non-nullable `int EquipmentID` on the API DTO deserializes.
+      equipmentID: this.equipment.equipmentID ?? 0,
+      title: this.equipment.title,
+      shortDescription: this.equipment.shortDescription,
+      description: this.equipment.description,
+      keywords: this.equipment.keywords,
+      publishedDate: this.equipment.publishedDate || null,
+      // The mapping table stores both main and sub category ids together.
+      categoryIDs: [...this.equipment.mainCategoryIDs, ...this.equipment.subCategoryIDs].join(',')
+    };
 
-    setTimeout(() => {
-      this.isSubmitting = false;
-      this.successMessage = this.equipment.publishedDate
-        ? 'Equipment scheduled successfully'
-        : 'Equipment published successfully';
-    }, 800);
+    const request$ = this.equipment.equipmentID
+      ? this.service.update(payload)
+      : this.service.add(payload);
+
+    request$.subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        // Work out the message before resetting (resetForm clears these fields).
+        const message = this.equipment.equipmentID
+          ? 'Equipment updated successfully'
+          : this.equipment.publishedDate
+            ? 'Equipment scheduled successfully'
+            : 'Equipment published successfully';
+        // Stay on the form for the next entry instead of leaving for the list.
+        this.resetForm();
+        this.successMessage = message;
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.errorMessage = 'Something went wrong while saving. Please try again.';
+      }
+    });
   }
 }

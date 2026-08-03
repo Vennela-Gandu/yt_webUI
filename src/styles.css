@@ -1,6 +1,9 @@
 /* YT Creator - Global Styles */
 /* Brand: Blue Glowing Theme - "Ignite Your Ideas. Amplify Your Influence." */
 
+/* CKEditor 5 (modular build) styles */
+@import 'ckeditor5/ckeditor5.css';
+
 /* Import Inter Font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 

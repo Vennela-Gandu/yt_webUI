@@ -23,10 +23,15 @@
     <label>Answer</label>
     <!--<textarea [(ngModel)]="faq.answer"
             placeholder="Enter FAQ answer"></textarea>-->
-    <ckeditor [editor]="Editor"
+    <ckeditor *ngIf="Editor; else editorLoading"
+              [editor]="Editor"
+              [disableWatchdog]="true"
               [(ngModel)]="faq.answer"
               [config]="editorConfig">
     </ckeditor>
+    <ng-template #editorLoading>
+      <p class="hint">Loading editor…</p>
+    </ng-template>
   </div>
 
   <button class="save-btn"

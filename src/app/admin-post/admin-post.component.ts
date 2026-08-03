@@ -16,10 +16,11 @@ export class AdminPostComponent implements OnInit {
   /* ================= CKEditor ================= */
   public Editor: any = null;
 
-  // Only plugins shipped in @ckeditor/ckeditor5-build-classic are listed here.
-  // The classic build does NOT include fontFamily/fontSize, so referencing them
-  // would prevent the editor from rendering.
-  public editorConfig = {
+  // Config is completed at runtime once the modular CKEditor build is
+  // dynamically imported (plugins are class references from the 'ckeditor5'
+  // package and must only be loaded in the browser to keep SSR safe).
+  public editorConfig: any = {
+    licenseKey: 'GPL',
     toolbar: {
       items: [
         'heading',
@@ -33,7 +34,7 @@ export class AdminPostComponent implements OnInit {
         'numberedList',
         '|',
         'blockQuote',
-        'imageUpload',
+        'uploadImage',
         '|',
         'undo',
         'redo'
@@ -82,8 +83,24 @@ export class AdminPostComponent implements OnInit {
   ngOnInit(): void {
     // Load the CKEditor build only on browser to avoid SSR errors (window is not defined)
     if (isPlatformBrowser(this.platformId)) {
-      import('@ckeditor/ckeditor5-build-classic').then((m) => {
-        this.Editor = m?.default || m;
+      // Load the modular CKEditor build only in the browser (it touches
+      // `window`/`document` and would break server-side rendering).
+      import('ckeditor5').then((CK: any) => {
+        const {
+          ClassicEditor, Essentials, Paragraph, Heading,
+          Bold, Italic, Underline, Link, List, BlockQuote,
+          Image, ImageUpload, Autoformat, PasteFromOffice
+        } = CK;
+
+        this.editorConfig.plugins = [
+          Essentials, Paragraph, Heading, Bold, Italic, Underline,
+          Link, List, BlockQuote, Image, ImageUpload,
+          Autoformat, PasteFromOffice
+        ];
+
+        // Set the editor class last so the template only renders the
+        // <ckeditor> once the config (incl. plugins) is ready.
+        this.Editor = ClassicEditor;
       }).catch((err) => {
         console.error('Failed to load the blog editor', err);
         this.errorMessage = 'The editor failed to load. Please refresh the page.';

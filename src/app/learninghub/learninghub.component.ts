@@ -13,9 +13,8 @@ export class LearninghubComponent {
   get isChildRouteActive(): boolean {
     return this.router.url !== '/learninghub';
   }
-  navigateTo(section: string): void {
-    console.log(`Navigating to: ${section}`);
-    // Implement navigation logic here
-    this.router.navigate(['/learninghub/' + section]);
+  // Takes a full route path: Equipment lives at the root, not under /learninghub.
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 }

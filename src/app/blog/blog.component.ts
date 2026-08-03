@@ -42,11 +42,14 @@ export class BlogComponent {
   loadCategories() {
     this.service.getCategories('blog')
       .subscribe(res => {
-        this.categories = res
-        this.categories = res.map(c => ({
-          ...c,
-          slug: toSlug(c.name)
-        }));
+        // "Trending" is a virtual category: posts ordered by how often they were opened.
+        this.categories = [
+          { categoryID: -2, name: 'Trending', slug: 'trending' },
+          ...res.map(c => ({
+            ...c,
+            slug: toSlug(c.name)
+          }))
+        ];
         this.route.params.subscribe(params => {
           if (params['slug']) {
             this.currentPage = 1;
@@ -61,6 +64,10 @@ export class BlogComponent {
   }
 
   loadPosts(slug?: string) {
+    if (slug === 'trending') {
+      this.loadTrendingPosts();
+      return;
+    }
     var categoryID = -1;
     if (slug != "-1") {
       const category = this.categories.find(c => c.slug === slug);
@@ -82,6 +89,17 @@ export class BlogComponent {
       });
 
   }
+  loadTrendingPosts() {
+    this.service.getTrendingPosts(this.currentPage, this.pageSize, this.searchQuery)
+      .subscribe(res => {
+        this.totalCount = res.totalCount;
+        this.posts = res.posts.map((c: any) => ({
+          ...c,
+          slug: toSlug(c.title)
+        }));
+      });
+  }
+
   onCategoryClick(category: any) {
     this.selectedCategory = category;
     const slug = toSlug(category);

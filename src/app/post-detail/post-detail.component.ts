@@ -74,6 +74,12 @@ export class PostDetailComponent implements OnInit {
      const id = Number(this.route.snapshot.paramMap.get('id'));
      this.loadCategories();
 
+     // Count this open for the Trending list. Browser-only so SSR prerender
+     // doesn't inflate the count; failures are non-blocking.
+     if (isPlatformBrowser(this.platformId) && id) {
+       this.service.recordView(id).subscribe({ error: () => { } });
+     }
+
      // If the route resolver provided the post (SSR or resolved route), use it to avoid HTTP calls during server render
      const resolvedPost = this.route.snapshot.data['post'];
      if (resolvedPost) {

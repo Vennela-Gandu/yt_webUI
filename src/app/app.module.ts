@@ -51,6 +51,7 @@ import { LoaderInterceptor } from './services/loader.interceptor';
 import { LoaderComponent } from './loader/loader.component';
 import { EquipmentFormComponent } from './equipment-form/equipment-form.component';
 import { EquipmentListComponent } from './equipment-list/equipment-list.component';
+import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.component';
 import { BlogListComponent } from './blog-list/blog-list.component';
 
 @NgModule({ declarations: [
@@ -97,6 +98,7 @@ import { BlogListComponent } from './blog-list/blog-list.component';
         LoaderComponent,    
   EquipmentFormComponent,
   EquipmentListComponent,
+  EquipmentDetailComponent,
   BlogListComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,

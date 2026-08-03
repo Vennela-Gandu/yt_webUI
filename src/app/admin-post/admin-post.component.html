@@ -79,6 +79,7 @@
 
       <ckeditor *ngIf="Editor; else editorLoading"
                 [editor]="Editor"
+                [disableWatchdog]="true"
                 [(ngModel)]="post.description"
                 [config]="editorConfig">
       </ckeditor>

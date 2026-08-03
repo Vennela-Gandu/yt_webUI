@@ -18,7 +18,7 @@
            *ngFor="let item of paginatedEquipments">
 
         <h2>
-          <a [routerLink]="['/equipment', item.slug]">
+          <a [routerLink]="['/equipment-detail', item.slug]">
             {{ item.title }}
           </a>
         </h2>
@@ -26,7 +26,7 @@
         <p>{{ item.shortDescription }}</p>
 
         <a class="read-more"
-           [routerLink]="['/equipment', item.slug]">
+           [routerLink]="['/equipment-detail', item.slug]">
           Read More →
         </a>
 
@@ -62,41 +62,38 @@
 
   </main>
 
-  <!-- SIDEBAR -->
-  <aside class="equipment-sidebar">
+  <!-- SIDEBAR (styled like the blog categories) -->
+  <aside class="equipment-sidebar blog-sidebar">
 
-    <div class="sidebar-box">
-      <h3>Categories</h3>
+    <h3>Categories</h3>
 
-      <div class="category-block"
-           *ngFor="let cat of categories">
+    <div class="category-block"
+         *ngFor="let cat of categories">
 
-        <div class="category-title"
-             (click)="selectMainCategory(cat.id)">
-          {{ cat.name }}
-          <span class="toggle-icon"
-                [class.open]="selectedMainCategoryId === cat.id"></span>
-        </div>
-
-        <ul class="subcategory-list"
-            *ngIf="selectedMainCategoryId === cat.id">
-
-          <li *ngFor="let sub of cat.subs"
-              (click)="selectSubCategory(sub.id)"
-              [class.active]="selectedSubCategoryId === sub.id">
-            {{ sub.name }}
-          </li>
-
-        </ul>
-
+      <div class="category-title"
+           (click)="selectMainCategory(cat.id)">
+        {{ cat.name }}
+        <span class="toggle-icon"
+              [class.open]="selectedMainCategoryId === cat.id"></span>
       </div>
 
-      <button class="clear-btn"
-              *ngIf="searchText || selectedSubCategoryId"
-              (click)="clearFilters()">
-        Clear Filters
-      </button>
+      <ul *ngIf="selectedMainCategoryId === cat.id">
+
+        <li *ngFor="let sub of cat.subs"
+            (click)="selectSubCategory(sub.id)"
+            [class.active]="selectedSubCategoryId === sub.id">
+          {{ sub.name }}
+        </li>
+
+      </ul>
+
     </div>
+
+    <button class="clear-btn"
+            *ngIf="searchText || selectedSubCategoryId"
+            (click)="clearFilters()">
+      Clear Filters
+    </button>
 
   </aside>
 

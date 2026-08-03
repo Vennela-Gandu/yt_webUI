@@ -12,13 +12,16 @@ import { Base64UploadPlugin } from '../utils/base64-upload.adapter';
 })
 export class AdminFaqComponent implements OnInit {
   public Editor: any = null;
-  public editorConfig = {
+  // Config is completed at runtime once the modular CKEditor build is
+  // dynamically imported (browser only, to keep SSR safe).
+  public editorConfig: any = {
+    licenseKey: 'GPL',
     toolbar: [
       'heading', '|',
       'bold', 'italic', 'underline', 'link',
       'bulletedList', 'numberedList',
       'blockQuote', '|',
-      'imageUpload',
+      'uploadImage',
       'undo', 'redo'
     ],
     extraPlugins: [Base64UploadPlugin]
@@ -58,8 +61,20 @@ export class AdminFaqComponent implements OnInit {
   }
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      import('@ckeditor/ckeditor5-build-classic').then((m) => {
-        this.Editor = m?.default || m;
+      import('ckeditor5').then((CK: any) => {
+        const {
+          ClassicEditor, Essentials, Paragraph, Heading,
+          Bold, Italic, Underline, Link, List, BlockQuote,
+          Image, ImageUpload, Autoformat, PasteFromOffice
+        } = CK;
+
+        this.editorConfig.plugins = [
+          Essentials, Paragraph, Heading, Bold, Italic, Underline,
+          Link, List, BlockQuote, Image, ImageUpload,
+          Autoformat, PasteFromOffice
+        ];
+
+        this.Editor = ClassicEditor;
       }).catch(() => {});
     }
   }

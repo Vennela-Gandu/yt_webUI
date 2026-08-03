@@ -124,11 +124,6 @@ const routes: Routes = [
         component: MonetizationComponent
       },
       {
-        path: 'equipment',
-        component: EquipmentComponent
-      },
-      { path: 'equipment-detail/:title/:id', component: EquipmentDetailComponent },
-      {
         path: 'community',
         component: CommunityComponent
       },
@@ -148,6 +143,14 @@ const routes: Routes = [
         component: YoutubeissuesComponent
       },
     ]
+  },
+  {
+    path: 'equipment',
+    component: EquipmentComponent
+  },
+  {
+    path: 'equipment-detail/:title',
+    component: EquipmentDetailComponent
   },
   {
     path: 'analysis',
@@ -250,9 +253,14 @@ const routes: Routes = [
         component: AdminPostComponent,
         canActivate: [AuthGuard]
       },
-      // Equipment Form
+      // Equipment Form (add + edit)
       {
         path: 'equipment-form',
+        component: EquipmentFormComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'equipment-form/:id',
         component: EquipmentFormComponent,
         canActivate: [AuthGuard]
       },

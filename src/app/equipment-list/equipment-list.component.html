@@ -32,9 +32,6 @@
         </option>
       </select>
 
-      <input type="date" [(ngModel)]="fromDate" title="From date" />
-      <input type="date" [(ngModel)]="toDate" title="To date" />
-
       <button class="btn secondary" (click)="resetFilters()">
         Reset
       </button>
@@ -83,14 +80,15 @@
           </td>
 
           <td data-label="URL">
-            <a href="/equipment/{{ item.slug }}" target="_blank">
-              /equipment/{{ item.slug }}
+            <a [routerLink]="['/equipment-detail', item.slug]"
+               target="_blank">
+              /equipment-detail/{{ item.slug }}
             </a>
           </td>
 
           <td data-label="Actions" class="actions-cell">
             <a class="btn btn-primary btn-sm"
-               [routerLink]="['/admin/equipment/edit', item.id]">
+               [routerLink]="['/admin/equipment-form', item.id]">
               Edit
             </a>
 

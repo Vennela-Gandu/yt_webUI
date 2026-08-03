@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import { EquipmentService } from '../services/equipment.service';
+import { toSlug } from '../utils/slug.util';
 
 @Component({
   selector: 'app-equipment-detail',
@@ -9,58 +12,38 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EquipmentDetailComponent implements OnInit {
 
-  slug: string | null = null;
-
   equipment: any = null;
 
-  /* TEMP DATA (replace with API later) */
-  equipments = [
-    {
-      slug: 'best-ring-lights-for-youtube-creators',
-      title: 'Best Ring Lights for YouTube Creators',
-      shortDescription: 'Top ring lights to improve video lighting.',
-      content: `
-        <p>Ring lights are one of the most important tools for content creators.</p>
-
-        <h2>Why Ring Lights Are Important</h2>
-        <p>They provide even lighting and reduce harsh shadows.</p>
-
-        <h2>Best Use Cases</h2>
-        <ul>
-          <li>YouTube videos</li>
-          <li>Instagram reels</li>
-          <li>Online teaching</li>
-        </ul>
-
-        <p>Choose ring lights based on size, brightness and color temperature.</p>
-      `,
-      category: 'Lighting Equipment',
-      subCategory: 'Ring Lights'
-    },
-    {
-      slug: 'usb-microphones-under-10000',
-      title: 'USB Microphones Under ₹10,000',
-      shortDescription: 'Affordable microphones for clear audio.',
-      content: `
-        <p>USB microphones are perfect for beginners.</p>
-
-        <h2>Advantages of USB Microphones</h2>
-        <ul>
-          <li>Easy plug and play</li>
-          <li>No audio interface needed</li>
-        </ul>
-
-        <p>Choose microphones based on sound quality and build.</p>
-      `,
-      category: 'Audio Equipment',
-      subCategory: 'USB Microphones'
-    }
-  ];
-
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute,
+    private service: EquipmentService,
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit(): void {
-    this.slug = this.route.snapshot.paramMap.get('slug');
-    this.equipment = this.equipments.find(e => e.slug === this.slug);
+    const slug = this.route.snapshot.paramMap.get('title');
+    if (!slug) { return; }
+
+    // The API has no "get by slug", so resolve the slug to an ID via the list,
+    // then load the full record (which includes the description) by that ID.
+    this.service.getList(1, 1000, '', null, false).subscribe(list => {
+      const match = (list.equipments || [])
+        .find((e: any) => toSlug(e.title) === slug);
+      if (!match) { return; }
+
+      this.service.getById(match.equipmentID).subscribe(res => {
+        if (!res) { return; }
+        const cats = res.categories || [];
+        const main = cats.find((c: any) => !c.parentCategoryID);
+        const sub = cats.find((c: any) => c.parentCategoryID);
+        this.equipment = {
+          ...res,
+          category: main?.name || '',
+          subCategory: sub?.name || '',
+          // Description is HTML from the editor — trust it so it renders formatted.
+          content: this.sanitizer.bypassSecurityTrustHtml(res.description || '')
+        };
+      });
+    });
   }
 }

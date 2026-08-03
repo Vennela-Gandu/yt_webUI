@@ -30,6 +30,7 @@
 /* CONTENT */
 .equipment-content {
   flex: 1;
+  min-width: 0; /* let the column shrink instead of being pushed wide by long titles */
 }
 
   .equipment-content h1 {
@@ -37,10 +38,11 @@
     margin-bottom: 20px;
   }
 
-/* GRID */
+/* GRID — fixed column counts so the row never collapses to a single card
+   when the content column is measured narrower than expected. */
 .equipment-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -49,6 +51,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 18px;
+  overflow-wrap: break-word; /* long titles wrap instead of widening the column */
 }
 
   .equipment-card h2 {
@@ -66,50 +69,63 @@
     color: #444;
   }
 
-/* SIDEBAR */
+/* SIDEBAR — box, heading and sub-category list come from the shared
+   global `.blog-sidebar` styles so it matches the blog categories panel. */
 .equipment-sidebar {
   width: 280px;
+  flex-shrink: 0;
 }
 
-.sidebar-box {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px;
-}
-
+/* Main category row — a bold, clickable header like a blog list item */
 .category-title {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   cursor: pointer;
   font-weight: 600;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
-/* TOGGLE ICON */
-.toggle-icon::before {
-  content: '▸';
-}
-
-.toggle-icon.open {
-  transform: rotate(90deg);
-}
-
-/* SUB CATEGORIES */
-.subcategory-list {
-  list-style: none;
-  padding: 0;
-  margin-top: 6px;
-}
-
-  .subcategory-list li {
-    padding: 6px;
-    cursor: pointer;
+  .category-title:hover {
+    background: #e0e7ff;
   }
 
-    .subcategory-list li.active {
-      background: #2563eb;
-      color: #fff;
-      border-radius: 6px;
-    }
+/* TOGGLE ICON */
+.toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+  .toggle-icon::before {
+    content: '▸';
+  }
+
+  .toggle-icon.open {
+    transform: rotate(90deg);
+  }
+
+/* Indent sub categories under their main category */
+.category-block ul {
+  padding-left: 12px;
+}
+
+/* CLEAR FILTERS BUTTON */
+.clear-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
+
+  .clear-btn:hover {
+    opacity: 0.9;
+  }
 
 /* PAGINATION */
 .pagination {
@@ -131,7 +147,7 @@
       color: #fff;
     }
 
-/* MOBILE */
+/* TABLET */
 @media (max-width: 900px) {
   .equipment-page {
     flex-direction: column;
@@ -140,5 +156,16 @@
   .equipment-sidebar {
     width: 100%;
     margin-top: 20px;
+  }
+
+  .equipment-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* MOBILE */
+@media (max-width: 560px) {
+  .equipment-grid {
+    grid-template-columns: 1fr;
   }
 }

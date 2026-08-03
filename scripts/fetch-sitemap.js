@@ -4,9 +4,10 @@ const fs = require('fs');
 const path = require('path');
 
 const API_BASE = process.env.API_BASE || process.env.API_URL || 'https://api.ytcreator.in';
-const DIST_DIR = path.resolve(__dirname, '..', 'dist');
-const OUT_DIR = DIST_DIR; // write files to dist root
-const FILES = ['/sitemap.xml', '/sitemap-pages.xml', '/sitemap-tools.xml', '/sitemap-blog.xml'];
+// The browser bundle is what gets copied to httpdocs, so the sitemaps must land
+// there to be served as static files (same place as robots.txt / ads.txt).
+const OUT_DIR = path.resolve(__dirname, '..', 'dist', 'Frontend', 'browser');
+const FILES = ['/sitemap.xml', '/sitemap-pages.xml', '/sitemap-tools.xml', '/sitemap-blog.xml', '/sitemap-equipment.xml'];
 
 // If you need to ignore TLS verification in build environment (dev only), set SKIP_TLS_VERIFY=true
 if (process.env.SKIP_TLS_VERIFY === 'true') {

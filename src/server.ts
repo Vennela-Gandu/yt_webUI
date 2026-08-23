@@ -12,6 +12,40 @@ const distServer = join(process.cwd(), process.env['SERVER_DIST'] || 'dist/Front
 
 const engine = new CommonEngine();
 
+// Sitemaps are built from live DB content by the API, so proxy them through on
+// every request rather than shipping a build-time snapshot. Registered ahead of
+// express.static so a stale sitemap*.xml in the bundle can never shadow it.
+// NOTE: IIS serves real files straight off disk (see plesk-web.config), so any
+// sitemap*.xml left in httpdocs would win before this handler is ever reached.
+const apiBase = process.env['API_BASE'] || 'https://api.ytcreator.in';
+
+app.get(/^\/sitemap(-[a-z]+)?\.xml$/, async (req, res) => {
+  try {
+    // fetch() sends no User-Agent by default, which Cloudflare's bot protection
+    // treats as suspicious and answers with 403. Identify ourselves explicitly.
+    const upstream = await fetch(`${apiBase}${req.path}`, {
+      headers: {
+        'User-Agent': 'ytcreator-ssr/1.0',
+        'Accept': 'application/xml'
+      }
+    });
+    if (!upstream.ok) {
+      // IIS replaces our error body with its own page, so the reason only ever
+      // reaches us through the iisnode log — record enough to act on.
+      const body = (await upstream.text()).slice(0, 300).replace(/\s+/g, ' ');
+      console.error(`SITEMAP UPSTREAM ${upstream.status} for ${apiBase}${req.path} :: ${body}`);
+      res.status(upstream.status).type('text/plain').send('Sitemap unavailable');
+    } else {
+      res.type('application/xml')
+         .set('Cache-Control', 'public, max-age=3600')
+         .send(await upstream.text());
+    }
+  } catch (err) {
+    console.error(`SITEMAP ERROR: ${req.path}`, err);
+    res.status(502).type('text/plain').send('Sitemap temporarily unavailable');
+  }
+});
+
 // ✅ serve static
 app.use(express.static(distBrowser, {
   maxAge: '1y',

@@ -5,11 +5,8 @@
     "ng": "ng",
   
     "start": "ng serve",
-  "sitemap": "node scripts/fetch-sitemap.js",
   "build": "ng build",
-  "postbuild": "npm run sitemap",
   "build:ssr": "ng build",
-  "postbuild:ssr": "npm run sitemap",
   "build:ssr:dev": "ng build --configuration development",
   "serve:ssr": "node dist/Frontend/server/server.mjs",
   "serve:ssr:dev": "node scripts/dev-ssr.mjs"

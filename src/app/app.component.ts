@@ -4,6 +4,8 @@ import { ContentResponse } from './models/content.model';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { SeoService } from './services/seo.service';
 import { filter } from 'rxjs';
+import { SOCIAL_PROFILE_URLS } from './utils/social-links';
+import { DEFAULT_PAGE_META, pageMetaFor } from './utils/page-meta';
 
 const SITE_URL = 'https://www.ytcreator.in/';
 const SITE_NAME = 'YT Creator';
@@ -26,13 +28,16 @@ export class AppComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit() {
-    // Handle initial route immediately (necessary for SSR to inject schema into server-rendered HTML)
+    // Handle initial route immediately (necessary for SSR to inject the title,
+    // description and schema into the server-rendered HTML)
+    this.applyPageMeta();
     this.handleRoute(this.route.root);
 
-    // Also update schema on client-side navigation
+    // Also update them on client-side navigation
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => {
+        this.applyPageMeta();
         this.handleRoute(this.route.root);
       });
 
@@ -76,6 +81,17 @@ export class AppComponent implements OnInit {
       gtag('config', 'G-TECC7B1N4L');
     `;
     this.document.head.appendChild(inline);
+  }
+
+  /**
+   * Applies the page title and meta description for the route just navigated
+   * to, then its JSON-LD. Pages built from a record (a post, an equipment
+   * guide, an author) are not in the table and overwrite these with their own
+   * once the record loads.
+   */
+  private applyPageMeta() {
+    const meta = pageMetaFor(this.router.url) || DEFAULT_PAGE_META;
+    this.seo.setPageMeta(meta.title, meta.description);
   }
 
   handleRoute(current: ActivatedRoute) {
@@ -131,8 +147,10 @@ export class AppComponent implements OnInit {
           "@type": "ImageObject",
           "url": LOGO_URL
         },
-        // TODO: add the brand's social profile URLs (YouTube, Instagram, LinkedIn, X) so search engines can disambiguate the entity.
-        "sameAs": [],
+        // The brand's own profiles. Search engines use sameAs to tie these
+        // accounts to this site as one entity — the same list the header and
+        // footer icons link to.
+        "sameAs": SOCIAL_PROFILE_URLS,
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "customer support",
@@ -181,10 +199,11 @@ export class AppComponent implements OnInit {
       "headline": post.title,
       "description": post.shortDescription,
       "datePublished": post.publishedDate,
-      "dateModified": post.publishedDate,
+      // Reflect a later edit so search results can show the post as updated.
+      "dateModified": post.updatedDate || post.publishedDate,
       "author": {
         "@type": "Person",
-        "name": SITE_NAME
+        "name": post.authorName || SITE_NAME
       },
       "publisher": { "@id": `${SITE_URL}#organization` },
       "mainEntityOfPage": {

@@ -1,79 +1,112 @@
 :host {
   display: block;
   background: #ffffff;
-  font-family: Arial, sans-serif;
   color: #000;
 }
 
-/* SEARCH */
-.equipment-search-top {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+/* Page heading — the only h1 here; card titles are h2, as on the blog. */
+.equipment-heading {
+  margin: 30px 30px 0;
 }
 
-  .equipment-search-top input {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-  }
-
-/* LAYOUT */
-.equipment-page {
+/* CARDS — one stacked column of full-width cards, matching the blog list.
+   Layout (.blog-layout) and the categories panel (.blog-sidebar) come from
+   the shared global styles so both pages stay in step. */
+.equipment-list {
   display: flex;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 16px 40px;
+  flex-direction: column;
+  gap: 25px;
 }
 
-/* CONTENT */
-.equipment-content {
-  flex: 1;
-  min-width: 0; /* let the column shrink instead of being pushed wide by long titles */
-}
-
-  .equipment-content h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-  }
-
-/* GRID — fixed column counts so the row never collapses to a single card
-   when the content column is measured narrower than expected. */
-.equipment-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-/* CARD */
 .equipment-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 18px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+  transition: transform 0.2s;
+  cursor: pointer;
   overflow-wrap: break-word; /* long titles wrap instead of widening the column */
 }
 
-  .equipment-card h2 {
-    font-size: 16px;
-    margin-bottom: 8px;
+  .equipment-card:hover {
+    transform: translateY(-4px);
   }
 
-  .equipment-card a {
-    color: #2563eb;
+/* Big title, description underneath — same scale as a blog post card. */
+.equipment-title {
+  color: #475569;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.equipment-desc {
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Byline under the title: publish date, author link, updated stamp. */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+  .post-meta .author {
+    color: #4338ca;
+    font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .equipment-card p {
-    font-size: 14px;
-    color: #444;
+    .post-meta .author:hover {
+      text-decoration: underline;
+    }
+
+  .post-meta .updated {
+    font-style: italic;
   }
 
-/* SIDEBAR — box, heading and sub-category list come from the shared
-   global `.blog-sidebar` styles so it matches the blog categories panel. */
+/* Footer: category chips on the left, the read-more link on the right. */
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.category {
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.read-more {
+  margin-left: auto;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+  .read-more:hover {
+    text-decoration: underline;
+  }
+
+.empty {
+  text-align: center;
+  color: #94a3b8;
+}
+
+/* SIDEBAR */
 .equipment-sidebar {
-  width: 280px;
-  flex-shrink: 0;
+  align-self: start;
 }
 
 /* Main category row — a bold, clickable header like a blog list item */
@@ -127,45 +160,8 @@
     opacity: 0.9;
   }
 
-/* PAGINATION */
-.pagination {
-  margin: 30px 0;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
-  .pagination button {
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    background: #fff;
-  }
-
-    .pagination button.active {
-      background: #2563eb;
-      color: #fff;
-    }
-
-/* TABLET */
 @media (max-width: 900px) {
-  .equipment-page {
-    flex-direction: column;
-  }
-
-  .equipment-sidebar {
-    width: 100%;
-    margin-top: 20px;
-  }
-
-  .equipment-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* MOBILE */
-@media (max-width: 560px) {
-  .equipment-grid {
-    grid-template-columns: 1fr;
+  .equipment-heading {
+    margin: 24px 15px 0;
   }
 }

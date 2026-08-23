@@ -53,11 +53,25 @@
 
     <!--SCHEDULE-->
     <div class="form-group">
-      <label>Publish Date</label>
+      <label>Publish Date &amp; Time (IST)</label>
       <input type="datetime-local"
              [(ngModel)]="equipment.publishedDate" />
       <small class="hint">
-        Leave empty to publish immediately (IST)
+        Times are IST. Pick a date and time to schedule it — it goes public at
+        exactly that IST time, wherever you are. Leave it empty to publish
+        immediately.
+      </small>
+    </div>
+
+    <!-- AUTHOR -->
+    <div class="form-group">
+      <label>Author Name <span class="required">*</span></label>
+      <select [(ngModel)]="equipment.authorName" class="form-control">
+        <option [ngValue]="null" disabled>Select an author</option>
+        <option *ngFor="let a of authors" [ngValue]="a">{{ a }}</option>
+      </select>
+      <small class="hint">
+        Credited on the equipment detail page.
       </small>
     </div>
 
@@ -82,7 +96,9 @@
                 placeholder="Brief summary shown in equipment listing">
       </textarea>
       <small class="hint">
-        {{ equipment.shortDescription?.length || 0 }}/500 characters
+        {{ equipment.shortDescription?.length || 0 }}/500 characters — also
+        published as the page's SEO meta description, so write it for search
+        results.
       </small>
     </div>
 
@@ -114,13 +130,7 @@
               (click)="save()">
 
         <span *ngIf="!isSubmitting">
-          {{
-            equipment.publishedDate
-              ? 'Schedule Equipment'
-              : equipment.equipmentID
-                ? 'Update Equipment'
-                : 'Publish Now'
-          }}
+          {{ saveButtonLabel() }}
         </span>
 
         <span *ngIf="isSubmitting">

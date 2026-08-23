@@ -1,8 +1,10 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Base64UploadPlugin } from '../utils/base64-upload.adapter';
+import { ServerImageUploadPlugin } from '../utils/image-upload.adapter';
 import { EquipmentService } from '../services/equipment.service';
+import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
+import { AuthorService } from '../services/author.service';
 
 @Component({
   selector: 'app-equipment-form',
@@ -21,9 +23,8 @@ export class EquipmentFormComponent implements OnInit {
     toolbar: {
       items: [
         'heading',
-        '|',
-        'fontFamily',
         'fontSize',
+        'fontFamily',
         '|',
         'bold',
         'italic',
@@ -32,14 +33,29 @@ export class EquipmentFormComponent implements OnInit {
         '|',
         'bulletedList',
         'numberedList',
+        'outdent',
+        'indent',
         '|',
-        'blockQuote',
+        'insertTable',
         'uploadImage',
+        'blockQuote',
         '|',
         'undo',
         'redo'
       ],
       shouldNotGroupWhenFull: true
+    },
+
+    // The equipment title is the detail page's only h1, so the content offers
+    // H2 to H5 and no h1 at all.
+    heading: {
+      options: [
+        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' }
+      ]
     },
 
     fontFamily: {
@@ -53,23 +69,64 @@ export class EquipmentFormComponent implements OnInit {
       ]
     },
 
+    // Text size for the selected range. 'default' clears it again.
     fontSize: {
-      options: [12, 14, 16, 18, 20, 24, 32],
+      options: [12, 14, 'default', 18, 20, 24, 32],
       supportAllValues: false
     },
 
-    extraPlugins: [Base64UploadPlugin]
+    // Bullet and number styles (disc, circle, decimal, lower-roman, ...) plus
+    // "start numbering at" for the selected list.
+    list: {
+      properties: {
+        styles: true,
+        startIndex: true,
+        reversed: true
+      }
+    },
+
+    image: {
+      toolbar: [
+        'imageStyle:inline',
+        'imageStyle:block',
+        'imageStyle:side',
+        '|',
+        'toggleImageCaption',
+        'imageTextAlternative'
+      ]
+    },
+
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        'tableProperties',
+        'tableCellProperties',
+        'toggleTableCaption'
+      ]
+    },
+
+    // Images are uploaded to the API and referenced by URL. Embedding base64
+    // would bloat every row of equipment content and slow the detail page.
+    extraPlugins: [ServerImageUploadPlugin]
   };
+
   isSubmitting = false;
   errorMessage = '';
   successMessage = '';
 
+  // Names come from the Author records managed in the admin portal.
+  authors: string[] = [];
+
   equipment: any = {
     equipmentID: null,
     title: '',
-    keywords: '', 
+    keywords: '',
     shortDescription: '',
     description: '',
+    authorName: null,
+    // Empty means publish immediately - see saveButtonLabel().
     publishedDate: '',
     mainCategoryIDs: [],
     subCategoryIDs: []
@@ -118,13 +175,33 @@ export class EquipmentFormComponent implements OnInit {
       (this.equipment.title || '').trim() !== '' &&
       (this.equipment.shortDescription || '').trim() !== '' &&
       (this.equipment.description || '').trim() !== '' &&
+      !!this.equipment.authorName &&
       this.equipment.subCategoryIDs.length > 0
     );
+  }
+
+  /* ================= Dates =================
+     A publish time typed here always means IST, whatever zone this machine is
+     in. istInputToUtcIso/utcToIstInputValue translate between the IST
+     wall-clock the picker shows and the UTC instant the API stores. */
+
+  /** Was a future publish time picked? Then saving schedules the item. */
+  isScheduled(): boolean {
+    if (!this.equipment.publishedDate) return false;
+
+    const utc = istInputToUtcIso(this.equipment.publishedDate);
+    return !!utc && new Date(utc).getTime() > Date.now();
+  }
+
+  saveButtonLabel(): string {
+    if (this.equipment.equipmentID) return 'Update Equipment';
+    return this.isScheduled() ? 'Schedule Equipment' : 'Publish Now';
   }
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private service: EquipmentService,
+    private authorService: AuthorService,
     private route: ActivatedRoute
   ) {}
 
@@ -132,6 +209,9 @@ export class EquipmentFormComponent implements OnInit {
     this.service.getCategories().subscribe(res => {
       this.categories = this.service.buildCategoryTree(res);
     });
+
+    this.authorService.names()
+      .subscribe(rows => this.authors = rows.map(a => a.name));
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
@@ -144,14 +224,21 @@ export class EquipmentFormComponent implements OnInit {
       import('ckeditor5').then((CK: any) => {
         const {
           ClassicEditor, Essentials, Paragraph, Heading,
-          Bold, Italic, Underline, Link, List, BlockQuote,
-          Image, ImageUpload, FontFamily, FontSize,
+          Bold, Italic, Underline, Link, List, ListProperties, BlockQuote,
+          Image, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, ImageResize,
+          Table, TableToolbar, TableProperties, TableCellProperties,
+          TableCaption, TableColumnResize,
+          FontFamily, FontSize, Indent, IndentBlock,
           Autoformat, PasteFromOffice
         } = CK;
 
         this.editorConfig.plugins = [
-          Essentials, Paragraph, Heading, Bold, Italic, Underline,
-          Link, List, BlockQuote, Image, ImageUpload, FontFamily, FontSize,
+          Essentials, Paragraph, Heading, Bold, Italic, Underline, Link,
+          List, ListProperties, BlockQuote,
+          Image, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, ImageResize,
+          Table, TableToolbar, TableProperties, TableCellProperties,
+          TableCaption, TableColumnResize,
+          FontFamily, FontSize, Indent, IndentBlock,
           Autoformat, PasteFromOffice
         ];
 
@@ -175,8 +262,9 @@ export class EquipmentFormComponent implements OnInit {
         keywords: res.keywords || '',
         shortDescription: res.shortDescription || '',
         description: res.description || '',
-        // datetime-local needs 'yyyy-MM-ddTHH:mm'
-        publishedDate: res.publishedDate ? res.publishedDate.substring(0, 16) : '',
+        authorName: res.authorName || null,
+        // Stored as UTC; the picker shows and reads it back as IST.
+        publishedDate: utcToIstInputValue(res.publishedDate) || '',
         mainCategoryIDs: cats.filter((c: any) => !c.parentCategoryID).map((c: any) => c.categoryID),
         subCategoryIDs: cats.filter((c: any) => c.parentCategoryID).map((c: any) => c.categoryID)
       };
@@ -190,6 +278,7 @@ export class EquipmentFormComponent implements OnInit {
       keywords: '',
       shortDescription: '',
       description: '',
+      authorName: null,
       publishedDate: '',
       mainCategoryIDs: [],
       subCategoryIDs: []
@@ -203,6 +292,8 @@ export class EquipmentFormComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
+    const wasScheduled = this.isScheduled();
+
     const payload = {
       // New equipment has no ID yet; send 0 (C# int default) instead of null
       // so the non-nullable `int EquipmentID` on the API DTO deserializes.
@@ -211,7 +302,9 @@ export class EquipmentFormComponent implements OnInit {
       shortDescription: this.equipment.shortDescription,
       description: this.equipment.description,
       keywords: this.equipment.keywords,
-      publishedDate: this.equipment.publishedDate || null,
+      authorName: this.equipment.authorName,
+      // The picked time is IST; the API stores the matching UTC instant.
+      publishedDate: istInputToUtcIso(this.equipment.publishedDate),
       // The mapping table stores both main and sub category ids together.
       categoryIDs: [...this.equipment.mainCategoryIDs, ...this.equipment.subCategoryIDs].join(',')
     };
@@ -226,8 +319,8 @@ export class EquipmentFormComponent implements OnInit {
         // Work out the message before resetting (resetForm clears these fields).
         const message = this.equipment.equipmentID
           ? 'Equipment updated successfully'
-          : this.equipment.publishedDate
-            ? 'Equipment scheduled successfully'
+          : wasScheduled
+            ? 'Equipment scheduled - it goes live at the IST time you picked.'
             : 'Equipment published successfully';
         // Stay on the form for the next entry instead of leaving for the list.
         this.resetForm();

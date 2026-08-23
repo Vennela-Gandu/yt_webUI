@@ -1,0 +1,85 @@
+.admin-wrapper {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.state {
+  color: #94a3b8;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* The table scrolls sideways on small screens rather than breaking the page. */
+.table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+
+.author-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+  .author-table th,
+  .author-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #eef1f6;
+    vertical-align: middle;
+  }
+
+  .author-table th {
+    background: #f8fafc;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+  }
+
+  .author-table td.name {
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .author-table a {
+    color: #4338ca;
+    text-decoration: none;
+  }
+
+    .author-table a:hover {
+      text-decoration: underline;
+    }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+  .badge.inactive {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}

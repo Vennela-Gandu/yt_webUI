@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../post.service';
 import { toSlug } from '../utils/slug.util';
+import { withPostDates } from '../utils/date.util';
+import { AuthorService } from '../services/author.service';
 
 
 @Component({
@@ -22,15 +24,19 @@ export class BlogComponent {
   selectedCategory: string = '';
   constructor(private route: ActivatedRoute,
     private service: PostService,
-    private router: Router
+    private router: Router,
+    private authorService: AuthorService
   ) {
+    // Loads (and caches) the name-to-slug map the bylines link with.
+    this.authorService.names().subscribe();
+
     // Detect admin route
     this.isAdmin = this.router.url.startsWith('/admin');
     const id = Number(this.route.snapshot.paramMap.get('id'));
     // If resolver provided posts (SSR), use them to populate the page source
     const resolved = this.route.snapshot.data['blogs'];
     if (resolved && resolved.posts) {
-      this.posts = resolved.posts.map((c:any) => ({ ...c, slug: toSlug(c.title) }));
+      this.posts = resolved.posts.map((c: any) => withPostDates({ ...c, slug: toSlug(c.title) }));
       this.totalCount = resolved.totalCount || this.posts.length;
     }
 
@@ -80,12 +86,10 @@ export class BlogComponent {
       this.pageSize,
       this.searchQuery, categoryID)
       .subscribe(res => {
-        this.posts = res.posts;
         this.totalCount = res.totalCount;
-        this.posts = res.posts.map((c:any) => ({
-          ...c,
-          slug: toSlug(c.title)
-        }));
+        this.posts = res.posts.map((c: any) =>
+          withPostDates({ ...c, slug: toSlug(c.title) })
+        );
       });
 
   }
@@ -93,10 +97,9 @@ export class BlogComponent {
     this.service.getTrendingPosts(this.currentPage, this.pageSize, this.searchQuery)
       .subscribe(res => {
         this.totalCount = res.totalCount;
-        this.posts = res.posts.map((c: any) => ({
-          ...c,
-          slug: toSlug(c.title)
-        }));
+        this.posts = res.posts.map((c: any) =>
+          withPostDates({ ...c, slug: toSlug(c.title) })
+        );
       });
   }
 
@@ -155,6 +158,11 @@ export class BlogComponent {
 
   get totalPages() {
     return Math.ceil(this.totalCount / this.pageSize);
+  }
+
+  /** URL segment of the author page for a byline. */
+  authorSlug(name: string): string {
+    return this.authorService.slugFor(name);
   }
 
 }

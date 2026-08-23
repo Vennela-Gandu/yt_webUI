@@ -71,3 +71,41 @@
 
 
 
+
+/* Page heading — the only h1 on the blog list; post titles stay h2. The side
+   margin lines the title up with the search box below it. */
+.blog-heading {
+  margin: 30px 30px 0;
+}
+
+/* Byline under each post title: publish date, author link, updated stamp. */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+  .post-meta .author {
+    color: #4338ca;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+    .post-meta .author:hover {
+      text-decoration: underline;
+    }
+
+  .post-meta .updated {
+    font-style: italic;
+  }
+
+@media (max-width: 900px) {
+  .blog-heading {
+    margin: 24px 15px 0;
+  }
+}

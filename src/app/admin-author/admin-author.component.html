@@ -1,0 +1,137 @@
+<div class="admin-wrapper">
+
+  <h1 class="page-title">
+    {{ author.authorID ? 'Edit Author' : 'Add New Author' }}
+  </h1>
+
+  <div class="card">
+
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+
+    <!-- NAME -->
+    <div class="form-group">
+      <label>Author Name <span class="required">*</span></label>
+      <input type="text"
+             [(ngModel)]="author.name"
+             (ngModelChange)="onNameChange()"
+             class="form-control"
+             placeholder="e.g. Venkatesh" />
+      <small class="hint">
+        This is the name shown on the byline of every post and equipment guide
+        credited to them.
+      </small>
+    </div>
+
+    <!-- SLUG -->
+    <div class="form-group">
+      <label>Page URL <span class="required">*</span></label>
+      <input type="text"
+             [(ngModel)]="author.slug"
+             (blur)="onSlugChange()"
+             class="form-control"
+             placeholder="venkatesh" />
+      <small class="hint">
+        Their page will be live at <strong>{{ pageUrl }}</strong> — filled in
+        from the name, but you can change it.
+      </small>
+    </div>
+
+    <!-- ROLE -->
+    <div class="form-group">
+      <label>Role / Title</label>
+      <input type="text"
+             [(ngModel)]="author.role"
+             class="form-control"
+             placeholder="e.g. YouTube Growth Strategist" />
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="form-group">
+      <label>Experience</label>
+      <input type="text"
+             [(ngModel)]="author.experience"
+             class="form-control"
+             placeholder="e.g. 8+ years" />
+      <small class="hint">
+        Shown on their page as a headline fact.
+      </small>
+    </div>
+
+    <!-- BIO -->
+    <div class="form-group">
+      <label>About / Relevant Details</label>
+      <textarea rows="6"
+                [(ngModel)]="author.bio"
+                class="form-control"
+                placeholder="Background, areas of expertise, what they write about..."></textarea>
+      <small class="hint">
+        Also used as the SEO meta description for their page. Line breaks are kept.
+      </small>
+    </div>
+
+    <!-- PHOTO -->
+    <div class="form-group">
+      <label>Photo URL</label>
+      <input type="text"
+             [(ngModel)]="author.photoUrl"
+             class="form-control"
+             placeholder="https://..." />
+      <small class="hint">
+        Optional. Without a photo their page shows their initials instead.
+      </small>
+    </div>
+
+    <!-- CONTACT + SOCIAL -->
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email"
+             [(ngModel)]="author.email"
+             class="form-control"
+             placeholder="name@ytcreator.in" />
+    </div>
+
+    <div class="form-group">
+      <label>Social Links</label>
+      <div class="social-grid">
+        <input type="text" [(ngModel)]="author.youtubeUrl" class="form-control" placeholder="YouTube URL" />
+        <input type="text" [(ngModel)]="author.instagramUrl" class="form-control" placeholder="Instagram URL" />
+        <input type="text" [(ngModel)]="author.linkedinUrl" class="form-control" placeholder="LinkedIn URL" />
+        <input type="text" [(ngModel)]="author.xUrl" class="form-control" placeholder="X (Twitter) URL" />
+      </div>
+      <small class="hint">
+        Only the ones you fill in appear on their page.
+      </small>
+    </div>
+
+    <!-- ACTIVE -->
+    <div class="form-group">
+      <label class="checkbox-inline">
+        <input type="checkbox" [(ngModel)]="author.isActive" />
+        Active
+      </label>
+      <small class="hint">
+        Inactive authors disappear from the editors' dropdowns and from the
+        /author list, but their existing page keeps working.
+      </small>
+    </div>
+
+    <div class="actions">
+      <button class="btn secondary" type="button" (click)="resetForm()">
+        Reset
+      </button>
+      <button class="btn secondary" type="button" (click)="goToList()">
+        All Authors
+      </button>
+      <button class="btn btn-primary"
+              [disabled]="!isFormValid() || isSubmitting"
+              (click)="save()">
+        <span *ngIf="!isSubmitting">
+          {{ author.authorID ? 'Update Author' : 'Add Author' }}
+        </span>
+        <span *ngIf="isSubmitting">Saving...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

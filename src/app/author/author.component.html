@@ -1,0 +1,112 @@
+<div class="author-page">
+
+  <p class="state" *ngIf="isLoading">Loading author...</p>
+
+  <div class="state not-found" *ngIf="notFound">
+    <h1 class="page-title">Author not found</h1>
+    <p>This author page is not available.</p>
+    <a routerLink="/author">← See all authors</a>
+  </div>
+
+  <ng-container *ngIf="author">
+
+    <!-- PROFILE -->
+    <header class="author-profile">
+      <div class="avatar">
+        <img *ngIf="author.photoUrl" [src]="author.photoUrl" [alt]="author.name" />
+        <span *ngIf="!author.photoUrl" class="initials">{{ initials }}</span>
+      </div>
+
+      <div class="profile-text">
+        <h1 class="page-title">{{ displayName }}</h1>
+
+        <p class="role" *ngIf="author.role">{{ author.role }}</p>
+
+        <ul class="facts">
+          <li *ngIf="author.experience">
+            <span class="label">Experience</span>
+            <span class="value">{{ author.experience }}</span>
+          </li>
+          <li>
+            <span class="label">Articles</span>
+            <span class="value">{{ posts.length }}</span>
+          </li>
+          <li>
+            <span class="label">Equipment guides</span>
+            <span class="value">{{ equipment.length }}</span>
+          </li>
+        </ul>
+
+        <div class="socials" *ngIf="socialLinks.length">
+          <a *ngFor="let link of socialLinks"
+             [href]="link.url"
+             target="_blank"
+             rel="noopener"
+             [attr.aria-label]="link.label"
+             [title]="link.label">
+            <i [class]="link.icon" aria-hidden="true"></i>
+            <span class="sr-only">{{ displayName }} on {{ link.label }}</span>
+          </a>
+        </div>
+
+        <a class="email" *ngIf="author.email" [href]="'mailto:' + author.email">
+          {{ author.email }}
+        </a>
+      </div>
+    </header>
+
+    <!-- ABOUT -->
+    <section class="author-bio" *ngIf="author.bio">
+      <h2>About {{ displayName }}</h2>
+      <p>{{ author.bio }}</p>
+    </section>
+
+    <!-- ARTICLES -->
+    <section class="author-content">
+      <h2>Articles by {{ displayName }}</h2>
+
+      <div class="card-list">
+        <div *ngFor="let post of posts" class="content-card" (click)="openPost(post)">
+          <h3><span [innerHTML]="post.title"></span></h3>
+
+          <div class="card-meta">
+            <span>{{ post.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST</span>
+            <span class="updated" *ngIf="post.wasUpdated">
+              Updated {{ post.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+            </span>
+          </div>
+
+          <p class="card-desc"><span [innerHTML]="post.shortDescription"></span></p>
+        </div>
+
+        <p class="empty" *ngIf="posts.length === 0">No articles published yet.</p>
+      </div>
+    </section>
+
+    <!-- EQUIPMENT -->
+    <section class="author-content">
+      <h2>Equipment guides by {{ displayName }}</h2>
+
+      <div class="card-list">
+        <div *ngFor="let item of equipment" class="content-card" (click)="openEquipment(item)">
+          <h3>{{ item.title }}</h3>
+
+          <div class="card-meta">
+            <span>{{ item.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST</span>
+            <span class="updated" *ngIf="item.wasUpdated">
+              Updated {{ item.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+            </span>
+          </div>
+
+          <p class="card-desc">{{ item.shortDescription }}</p>
+        </div>
+
+        <p class="empty" *ngIf="equipment.length === 0">No equipment guides published yet.</p>
+      </div>
+    </section>
+
+    <a class="back-link" routerLink="/author">← See all authors</a>
+
+  </ng-container>
+
+</div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { SOCIAL_LINKS } from '../utils/social-links';
 
 @Component({
     selector: 'app-header',
@@ -8,6 +9,9 @@ import { Router } from '@angular/router';
     standalone: false
 })
 export class HeaderComponent {
+  // Shared with the footer and the Organization JSON-LD.
+  socialLinks = SOCIAL_LINKS;
+
   constructor(private router: Router) { }
 
   navigate(path: string) {

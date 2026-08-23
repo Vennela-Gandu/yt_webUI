@@ -13,10 +13,12 @@ export class EquipmentService {
   }
 
   getList(page: number, pageSize: number, search: string,
-    categoryId?: number | null, publishedOnly: boolean = false) {
+    categoryId?: number | null, publishedOnly: boolean = false,
+    author?: string) {
     let params: any = { page, pageSize, publishedOnly };
     if (search) params.search = search;
     if (categoryId) params.categoryId = categoryId;
+    if (author) params.author = author;
     return this.http.get<any>(`${this.api}/list`, { params });
   }
 

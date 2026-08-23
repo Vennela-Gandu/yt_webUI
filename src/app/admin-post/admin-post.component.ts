@@ -4,6 +4,9 @@ import { isPlatformBrowser } from '@angular/common';
 
 import { PostService } from '../post.service';
 import { ServerImageUploadPlugin } from '../utils/image-upload.adapter';
+import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
+import { AuthorService } from '../services/author.service';
+
 
 @Component({
   selector: 'app-admin-post',
@@ -24,6 +27,7 @@ export class AdminPostComponent implements OnInit {
     toolbar: {
       items: [
         'heading',
+        'fontSize',
         '|',
         'bold',
         'italic',
@@ -32,14 +36,65 @@ export class AdminPostComponent implements OnInit {
         '|',
         'bulletedList',
         'numberedList',
+        'outdent',
+        'indent',
         '|',
-        'blockQuote',
+        'insertTable',
         'uploadImage',
+        'blockQuote',
         '|',
         'undo',
         'redo'
       ],
       shouldNotGroupWhenFull: true
+    },
+
+    // The post title is the only h1 on the page, so content headings start at H2.
+    heading: {
+      options: [
+        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
+      ]
+    },
+
+    // Text size for the selected range. 'default' clears it again.
+    fontSize: {
+      options: [12, 14, 'default', 18, 20, 24, 30],
+      supportAllValues: false
+    },
+
+    // Bullet and number styles (disc, circle, decimal, lower-roman, ...) plus
+    // "start numbering at" for the selected list.
+    list: {
+      properties: {
+        styles: true,
+        startIndex: true,
+        reversed: true
+      }
+    },
+
+    image: {
+      toolbar: [
+        'imageStyle:inline',
+        'imageStyle:block',
+        'imageStyle:side',
+        '|',
+        'toggleImageCaption',
+        'imageTextAlternative'
+      ]
+    },
+
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        'tableProperties',
+        'tableCellProperties',
+        'toggleTableCaption'
+      ]
     },
 
     extraPlugins: [ServerImageUploadPlugin]
@@ -51,11 +106,15 @@ export class AdminPostComponent implements OnInit {
     description: '',
     shortDescription: '',
     keywords: '',
+    authorName: null,
     categoryIDs: [] as number[],
-    publishedDate: new Date()
+    // Empty means publish immediately - see saveButtonLabel().
+    publishedDate: null
   };
 
   categories: any[] = [];
+  // Names come from the Author records managed in the admin portal.
+  authors: string[] = [];
 
   isSubmitting = false;
   successMessage = '';
@@ -68,9 +127,11 @@ export class AdminPostComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private service: PostService,
+    private authorService: AuthorService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loadCategories();
+    this.loadAuthors();
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -88,13 +149,21 @@ export class AdminPostComponent implements OnInit {
       import('ckeditor5').then((CK: any) => {
         const {
           ClassicEditor, Essentials, Paragraph, Heading,
-          Bold, Italic, Underline, Link, List, BlockQuote,
-          Image, ImageUpload, Autoformat, PasteFromOffice
+          Bold, Italic, Underline, Link, List, ListProperties, BlockQuote,
+          Image, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, ImageResize,
+          Table, TableToolbar, TableProperties, TableCellProperties,
+          TableCaption, TableColumnResize,
+          FontSize, Indent, IndentBlock,
+          Autoformat, PasteFromOffice
         } = CK;
 
         this.editorConfig.plugins = [
-          Essentials, Paragraph, Heading, Bold, Italic, Underline,
-          Link, List, BlockQuote, Image, ImageUpload,
+          Essentials, Paragraph, Heading, Bold, Italic, Underline, Link,
+          List, ListProperties, BlockQuote,
+          Image, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, ImageResize,
+          Table, TableToolbar, TableProperties, TableCellProperties,
+          TableCaption, TableColumnResize,
+          FontSize, Indent, IndentBlock,
           Autoformat, PasteFromOffice
         ];
 
@@ -129,6 +198,8 @@ export class AdminPostComponent implements OnInit {
             .map((v: string) => Number(v.trim()))
             .filter((n: number) => !isNaN(n));
         }
+        // Stored as UTC; the picker shows and reads it back as IST.
+        res.publishedDate = utcToIstInputValue(res.publishedDate);
         this.post = res;
       });
   }
@@ -139,11 +210,37 @@ export class AdminPostComponent implements OnInit {
       .subscribe(res => this.categories = res);
   }
 
+  /* ================= Load Authors ================= */
+  loadAuthors(): void {
+    this.authorService.names()
+      .subscribe(rows => this.authors = rows.map(a => a.name));
+  }
+
+  /* ================= Dates =================
+     A publish time typed here always means IST, whatever zone this machine is
+     in. istInputToUtcIso/utcToIstInputValue translate between the IST
+     wall-clock the picker shows and the UTC instant the API stores. */
+
+  /** Was a future publish time picked? Then saving schedules the post. */
+  isScheduled(): boolean {
+    if (!this.post.publishedDate) return false;
+
+    const utc = istInputToUtcIso(this.post.publishedDate);
+    return !!utc && new Date(utc).getTime() > Date.now();
+  }
+
+  saveButtonLabel(): string {
+    if (this.post.postID) return 'Update Post';
+    return this.isScheduled() ? 'Schedule Post' : 'Publish Now';
+  }
+
   /* ================= Validation ================= */
   isFormValid(): boolean {
     return (
       !!this.post.title?.trim() &&
       !!this.post.description?.trim() &&
+      !!this.post.shortDescription?.trim() &&
+      !!this.post.authorName &&
       this.post.categoryIDs.length > 0
     );
   }
@@ -160,27 +257,31 @@ export class AdminPostComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    if (this.post.publishedDate) {
-      this.post.publishedDate = new Date(this.post.publishedDate).toISOString();
-    }
+    // Send a copy so a failed save leaves the form exactly as the author left
+    // it. The picked time is IST, converted here to the UTC instant the API
+    // stores; categoryIDs go over the wire as "1, 2".
+    const wasScheduled = this.isScheduled();
+    const payload = {
+      ...this.post,
+      publishedDate: istInputToUtcIso(this.post.publishedDate),
+      categoryIDs: (this.post.categoryIDs || []).join(', ')
+    };
 
-    if (this.post.categoryIDs?.length > 0) {
-      this.post.categoryIDs = this.post.categoryIDs.join(', ');
-    }
-
-    const request = this.post.postID
-      ? this.service.updatePost(this.post)
-      : this.service.addPost(this.post);
+    const request = payload.postID
+      ? this.service.updatePost(payload)
+      : this.service.addPost(payload);
 
     request.subscribe({
       next: () => {
-        this.successMessage = this.post.postID
+        this.successMessage = payload.postID
           ? 'Post updated successfully!'
-          : 'Post published successfully!';
+          : wasScheduled
+            ? 'Post scheduled - it goes live at the time you picked.'
+            : 'Post published successfully!';
 
         this.isSubmitting = false;
 
-        if (!this.post.postID) {
+        if (!payload.postID) {
           this.resetForm();
         }
       },
@@ -199,11 +300,11 @@ export class AdminPostComponent implements OnInit {
       description: '',
       shortDescription: '',
       keywords: '',
+      authorName: null,
       categoryIDs: [] as number[],
       publishedDate: null
     };
 
-    this.successMessage = '';
     this.errorMessage = '';
     this.isSubmitting = false;
   }

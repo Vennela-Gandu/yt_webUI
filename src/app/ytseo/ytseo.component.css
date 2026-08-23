@@ -90,8 +90,9 @@ app-content-results {
   color: #222;
 }
 
-  .youtube-seo-content h1 {
+  .youtube-seo-content h2.seo-content-title {
     font-size: 28px;
+    margin-top: 0;
     margin-bottom: 16px;
     color: #111;
   }
@@ -148,7 +149,6 @@ app-content-results {
   max-width: 1100px;
   margin: 50px auto;
   padding: 0 20px;
-  font-family: Arial, Helvetica, sans-serif;
   color: #1f2937;
 }
 

@@ -1,10 +1,50 @@
+/* The table, filter bar, buttons and status colours are global (styles.css),
+   shared with the other admin tables. Only the page furniture lives here. */
 
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
 
+.state {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px 0;
+}
+
+/* Wide table scrolls sideways instead of breaking the page. */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* "Updated" sits under the publish date rather than widening the column. */
+.updated {
+  display: block;
+  font-size: 12px;
+  font-style: italic;
+  color: #64748b;
+}
 
 /* ===============================
    Pagination
 ================================ */
-/*.pagination {
+.pagination {
   margin-top: 18px;
   display: flex;
   justify-content: center;
@@ -34,6 +74,4 @@
   .pagination span {
     font-size: 14px;
     font-weight: 500;
-  }*/
-
-
+  }

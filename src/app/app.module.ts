@@ -34,6 +34,10 @@ import { YoutubestrategysuggestionsComponent } from './youtubestrategysuggestion
 import { ShortvideossuggestionsComponent } from './shortvideossuggestions/shortvideossuggestions.component';
 import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
+import { AuthorComponent } from './author/author.component';
+import { AuthorIndexComponent } from './author-index/author-index.component';
+import { AdminAuthorComponent } from './admin-author/admin-author.component';
+import { AdminAuthorListComponent } from './admin-author-list/admin-author-list.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
@@ -85,6 +89,10 @@ import { BlogListComponent } from './blog-list/blog-list.component';
         ShortvideossuggestionsComponent,
         MonetizationComponent,
         EquipmentComponent,
+        AuthorComponent,
+        AuthorIndexComponent,
+        AdminAuthorComponent,
+        AdminAuthorListComponent,
         CommunityComponent,
         YoutubeissuesComponent,
         SocialmediastatsComponent,

@@ -1,15 +1,21 @@
   <!-- TOP BAR -->
   <div class="top-bar">
     <div class="top-left">
-      <i class="fa fa-envelope"></i> support&#64;ytcreator.in
+      <i class="fa fa-envelope" aria-hidden="true"></i>
+      <a href="mailto:support@ytcreator.in">support&#64;ytcreator.in</a>
     </div>
     <div class="top-right">
-      <a href="https://www.facebook.com/ytcreator.in" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-      <a href="https://whatsapp.com/channel/0029Vb6jlyA2Jl8IVFZUZX3M" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-      <a href="https://www.instagram.com/yt.creator.in/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-      <a href="https://x.com/ytcreator_in/" target="_blank"><i class="fa-brands fa-x"></i></a>
-      <a href="https://www.youtube.com/@ytcreator_in" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-      <a href="https://www.linkedin.com/company/ytcreator/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+      <!-- Icon-only links carry their name as real text (visually hidden) so
+           crawlers and screen readers get anchor text, not an empty link. -->
+      <a *ngFor="let social of socialLinks"
+         [href]="social.url"
+         [attr.aria-label]="social.label"
+         [title]="social.name"
+         target="_blank"
+         rel="me noopener">
+        <i [class]="social.icon" aria-hidden="true"></i>
+        <span class="sr-only">{{ social.label }}</span>
+      </a>
     </div>
   </div>
 
@@ -43,6 +49,8 @@
       <a routerLink="/socialmedia/socialmediabiogenerator">Social Bio Generator</a>-->
         </div>
       </div>
+
+      <a routerLink="/equipment" routerLinkActive="active">Equipment</a>
 
       <!--<div class="nav-item">
     <a routerLink="/competitoranalysis" class="has-sub">

@@ -28,8 +28,11 @@
   --color-success: #10B981;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
-  /* Typography */
-  --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Typography — ONE font for the whole site. Every rule and component reads
+     this variable, so this line is the only place the typeface is chosen.
+     Inter is the face loaded by the @import above; the rest is fallback for
+     when that request fails. */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -116,6 +119,13 @@ h2 {
   font-weight: var(--font-weight-extrabold);
 }
 
+/* Page title at the h2 visual scale. For pages whose design never used the
+   full 3rem h1, so the heading can be an h1 without changing the layout. */
+h1.page-title {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-extrabold);
+}
+
 h3 {
   font-size: 1.875rem;
   font-weight: var(--font-weight-bold);
@@ -189,6 +199,21 @@ a:hover {
 
 .text-center {
   text-align: center;
+}
+
+/* Real text in the DOM that is not shown on screen. Used to give icon-only
+   links (social profiles, share buttons) anchor text a crawler and a screen
+   reader can read. Not display:none — that would hide it from both. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .text-gradient {
@@ -583,6 +608,18 @@ ckeditor {
   display: block;
 }
 
+/* CKEditor ships its own Helvetica/Arial stack, so the admin would write in a
+   different font than the published page renders. Point it at the site font. */
+:root {
+  --ck-font-face: var(--font-family);         /* editor chrome */
+  --ck-content-font-family: var(--font-family); /* the content being written */
+}
+
+.ck.ck-content,
+.ck-editor__editable {
+  font-family: var(--font-family);
+}
+
 .ck-editor__editable {
   border-radius: 8px;
   min-height: 360px; /* ~15 lines */
@@ -828,6 +865,12 @@ button:disabled {
   color: #ffc107;
   font-weight: 600;
 }
+
+/* Published in the future — waiting for its slot. */
+.status-scheduled {
+  color: #2563eb;
+  font-weight: 600;
+}
 /* ===============================
    Page Title
 ================================ */
@@ -835,6 +878,13 @@ h2 {
   margin-bottom: 18px;
   font-weight: 600;
   color: #2c3e50;
+}
+
+/* Page title at the h2 visual scale. For pages whose design never used the
+   full 3rem h1, so the heading can be an h1 without changing the layout. */
+h1.page-title {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-extrabold);
 }
 
 /* ===============================

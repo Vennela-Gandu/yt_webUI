@@ -205,3 +205,10 @@
     padding: 1rem 0.75rem;
   }
 }*/
+
+/* Section title — an h2 so the page keeps a single h1, sized like the
+   heading it replaced so it still reads above the h2 subsections below. */
+h2.section-title {
+  font-size: 3rem;
+  font-weight: var(--font-weight-black);
+}

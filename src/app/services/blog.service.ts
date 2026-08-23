@@ -7,21 +7,20 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BlogService {
 
-  private apiUrl = `${environment.apiBaseUrl}/api`;
+  private apiUrl = `${environment.apiBaseUrl.replace(/\/+$/, '')}/api`;
 
   constructor(private http: HttpClient) { }
 
+  /**
+   * Every post for the admin table, including scheduled ones. The public
+   * list endpoint (post/category) hides anything not yet live, which meant a
+   * scheduled post could not be opened for editing.
+   */
   getBlogs() {
-    // return this.http.get<any[]>(`${this.apiUrl}/list`);
-       let params: any = {
-        page: 1,
-        pageSize: 0
-      };
-     params.categoryId = -1;
-    return this.http.get<any>(`${this.apiUrl}/post/category/`, {params});
+    return this.http.get<any[]>(`${this.apiUrl}/post/adminList`);
   }
 
   deleteBlog(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/post/${id}`);
   }
 }

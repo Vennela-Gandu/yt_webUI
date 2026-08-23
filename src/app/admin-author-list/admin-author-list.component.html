@@ -1,0 +1,60 @@
+<div class="admin-wrapper">
+
+  <div class="list-header">
+    <h1 class="page-title">Authors</h1>
+    <button class="btn btn-primary" (click)="add()">Add Author</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+  <p class="state" *ngIf="isLoading">Loading authors...</p>
+
+  <div class="table-wrap" *ngIf="!isLoading">
+    <table class="author-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Experience</th>
+          <th>Articles</th>
+          <th>Equipment</th>
+          <th>Status</th>
+          <th>Page</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let author of authors">
+          <td class="name">{{ author.name }}</td>
+          <td>{{ author.role || '—' }}</td>
+          <td>{{ author.experience || '—' }}</td>
+          <td>{{ author.postCount || 0 }}</td>
+          <td>{{ author.equipmentCount || 0 }}</td>
+          <td>
+            <span class="badge" [class.inactive]="!author.isActive">
+              {{ author.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <a [routerLink]="['/author', author.slug]" target="_blank">/author/{{ author.slug }}</a>
+          </td>
+          <td class="row-actions">
+            <button class="btn secondary" (click)="edit(author)">Edit</button>
+            <button class="btn btn-danger"
+                    *ngIf="canDelete(author)"
+                    (click)="remove(author)">
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="authors.length === 0">
+          <td colspan="8" class="state">
+            No authors yet. Add one to start crediting posts and equipment guides.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

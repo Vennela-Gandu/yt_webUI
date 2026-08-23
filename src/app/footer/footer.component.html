@@ -19,36 +19,44 @@
       </ul>
 
       <div class="socials">
-        <a href="https://www.facebook.com/ytcreator.in" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://whatsapp.com/channel/0029Vb6jlyA2Jl8IVFZUZX3M" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="https://www.instagram.com/yt.creator.in/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://x.com/ytcreator_in/" target="_blank"><i class="fa-brands fa-x"></i></a>
-        <a href="https://www.youtube.com/@ytcreator_in" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-        <a href="https://www.linkedin.com/company/ytcreator/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+        <!-- Icon-only links carry their name as real text (visually hidden) so
+             crawlers and screen readers get anchor text, not an empty link. -->
+        <a *ngFor="let social of socialLinks"
+           [href]="social.url"
+           [attr.aria-label]="social.label"
+           [title]="social.name"
+           target="_blank"
+           rel="me noopener">
+          <i [class]="social.icon" aria-hidden="true"></i>
+          <span class="sr-only">{{ social.label }}</span>
+        </a>
       </div>
     </div>
 
     <!-- Quick Links -->
     <nav class="footer-col nav">
-      <h4>Quick Links</h4>
+      <h3>Quick Links</h3>
       <a routerLink="/">Home</a>
       <a routerLink="/youtubeseo" routerLinkActive="active">YouTube SEO</a>
       <a routerLink="/socialmedia">Social Media Tools</a>
+      <a routerLink="/equipment">Equipment</a>
+      <a routerLink="/author">Authors</a>
       <!--<a routerLink="/competitor-analysis">Competitor Analysis</a>-->
     </nav>
 
     <!-- Content Tools -->
     <div class="footer-col">
-      <h4>Content Tools</h4>
+      <h3>Content Tools</h3>
       <!--<a routerLink="/content-ideas">Content Ideas</a>-->
-      <a routerLink="/captiongenerator">Caption  & Hashtag Generator</a>
+      <a routerLink="/socialmedia/captiongenerator">Caption &amp; Hashtag Generator</a>
+      <a routerLink="/youtubeseo">YouTube SEO Tool</a>
       <!--<a routerLink="/hashtag-generator">Hashtag Generator</a>
       <a routerLink="/trending-music">Trending Music</a>-->
     </div>
 
     <!-- Learning -->
     <!--<div class="footer-col">
-      <h4>Learning</h4>
+      <h3>Learning</h3>
       <a routerLink="/monetization">Monetization</a>
       <a routerLink="/equipment">Equipment Guides</a>
       <a routerLink="/community">Community</a>
@@ -57,7 +65,7 @@
 
     <!-- Support -->
     <div class="footer-col">
-      <h4>Support</h4>
+      <h3>Support</h3>
       <a routerLink="/learninghub/faqs">FAQs</a>
       <a routerLink="/contactus">Contact Us</a>
       <a routerLink="/privacy-policy">Privacy Policy</a>

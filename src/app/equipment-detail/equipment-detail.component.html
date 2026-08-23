@@ -14,6 +14,23 @@
 
     <h1>{{ equipment.title }}</h1>
 
+    <!-- Byline: publish date, author, and "Updated" once revised. All IST. -->
+    <div class="post-meta">
+      <span class="published">
+        {{ equipment.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+      </span>
+
+      <a class="author"
+         *ngIf="equipment.authorName"
+         [routerLink]="['/author', authorSlug(equipment.authorName)]">
+        By {{ equipment.authorName }}
+      </a>
+
+      <span class="updated" *ngIf="equipment.wasUpdated">
+        Updated {{ equipment.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+      </span>
+    </div>
+
     <p class="short-description">
       {{ equipment.shortDescription }}
     </p>

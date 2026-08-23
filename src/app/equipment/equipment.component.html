@@ -1,68 +1,65 @@
-<!-- SEARCH (ALWAYS ON TOP) -->
-<div class="equipment-search-top">
+<h1 class="page-title equipment-heading">Creator Equipment</h1>
+
+<!-- Same search bar treatment as the blog list -->
+<div class="search-box">
   <input type="text"
          placeholder="Search equipment..."
          [(ngModel)]="searchText" />
+  <button (click)="clearFilters()">Clear</button>
 </div>
 
-<div class="equipment-page">
+<div class="blog-layout">
 
-  <!-- CONTENT FIRST -->
-  <main class="equipment-content">
+  <!-- LEFT: EQUIPMENT CARDS -->
+  <div class="equipment-list">
 
-    <h1>Creator Equipment</h1>
+    <div class="equipment-card"
+         *ngFor="let item of paginatedEquipments"
+         (click)="openEquipment(item)">
 
-    <div class="equipment-grid">
+      <h2 class="equipment-title">{{ item.title }}</h2>
 
-      <div class="equipment-card"
-           *ngFor="let item of paginatedEquipments">
+      <!-- Byline: date, author, and an "Updated" stamp once edited -->
+      <div class="post-meta" (click)="$event.stopPropagation()">
+        <span class="published">
+          {{ item.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+        </span>
 
-        <h2>
-          <a [routerLink]="['/equipment-detail', item.slug]">
-            {{ item.title }}
-          </a>
-        </h2>
-
-        <p>{{ item.shortDescription }}</p>
-
-        <a class="read-more"
-           [routerLink]="['/equipment-detail', item.slug]">
-          Read More →
+        <a class="author"
+           *ngIf="item.authorName"
+           [routerLink]="['/author', authorSlug(item.authorName)]">
+          {{ item.authorName }}
         </a>
 
+        <span class="updated" *ngIf="item.wasUpdated">
+          Updated {{ item.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+        </span>
+      </div>
+
+      <p class="equipment-desc">{{ item.shortDescription }}</p>
+
+      <div class="card-footer">
+        <span class="category" *ngFor="let name of item.categoryNames">
+          {{ name }}
+        </span>
+
+        <!-- A real link, so the guide is reachable without JavaScript -->
+        <a class="read-more"
+           [routerLink]="['/equipment-detail', item.slug]"
+           (click)="$event.stopPropagation()">
+          Read More →
+        </a>
       </div>
 
     </div>
 
-    <p *ngIf="paginatedEquipments.length === 0"
-       class="no-results">
+    <p *ngIf="paginatedEquipments.length === 0" class="empty">
       No equipment found.
     </p>
 
-    <!-- PAGINATION -->
-    <div class="pagination" *ngIf="totalPages > 1">
+  </div>
 
-      <button (click)="changePage(currentPage - 1)"
-              [disabled]="currentPage === 1">
-        ‹ Prev
-      </button>
-
-      <button *ngFor="let p of [].constructor(totalPages); let i = index"
-              (click)="changePage(i + 1)"
-              [class.active]="currentPage === i + 1">
-        {{ i + 1 }}
-      </button>
-
-      <button (click)="changePage(currentPage + 1)"
-              [disabled]="currentPage === totalPages">
-        Next ›
-      </button>
-
-    </div>
-
-  </main>
-
-  <!-- SIDEBAR (styled like the blog categories) -->
+  <!-- RIGHT: CATEGORIES -->
   <aside class="equipment-sidebar blog-sidebar">
 
     <h3>Categories</h3>
@@ -97,4 +94,24 @@
 
   </aside>
 
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination" *ngIf="totalPages > 1">
+
+  <button (click)="changePage(currentPage - 1)"
+          [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <button *ngFor="let p of [].constructor(totalPages); let i = index"
+          (click)="changePage(i + 1)"
+          [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button (click)="changePage(currentPage + 1)"
+          [disabled]="currentPage === totalPages">
+    Next
+  </button>
 </div>

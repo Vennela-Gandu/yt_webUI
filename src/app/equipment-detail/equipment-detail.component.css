@@ -1,7 +1,6 @@
 :host {
   display: block;
   background: #ffffff;
-  font-family: Arial, sans-serif;
   color: #000;
 }
 
@@ -53,19 +52,106 @@
   line-height: 1.7;
 }
 
-  .content h2 {
-    margin-top: 24px;
-    font-size: 20px;
+/* Byline under the title. */
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+  .post-meta .author {
+    font-weight: 600;
+    color: #4338ca;
+    text-decoration: none;
   }
 
-  .content ul {
-    padding-left: 20px;
-    margin: 12px 0;
+    .post-meta .author:hover {
+      text-decoration: underline;
+    }
+
+  .post-meta .updated {
+    font-style: italic;
   }
 
-  .content p {
-    margin-bottom: 12px;
-  }
+/* The body is injected with [innerHTML], so it carries no component scoping
+   attribute — these rules need ::ng-deep to reach it at all. */
+.content ::ng-deep h2 {
+  margin-top: 24px;
+  font-size: 20px;
+}
+
+.content ::ng-deep h3 {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.content ::ng-deep h4 {
+  margin-top: 18px;
+  font-size: 16px;
+}
+
+.content ::ng-deep h5 {
+  margin-top: 16px;
+  font-size: 15px;
+}
+
+.content ::ng-deep p {
+  margin-bottom: 12px;
+}
+
+.content ::ng-deep ul,
+.content ::ng-deep ol {
+  padding-left: 28px;
+  margin: 12px 0;
+}
+
+.content ::ng-deep li {
+  margin: 6px 0;
+}
+
+.content ::ng-deep img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px auto;
+}
+
+.content ::ng-deep figure {
+  margin: 20px 0;
+}
+
+.content ::ng-deep figcaption {
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+  padding-top: 6px;
+}
+
+/* Tables written in the editor; they scroll rather than break the layout. */
+.content ::ng-deep table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+.content ::ng-deep th,
+.content ::ng-deep td {
+  border: 1px solid #d7dce5;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.content ::ng-deep th {
+  background: #f1f5f9;
+  font-weight: 600;
+}
 
 /* NOT FOUND */
 .not-found {

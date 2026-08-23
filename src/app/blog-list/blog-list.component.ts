@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BlogService } from '../services/blog.service';
-import { SeoService } from '../services/seo.service';
 import { toSlug } from '../utils/slug.util';
+import { withPostDates } from '../utils/date.util';
 
 @Component({
   selector: 'app-blog-list',
@@ -26,26 +27,46 @@ export class BlogListComponent implements OnInit {
   totalPages: number = 0;
 
   categories: string[] = [];
-  statuses: string[] = ['Published', 'Draft'];
+  statuses: string[] = ['Published', 'Scheduled', 'Draft'];
 
-  constructor(private blogService: BlogService, private seo: SeoService) { }
+  isLoading = true;
+  errorMessage = '';
+
+  constructor(
+    private blogService: BlogService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadBlogs();
   }
 
   loadBlogs() {
-    this.blogService.getBlogs().subscribe(res => {
-     
-      
-       this.blogs = res.posts.map((c:any) => ({
-                ...c,
-                slug: toSlug(c.title)
-              }));
-        this.categories = [...new Set(this.blogs.map(x => x.category))];
-      this.applyFilters();
-      // Publish JSON-LD for blog list on client-side navigation
-    
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.blogService.getBlogs().subscribe({
+      next: rows => {
+        this.blogs = (rows || []).map((p: any) =>
+          withPostDates({ ...p, slug: toSlug(p.title) })
+        );
+
+        // A post can sit in several categories; the proc returns them as
+        // "News, Tips", so split them out for the filter dropdown.
+        this.categories = [...new Set(
+          this.blogs
+            .flatMap(b => (b.categories || '').split(','))
+            .map((c: string) => c.trim())
+            .filter((c: string) => !!c)
+        )].sort();
+
+        this.applyFilters();
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'The blog list could not be loaded.';
+        this.isLoading = false;
+      }
     });
   }
 
@@ -54,11 +75,14 @@ export class BlogListComponent implements OnInit {
 
       const matchesTitle =
         !this.searchTitle ||
-        blog.title.toLowerCase().includes(this.searchTitle.toLowerCase());
+        (blog.title || '').toLowerCase().includes(this.searchTitle.toLowerCase());
 
       const matchesCategory =
         !this.selectedCategory ||
-        blog.category === this.selectedCategory;
+        (blog.categories || '')
+          .split(',')
+          .map((c: string) => c.trim())
+          .includes(this.selectedCategory);
 
       const matchesStatus =
         !this.selectedStatus ||
@@ -66,8 +90,9 @@ export class BlogListComponent implements OnInit {
 
       const matchesDate =
         !this.selectedDate ||
-        new Date(blog.publishedDate).toDateString() ===
-        new Date(this.selectedDate).toDateString();
+        (blog.publishedDate &&
+          blog.publishedDate.toDateString() ===
+          new Date(this.selectedDate + 'T00:00:00').toDateString());
 
       return matchesTitle && matchesCategory && matchesStatus && matchesDate;
     });
@@ -87,11 +112,37 @@ export class BlogListComponent implements OnInit {
     }
   }
 
-  deleteBlog(id: number) {
-    if (confirm('Are you sure you want to delete this blog?')) {
-      this.blogService.deleteBlog(id).subscribe(() => {
-        this.loadBlogs();
-      });
+  clearFilters() {
+    this.searchTitle = '';
+    this.selectedCategory = '';
+    this.selectedStatus = '';
+    this.selectedDate = '';
+    this.applyFilters();
+  }
+
+  addPost() {
+    this.router.navigate(['/admin/add-post']);
+  }
+
+  editBlog(blog: any) {
+    this.router.navigate(['/admin/edit-post', blog.postID]);
+  }
+
+  /** Opens the live post in a new tab; only meaningful once it is public. */
+  viewUrl(blog: any): string[] {
+    return ['/blog', blog.slug, blog.postID];
+  }
+
+  deleteBlog(blog: any) {
+    if (!confirm(`Delete "${blog.title}"? This cannot be undone.`)) {
+      return;
     }
+
+    this.errorMessage = '';
+    this.blogService.deleteBlog(blog.postID).subscribe({
+      next: () => this.loadBlogs(),
+      error: err => this.errorMessage = err?.error?.error
+        || 'That post could not be deleted.'
+    });
   }
 }

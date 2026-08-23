@@ -25,6 +25,10 @@ import { YoutubestrategysuggestionsComponent } from './youtubestrategysuggestion
 import { ShortvideossuggestionsComponent } from './shortvideossuggestions/shortvideossuggestions.component';
 import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
+import { AuthorComponent } from './author/author.component';
+import { AuthorIndexComponent } from './author-index/author-index.component';
+import { AdminAuthorComponent } from './admin-author/admin-author.component';
+import { AdminAuthorListComponent } from './admin-author-list/admin-author-list.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
@@ -149,6 +153,17 @@ const routes: Routes = [
     component: EquipmentComponent
   },
   {
+    // Everyone who writes for the site.
+    path: 'author',
+    component: AuthorIndexComponent
+  },
+  {
+    // One author: profile plus everything they published. Linked from the
+    // byline on the blog list, a post, and an equipment guide.
+    path: 'author/:name',
+    component: AuthorComponent
+  },
+  {
     path: 'equipment-detail/:title',
     component: EquipmentDetailComponent
   },
@@ -267,6 +282,22 @@ const routes: Routes = [
       {
         path: 'equipment-list',
         component: EquipmentListComponent,
+        canActivate: [AuthGuard]
+      },
+      // Author details (add + edit). Saving one creates its public page.
+      {
+        path: 'author-form',
+        component: AdminAuthorComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'author-form/:id',
+        component: AdminAuthorComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'author-list',
+        component: AdminAuthorListComponent,
         canActivate: [AuthGuard]
       },
       { path: 'faq', component: AdminFaqComponent },

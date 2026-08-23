@@ -23,13 +23,15 @@ export class PostService {
   getPostsByCategory(page: number,
     pageSize: number,
     search: string,
-    categoryId?: number) {
+    categoryId?: number,
+    author?: string) {
     let params: any = {
       page,
       pageSize
     };
     if (search) params.search = search;
     if (categoryId) params.categoryId = categoryId;
+    if (author) params.author = author;
     return this.http.get<any>(`${this.api}/post/category/`, {params});
   }
   getPostById(id: number) {

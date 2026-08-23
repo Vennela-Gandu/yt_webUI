@@ -5,6 +5,9 @@ import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { toSlug } from '../utils/slug.util';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { withPostDates } from '../utils/date.util';
+import { SeoService } from '../services/seo.service';
+import { AuthorService } from '../services/author.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -34,30 +37,35 @@ export class PostDetailComponent implements OnInit {
     private route: ActivatedRoute, private router: Router,
     private service: PostService,
     private sanitizer: DomSanitizer,@Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private seo: SeoService,
+    private authorService: AuthorService
   ) {
-   
+    // Loads (and caches) the name-to-slug map the byline links with.
+    this.authorService.names().subscribe();
   }
- share(platform: string) {
-  if(isPlatformBrowser(this.platformId)){
-    const url = this.document.location.href
-    window.location.href;
-    let shareUrl = '';
 
-    switch (platform) {
-      case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-        break;
-      case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?url=${url}`;
-        break;
-      // Add other cases...
+  /**
+   * Opens the platform's share dialog in a new tab. The URL and title are
+   * encoded, so a title with & or ? does not truncate the link.
+   */
+  share(platform: string) {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const url = encodeURIComponent(this.document.location.href);
+    const title = encodeURIComponent(this.post?.title || '');
+
+    const targets: { [key: string]: string } = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${title}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${title}%20${url}`
+    };
+
+    const shareUrl = targets[platform];
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'noopener');
     }
-
-   
-    this.document.open(shareUrl, '_blank');
-    
-  }
   }
   copyLink() {
     if(isPlatformBrowser(this.platformId)){
@@ -130,11 +138,33 @@ export class PostDetailComponent implements OnInit {
 
   private async setPost(res: any) {
     if (!res) return;
-    this.post = res;
-    // ensure date parsing and content sanitization
-    if (this.post.publishedDate) this.post.publishedDate = new Date(this.post.publishedDate + 'Z');
-    const html = await marked.parse(this.post.description || '');
+
+    // Real Date objects (the API sends UTC without a suffix) plus the
+    // wasUpdated flag the byline needs.
+    this.post = withPostDates(res);
+
+    // The post supplies its own title and description, overriding the route
+    // default AppComponent applied on navigation.
+    this.seo.setPageMeta(
+      `${this.post.title} | YT Creator`,
+      this.post.shortDescription
+    );
+
+    // The editor saves HTML. Older posts were written as Markdown, so only
+    // those go through marked — running HTML through it mangles tables and
+    // image figures.
+    const raw = this.post.description || '';
+    const html = this.looksLikeHtml(raw) ? raw : await marked.parse(raw);
     this.content = this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  /** URL segment of the author page for the byline. */
+  authorSlug(name: string): string {
+    return this.authorService.slugFor(name);
+  }
+
+  private looksLikeHtml(content: string): boolean {
+    return /<(p|div|h[1-6]|ul|ol|li|table|figure|img|blockquote|span|strong|em)\b/i.test(content);
   }
   loadCategories() {
     this.service.getCategories('blog')

@@ -81,7 +81,7 @@
     }
 
 /* Columns */
-.footer-col h4 {
+.footer-col h3 {
   font-size: 1.05rem;
   margin-bottom: 16px;
   color: #ffffff;
@@ -167,7 +167,7 @@
     font-size: 1.1rem;
   }
 
-  .footer-col h4 {
+  .footer-col h3 {
     font-size: 1rem;
   }
 }

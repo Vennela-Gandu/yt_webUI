@@ -40,11 +40,26 @@
 
     <!-- SCHEDULE -->
     <div class="form-group">
-      <label>Publish Date</label>
+      <label>Publish Date &amp; Time (IST)</label>
       <input type="datetime-local"
              [(ngModel)]="post.publishedDate" />
       <small class="hint">
-        Leave empty to publish immediately
+        Times are IST. Pick a date and time to schedule the post — it goes
+        public at exactly that IST time, wherever you are. Leave it empty to
+        publish immediately.
+      </small>
+    </div>
+
+    <!-- AUTHOR -->
+    <div class="form-group">
+      <label>Author Name <span class="required">*</span></label>
+      <select [(ngModel)]="post.authorName" class="form-control">
+        <option [ngValue]="null" disabled>Select an author</option>
+        <option *ngFor="let a of authors" [ngValue]="a">{{ a }}</option>
+      </select>
+      <small class="hint">
+        Shown as a link on the blog — readers can click it to see every post by
+        this author.
       </small>
     </div>
 
@@ -60,13 +75,14 @@
       </small>
     </div>
     <div class="form-group">
-      <label>Short Description <span>*</span></label>
+      <label>Short Description <span class="required">*</span></label>
       <textarea rows="3"
                 maxlength="500"
                 [(ngModel)]="post.shortDescription"
                 placeholder="Brief summary shown in blog listing"></textarea>
       <small class="hint">
-        {{ post.shortDescription?.length || 0 }}/500 characters
+        {{ post.shortDescription?.length || 0 }}/500 characters — also published
+        as the page's SEO meta description, so write it for search results.
       </small>
     </div>
     <!-- DESCRIPTION -->
@@ -101,10 +117,7 @@
               (click)="save()">
 
         <span *ngIf="!isSubmitting">
-          {{
- post.publishedDate ? 'Schedule Post' :
-             post.postID ? 'Update Post' : 'Publish Now'
-          }}
+          {{ saveButtonLabel() }}
         </span>
 
         <span *ngIf="isSubmitting">

@@ -26,12 +26,18 @@ export class PostResolver {
               "headline": post.title,
               "description": post.shortDescription,
               "datePublished": post.publishedDate,
-              "dateModified": post.publishedDate,
-              "author": { "@type": "Person", "name": "YT Creator" },
+              "dateModified": post.updatedDate || post.publishedDate,
+              "author": { "@type": "Person", "name": post.authorName || "YT Creator" },
               "publisher": { "@type": "Organization", "name": "YT Creator", "logo": { "@type": "ImageObject", "url": "https://www.ytcreator.in/assets/logo.png" } },
               "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.ytcreator.in/blog/${post.postID}` }
             };
             this.seo.setSchema([articleSchema]);
+            // Title and description here too, so they land in the
+            // server-rendered HTML rather than only after hydration.
+            this.seo.setPageMeta(
+              `${post.title} | YT Creator`,
+              post.shortDescription
+            );
           } catch (e) {
             // ignore
           }

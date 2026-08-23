@@ -205,3 +205,22 @@
     padding: 1rem 0.75rem;
   }
 }*/
+
+/* Section title — an h2 so the page keeps a single h1, sized like the
+   heading it replaced so it still reads above the h2 subsections below. */
+h2.section-title {
+  font-size: 3rem;
+  font-weight: var(--font-weight-black);
+}
+
+/* Body-copy bullet list. The global reset strips list padding, so the markers
+   need it back or they sit outside the visible area. */
+.learning-hub ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 14px 0;
+}
+
+  .learning-hub li {
+    margin: 6px 0;
+  }

@@ -6,7 +6,23 @@
     <h1 class="blog-title">
       {{ post.title }}
     </h1>
-    <span>{{post.publishedDate| date:'dd MMM yyyy, hh:mm a'}}</span>
+
+    <!-- Byline: publish date, author link, and "Updated" once revised -->
+    <div class="post-meta">
+      <span class="published">
+        {{ post.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+      </span>
+
+      <a class="author"
+         *ngIf="post.authorName"
+         [routerLink]="['/author', authorSlug(post.authorName)]">
+        {{ post.authorName }}
+      </a>
+
+      <span class="updated" *ngIf="post.wasUpdated">
+        Updated {{ post.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+      </span>
+    </div>
     <!-- KEYWORDS -->
     <!--<div class="keywords" *ngIf="post.keywords">
     <span class="keyword"
@@ -26,25 +42,38 @@
     <div class="social-share">
       <span>Share:</span>
 
-      <a (click)="share('facebook')" title="Share on Facebook" class="pointer">
-        <i class="fab fa-facebook-f"></i>
-      </a>
+      <!-- Icon-only controls carry their action as real text (visually hidden)
+           so screen readers announce them; the icon itself is decorative. -->
+      <button type="button" (click)="share('facebook')" title="Share on Facebook"
+              aria-label="Share this post on Facebook">
+        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+        <span class="sr-only">Share this post on Facebook</span>
+      </button>
 
-      <a (click)="share('twitter')" title="Share on Twitter" class="pointer">
-        <i class="fab fa-x-twitter"></i>
-      </a>
+      <button type="button" (click)="share('twitter')" title="Share on X"
+              aria-label="Share this post on X (Twitter)">
+        <i class="fab fa-x-twitter" aria-hidden="true"></i>
+        <span class="sr-only">Share this post on X (Twitter)</span>
+      </button>
 
-      <a (click)="share('linkedin')" title="Share on LinkedIn" class="pointer">
-        <i class="fab fa-linkedin-in"></i>
-      </a>
+      <button type="button" (click)="share('linkedin')" title="Share on LinkedIn"
+              aria-label="Share this post on LinkedIn">
+        <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+        <span class="sr-only">Share this post on LinkedIn</span>
+      </button>
 
-      <a (click)="share('whatsapp')" title="Share on WhatsApp" class="pointer">
-        <i class="fab fa-whatsapp"></i>
-      </a>
-      <a (click)="copyLink()" title="Copy Link" class="copy-link">
-        <i class="fas fa-link"></i>
+      <button type="button" (click)="share('whatsapp')" title="Share on WhatsApp"
+              aria-label="Share this post on WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span class="sr-only">Share this post on WhatsApp</span>
+      </button>
+
+      <button type="button" class="copy-link" (click)="copyLink()" title="Copy Link"
+              aria-label="Copy a link to this post">
+        <i class="fas fa-link" aria-hidden="true"></i>
+        <span class="sr-only">Copy a link to this post</span>
         <span class="copy-status" *ngIf="copied">Copied!</span>
-      </a>
+      </button>
     </div>
 
     <div class="related-posts" *ngIf="relatedPosts.length">

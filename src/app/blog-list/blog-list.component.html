@@ -1,4 +1,9 @@
-<h2>Blog List</h2>
+<div class="list-header">
+  <h1 class="page-title">Blog List</h1>
+  <button class="btn btn-primary" (click)="addPost()">Add Blog</button>
+</div>
+
+<div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
 
 <!-- FILTER BAR -->
 <div class="filter-bar">
@@ -22,49 +27,71 @@
          [(ngModel)]="selectedDate"
          (change)="applyFilters()" />
 
+  <button class="btn secondary" (click)="clearFilters()">Clear</button>
+
 </div>
 
-<!-- TABLE -->
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Category</th>
-      <th>Published Date</th>
-      <th>Status</th>
-      <th width="120">Actions</th>
-    </tr>
-  </thead>
+<p class="state" *ngIf="isLoading">Loading posts...</p>
 
-  <tbody>
-    <tr *ngFor="let blog of paginatedBlogs">
-      <td data-label="Title">{{ blog.title }}</td>
-      <td data-label="Category">{{ blog.category }}</td>
-      <td data-label="Date">{{ blog.publishedDate | date:'dd MMM yyyy' }}</td>
-      <td data-label="Status">
-        <span [ngClass]="{
-            'status-published': blog.status === 'Published',
-            'status-draft': blog.status === 'Draft'
-          }">
-          {{ blog.status }}
-        </span>
-      </td>
-      <td data-label="Actions">
-        <a [routerLink]="['/admin/blog-edit', blog.id]"
-           class="btn btn-primary btn-sm">
-          Edit
-        </a>
-        <button class="btn btn-danger btn-sm"
-                (click)="deleteBlog(blog.id)">
-          Delete
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<!-- TABLE -->
+<div class="table-wrap" *ngIf="!isLoading">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Published (IST)</th>
+        <th>Status</th>
+        <th width="210">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let blog of paginatedBlogs">
+        <td data-label="Title">{{ blog.title }}</td>
+        <td data-label="Category">{{ blog.categories || '—' }}</td>
+        <td data-label="Author">{{ blog.authorName || '—' }}</td>
+        <td data-label="Date">
+          {{ blog.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }}
+          <span class="updated" *ngIf="blog.wasUpdated">
+            Updated {{ blog.updatedDate | date:'dd MMM yyyy':'+0530' }}
+          </span>
+        </td>
+        <td data-label="Status">
+          <span [ngClass]="{
+              'status-published': blog.status === 'Published',
+              'status-scheduled': blog.status === 'Scheduled',
+              'status-draft': blog.status === 'Draft'
+            }">
+            {{ blog.status }}
+          </span>
+        </td>
+        <td data-label="Actions" class="row-actions">
+          <button class="btn btn-primary btn-sm" (click)="editBlog(blog)">
+            Edit
+          </button>
+          <a class="btn secondary btn-sm"
+             *ngIf="blog.status === 'Published'"
+             [routerLink]="viewUrl(blog)"
+             target="_blank">
+            View
+          </a>
+          <button class="btn btn-danger btn-sm" (click)="deleteBlog(blog)">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="filteredBlogs.length === 0">
+        <td colspan="6" class="state">No posts match these filters.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- PAGINATION -->
-<div class="pagination">
+<div class="pagination" *ngIf="totalPages > 1">
   <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
     Prev
   </button>

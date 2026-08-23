@@ -1,3 +1,4 @@
+<h1 class="page-title blog-heading">YT Creator Blog</h1>
 <div class="search-box">
   <input type="text"
          [(ngModel)]="searchQuery"
@@ -15,6 +16,23 @@
     <div *ngFor="let post of posts" class="post-card" (click)="openPost(post.slug)">
 
       <h2 class="post-title"><span [innerHTML]="post.title"></span></h2>
+
+      <!-- Byline: date, author, and an "Updated" stamp once edited -->
+      <div class="post-meta" (click)="$event.stopPropagation()">
+        <span class="published">
+          {{ post.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+        </span>
+
+        <a class="author"
+           *ngIf="post.authorName"
+           [routerLink]="['/author', authorSlug(post.authorName)]">
+          {{ post.authorName }}
+        </a>
+
+        <span class="updated" *ngIf="post.wasUpdated">
+          Updated {{ post.updatedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST
+        </span>
+      </div>
 
       <p class="post-desc">
         <span [innerHTML]="post.shortDescription"></span>

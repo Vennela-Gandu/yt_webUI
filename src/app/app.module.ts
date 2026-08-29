@@ -5,7 +5,6 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
 import { ContentFormComponent } from './components/content-form/content-form.component';
 import { ContentResultsComponent } from './components/content-results/content-results.component';
 import { HomeComponent } from './home/home.component';
@@ -36,31 +35,22 @@ import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { AuthorComponent } from './author/author.component';
 import { AuthorIndexComponent } from './author-index/author-index.component';
-import { AdminAuthorComponent } from './admin-author/admin-author.component';
-import { AdminAuthorListComponent } from './admin-author-list/admin-author-list.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
 import { YoutubeanalysisComponent } from './youtubeanalysis/youtubeanalysis.component';
-import { AdminPostComponent } from './admin-post/admin-post.component';
 import { BlogComponent } from './blog/blog.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './register/register.component';
 import { PostDetailComponent } from './post-detail/post-detail.component';
-import { AdminFaqComponent } from './admin-faq/admin-faq.component';
 import { FaqsComponent } from './faqs/faqs.component';
 import { LoaderInterceptor } from './services/loader.interceptor';
 import { LoaderComponent } from './loader/loader.component';
-import { EquipmentFormComponent } from './equipment-form/equipment-form.component';
-import { EquipmentListComponent } from './equipment-list/equipment-list.component';
 import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.component';
-import { BlogListComponent } from './blog-list/blog-list.component';
 
 @NgModule({ declarations: [
   AppComponent,
-  LoginComponent,
         ContentFormComponent,
         ContentResultsComponent,
         HomeComponent,
@@ -91,27 +81,20 @@ import { BlogListComponent } from './blog-list/blog-list.component';
         EquipmentComponent,
         AuthorComponent,
         AuthorIndexComponent,
-        AdminAuthorComponent,
-        AdminAuthorListComponent,
         CommunityComponent,
         YoutubeissuesComponent,
         SocialmediastatsComponent,
         YoutubeanalysisComponent,
-        AdminPostComponent,
         BlogComponent,
         PostDetailComponent,
         RegisterComponent,
-        AdminFaqComponent,
         FaqsComponent,
         LoaderComponent,    
-  EquipmentFormComponent,
-  EquipmentListComponent,
   EquipmentDetailComponent,
-  BlogListComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
-    FormsModule, CKEditorModule],
+    FormsModule],
   providers: [provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,

@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ServerImageUploadPlugin } from '../utils/image-upload.adapter';
 import { EquipmentService } from '../services/equipment.service';
 import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
 import { AuthorService } from '../services/author.service';
+import { ensureEditorStyles } from '../utils/editor-styles';
 
 @Component({
   selector: 'app-equipment-form',
@@ -202,7 +203,8 @@ export class EquipmentFormComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private service: EquipmentService,
     private authorService: AuthorService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
@@ -219,6 +221,10 @@ export class EquipmentFormComponent implements OnInit {
     }
 
     if (isPlatformBrowser(this.platformId)) {
+      // The editor stylesheets are ~230 KB and only needed here, so they are
+      // fetched now rather than shipped in the global stylesheet.
+      ensureEditorStyles(this.document);
+
       // Load the modular CKEditor build only in the browser (it touches
       // `window`/`document` and would break server-side rendering).
       import('ckeditor5').then((CK: any) => {

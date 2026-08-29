@@ -46,6 +46,58 @@
          [innerHTML]="equipment.content">
     </div>
 
+    <!-- Social Share -->
+    <div class="social-share">
+      <span>Share:</span>
+
+      <!-- Icon-only controls carry their action as real text (visually hidden)
+           so screen readers announce them; the icon itself is decorative. -->
+      <button type="button" (click)="share('facebook')" title="Share on Facebook"
+              aria-label="Share this equipment guide on Facebook">
+        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+        <span class="sr-only">Share this equipment guide on Facebook</span>
+      </button>
+
+      <button type="button" (click)="share('twitter')" title="Share on X"
+              aria-label="Share this equipment guide on X (Twitter)">
+        <i class="fab fa-x-twitter" aria-hidden="true"></i>
+        <span class="sr-only">Share this equipment guide on X (Twitter)</span>
+      </button>
+
+      <button type="button" (click)="share('linkedin')" title="Share on LinkedIn"
+              aria-label="Share this equipment guide on LinkedIn">
+        <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+        <span class="sr-only">Share this equipment guide on LinkedIn</span>
+      </button>
+
+      <button type="button" (click)="share('whatsapp')" title="Share on WhatsApp"
+              aria-label="Share this equipment guide on WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span class="sr-only">Share this equipment guide on WhatsApp</span>
+      </button>
+
+      <button type="button" class="copy-link" (click)="copyLink()" title="Copy Link"
+              aria-label="Copy a link to this equipment guide">
+        <i class="fas fa-link" aria-hidden="true"></i>
+        <span class="sr-only">Copy a link to this equipment guide</span>
+        <span class="copy-status" *ngIf="copied">Copied!</span>
+      </button>
+    </div>
+
+    <!-- Related guides, same as the blog shows under a post -->
+    <div class="related-posts" *ngIf="relatedEquipment.length">
+      <h3>Related Equipment</h3>
+
+      <ul>
+        <li *ngFor="let item of relatedEquipment">
+          <a [routerLink]="['/equipment-detail', item.slug]"
+             (click)="$event.preventDefault(); openRelated(item)">
+            {{ item.title }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
   </article>
 
 </div>

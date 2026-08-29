@@ -34,6 +34,11 @@ export class EquipmentService {
     return this.http.put(`${this.api}/edit`, data);
   }
 
+  /** Related guides shown under an equipment article. */
+  getRelated(id: number, top = 5) {
+    return this.http.get<any[]>(`${this.api}/related/${id}`, { params: { top } });
+  }
+
   delete(id: number) {
     return this.http.delete(`${this.api}/${id}`);
   }

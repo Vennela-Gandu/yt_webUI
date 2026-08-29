@@ -68,7 +68,7 @@
 button {
   width: 100%;
   padding: 14px;
-  background: #ff0033;
+  background: #df002d;   /* darkened from #ff0033: white text was 3.96:1 */
   border: none;
   border-radius: 8px;
   color: #fff;

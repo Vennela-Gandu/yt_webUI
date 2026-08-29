@@ -10,7 +10,7 @@ import { DEFAULT_PAGE_META, pageMetaFor } from './utils/page-meta';
 const SITE_URL = 'https://www.ytcreator.in/';
 const SITE_NAME = 'YT Creator';
 const SITE_DESCRIPTION = 'AI-powered YouTube creator toolkit: SEO, content ideas, captions, analytics.';
-const LOGO_URL = 'https://www.ytcreator.in/assets/Yt%20Creator%20Icon.png';
+const LOGO_URL = 'https://www.ytcreator.in/assets/Yt%20Creator%20Icon.webp';
 
 @Component({
   selector: 'app-root',
@@ -41,46 +41,48 @@ export class AppComponent implements OnInit {
         this.handleRoute(this.route.root);
       });
 
-    // Inject GTM/GA only on the browser to avoid SSR "window is not defined" issues
+    // Browser only — GTM touches `window`, which does not exist during SSR.
     if (isPlatformBrowser(this.platformId)) {
       this.injectGTM();
-      this.injectGA();
     }
   }
 
+  /**
+   * Loads the GTM container, which is the single place tags are configured.
+   *
+   * GA4 is NOT loaded here as well: the container already carries the Google
+   * tag for G-TECC7B1N4L, so injecting gtag.js directly fetched a second copy
+   * of the same 161 KiB script and configured the property twice — duplicating
+   * page views as well as the download.
+   *
+   * The container is fetched once the browser is idle. It is ~370 KB and
+   * nothing on screen depends on it, so it has no business competing with the
+   * page's own resources for bandwidth during first paint.
+   */
   private injectGTM() {
-    // avoid duplicate insertion
     if (this.document.getElementById('gtm-script')) return;
 
     const dataLayerName = 'dataLayer';
     (window as any)[dataLayerName] = (window as any)[dataLayerName] || [];
     (window as any)[dataLayerName].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
 
-    const script = this.document.createElement('script');
-    script.id = 'gtm-script';
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-TBHBSX7F';
-    this.document.head.appendChild(script);
-  }
+    const load = () => {
+      if (this.document.getElementById('gtm-script')) return;
+      const script = this.document.createElement('script');
+      script.id = 'gtm-script';
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-TBHBSX7F';
+      this.document.head.appendChild(script);
+    };
 
-  private injectGA() {
-    if (this.document.getElementById('ga-script')) return;
-
-    const script = this.document.createElement('script');
-    script.id = 'ga-script';
-    script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-TECC7B1N4L';
-    this.document.head.appendChild(script);
-
-    const inline = this.document.createElement('script');
-    inline.id = 'ga-inline';
-    inline.text = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-TECC7B1N4L');
-    `;
-    this.document.head.appendChild(inline);
+    const idle = (window as any).requestIdleCallback;
+    if (typeof idle === 'function') {
+      // Cap the wait so the container still loads on a busy page.
+      idle(load, { timeout: 4000 });
+    } else {
+      // Safari and older browsers: wait for load, then yield a tick.
+      window.addEventListener('load', () => setTimeout(load, 1200), { once: true });
+    }
   }
 
   /**

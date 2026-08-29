@@ -45,10 +45,47 @@ export class SeoService {
     tag.setAttribute('content', text);
   }
 
-  /** Both at once — what every page needs on navigation. */
-  setPageMeta(title: string, description: string) {
+  /**
+   * The title a social platform shows next to a shared link.
+   *
+   * Facebook, LinkedIn and WhatsApp read og:title when someone shares a URL —
+   * their share dialogs accept no title of their own, so without this the post
+   * appears as a bare link. Only the title is published: no description or
+   * image, so the card stays a plain titled link.
+   */
+  setShareTitle(title: string) {
+    if (!title) return;
+
+    const text = title.replace(/<[^>]*>/g, '').trim();
+    if (!text) return;
+
+    // og: uses the property attribute, twitter: uses name.
+    this.upsertMeta('property', 'og:title', text);
+    this.upsertMeta('name', 'twitter:title', text);
+  }
+
+  private upsertMeta(attr: string, key: string, value: string) {
+    let tag = this.document.querySelector(`meta[${attr}="${key}"]`);
+
+    if (!tag) {
+      tag = this.document.createElement('meta');
+      tag.setAttribute(attr, key);
+      this.document.head.appendChild(tag);
+    }
+
+    tag.setAttribute('content', value);
+  }
+
+  /**
+   * Both at once — what every page needs on navigation.
+   *
+   * shareTitle is the bare topic title (no " | YT Creator" suffix), which is
+   * what reads well beside a shared link. Defaults to the page title.
+   */
+  setPageMeta(title: string, description: string, shareTitle?: string) {
     this.setTitle(title);
     this.setMetaDescription(description);
+    this.setShareTitle(shareTitle || title);
   }
 
   setSchema(schema: any) {

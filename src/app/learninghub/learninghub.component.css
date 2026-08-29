@@ -71,7 +71,7 @@
 
   .feature-btn:hover {
     color: #ffffff;
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
   }

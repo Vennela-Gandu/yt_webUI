@@ -208,3 +208,13 @@
     justify-content: center;
   }
 }
+
+/* Card titles are real links; keep the heading look. */
+.content-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+  .content-card h3 a:hover {
+    text-decoration: underline;
+  }

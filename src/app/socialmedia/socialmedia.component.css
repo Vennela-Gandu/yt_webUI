@@ -70,7 +70,7 @@
 
   .feature-btn:hover {
     border-color: rgba(59, 130, 246, 0.6);
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     color:#ffffff;
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);

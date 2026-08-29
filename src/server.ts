@@ -47,9 +47,25 @@ app.get(/^\/sitemap(-[a-z]+)?\.xml$/, async (req, res) => {
 });
 
 // ✅ serve static
+//
+// In production IIS serves these files straight off disk (see
+// plesk-web.config) and this never runs — but it must agree with that config
+// so local runs and any request IIS does hand over behave the same way.
+//
+// Hashed bundles are immutable: a change produces a new filename. Everything
+// else keeps its name when edited, so it gets a short life instead.
+const IMMUTABLE = /-[A-Z0-9]{8}\.(?:js|css|mjs)$/;
+
 app.use(express.static(distBrowser, {
-  maxAge: '1y',
-  index: false
+  index: false,
+  setHeaders: (res, filePath) => {
+    res.setHeader(
+      'Cache-Control',
+      IMMUTABLE.test(filePath)
+        ? 'public, max-age=31536000, immutable'
+        : 'public, max-age=86400'
+    );
+  }
 }));
 
 // 🔥 fix static routing manually

@@ -11,14 +11,61 @@
   background: #0b1320;
   color: #fff;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 2rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.25rem 2rem;
   font-size: 0.85rem;
 }
-  .top-bar a {
+
+.top-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+  /* The email is a mailto link; keep it a comfortable tap height. */
+  .top-left a {
     color: #fff;
-    margin-left: 0.8rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 2px;
   }
+
+    .top-left a:hover {
+      text-decoration: underline;
+    }
+
+/* Social icons. An icon glyph on its own is roughly a 14px tap target, which
+   fails the 24x24 minimum and sits too close to its neighbours — so each link
+   is a 40px box with a gap between them. */
+.top-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+  .top-right a {
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    transition: background 0.2s;
+  }
+
+    .top-right a:hover,
+    .top-right a:focus-visible {
+      background: rgba(255, 255, 255, 0.14);
+    }
 /* ===== HEADER INNER ===== */
 .header-inner {
  /* max-width: 1400px;
@@ -27,7 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0e80e4;
+  background-color: var(--color-brand-blue);
 }
 /* ===== LOGO ===== */
 .logo {
@@ -57,11 +104,16 @@
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
-    color: rgba(255,255,255,0.85);
+    /* Solid white, not 85% alpha: over the header blue the faded version was
+       only 3.33:1. The active link is marked by weight and an underline
+       instead of by opacity. */
+    color: #ffffff;
   }
+
     .nav a.active {
-      color: white;
       font-weight: 800;
+      text-decoration: underline;
+      text-underline-offset: 5px;
     }
 
 /* ===== DROPDOWN ===== */
@@ -109,10 +161,13 @@
   max-width: 90vw;
   overflow-x: auto;
 }
-  .nav-item:hover .submenu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  /* :focus-within as well as :hover — with hover alone a keyboard user could
+     tab to "Social Media" and never reach the items underneath it. */
+  .nav-item:hover .submenu,
+  .nav-item:focus-within .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
  .nav-item.align-right .submenu {
   right: 0;
@@ -153,11 +208,74 @@
     right: 0;
     background: #0b1320;
     flex-direction: column;
-    padding: 20px;
+    align-items: stretch;
+    gap: 2px;
+    padding: 12px 16px 16px;
     display: none;
+    max-height: calc(100vh - 100%);
+    overflow-y: auto;
   }
 
     .nav.open {
       display: flex;
     }
+
+  /* Full-width rows at a comfortable tap size. As inline text each link was
+     only about as tall as its line box. */
+  .nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 6px;
+    border-radius: 6px;
+  }
+
+    .nav a:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+  .nav-item {
+    width: 100%;
+  }
+
+  /* Touch screens have no hover, so a dropdown that only opens on hover is
+     unreachable. Inside the mobile panel the submenu is simply always shown,
+     indented under its parent. */
+  .submenu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    min-width: 0;
+    max-width: none;
+    overflow-x: visible;
+    padding-left: 14px;
+  }
+
+    .submenu a {
+      color: rgba(255, 255, 255, 0.85);
+      padding: 0 6px;
+    }
+
+    .submenu a:active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+  /* The arrow implied a dropdown that no longer opens or closes here. */
+  .has-sub span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Narrow screens: the email and the icon row stack and centre rather than
+     squeezing the icons together, so each stays a full-size tap target. */
+  .top-bar {
+    justify-content: center;
+    padding: 0.25rem 1rem;
+  }
 }

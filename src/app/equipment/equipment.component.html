@@ -17,7 +17,10 @@
          *ngFor="let item of paginatedEquipments"
          (click)="openEquipment(item)">
 
-      <h2 class="equipment-title">{{ item.title }}</h2>
+      <h2 class="equipment-title">
+        <a [routerLink]="['/equipment-detail', item.slug]"
+           (click)="$event.stopPropagation()">{{ item.title }}</a>
+      </h2>
 
       <!-- Byline: date, author, and an "Updated" stamp once edited -->
       <div class="post-meta" (click)="$event.stopPropagation()">

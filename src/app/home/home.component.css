@@ -62,7 +62,7 @@
 }
 
   .faq-question:hover {
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     color:#ffffff;
   }
 
@@ -112,7 +112,7 @@
 }
 
   .view-faq-btn:hover {
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     transform: translateY(-2px);
   }*/
 

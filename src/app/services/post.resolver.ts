@@ -36,44 +36,19 @@ export class PostResolver {
             // server-rendered HTML rather than only after hydration.
             this.seo.setPageMeta(
               `${post.title} | YT Creator`,
-              post.shortDescription
+              post.shortDescription,
+              post.title
             );
           } catch (e) {
             // ignore
           }
         }
       }),
-      catchError(() => {
-        // If API call fails on server, provide a small stub post so SSR still renders content & schema
-        if (isPlatformServer(this.platformId)) {
-          const samplePost: any = {
-            postID: id,
-            title: 'YT Creator sample article',
-            shortDescription: 'Sample description for prerender',
-            description: '<p>This is a sample article used during server-side prerendering.</p>',
-            prerenderStub: true,
-            publishedDate: new Date().toISOString()
-          };
-
-          try {
-            const articleSchema = {
-              "@context": "https://schema.org",
-              "@type": "Article",
-              "headline": samplePost.title,
-              "description": samplePost.shortDescription,
-              "datePublished": samplePost.publishedDate,
-              "dateModified": samplePost.publishedDate,
-              "author": { "@type": "Person", "name": "YT Creator" },
-              "publisher": { "@type": "Organization", "name": "YT Creator", "logo": { "@type": "ImageObject", "url": "https://www.ytcreator.in/assets/logo.png" } },
-              "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.ytcreator.in/blog/${samplePost.postID}` }
-            };
-            this.seo.setSchema([articleSchema]);
-          } catch (e) { }
-
-          return of(samplePost);
-        }
-        return of(null);
-      })
+      // If the post cannot be loaded, the page renders nothing. It must never
+      // fall back to placeholder text: the Article JSON-LD published alongside
+      // it would tell search engines that a real URL holds an article which
+      // does not exist.
+      catchError(() => of(null))
     );
   }
 }

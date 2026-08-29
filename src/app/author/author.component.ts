@@ -64,7 +64,8 @@ export class AuthorComponent implements OnInit {
 
         this.seo.setPageMeta(
           `${author.name} | Author at YT Creator`,
-          author.bio || `Articles and equipment guides by ${author.name} on YT Creator.`
+          author.bio || `Articles and equipment guides by ${author.name} on YT Creator.`,
+          author.name
         );
 
         this.loadContent(author.name);

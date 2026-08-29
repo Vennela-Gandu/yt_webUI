@@ -165,3 +165,13 @@
     margin: 24px 15px 0;
   }
 }
+
+/* The title is a real link now; keep it looking like a heading. */
+.equipment-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+  .equipment-title a:hover {
+    text-decoration: underline;
+  }

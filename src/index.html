@@ -5,10 +5,34 @@
   <title>YT Creator</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/png" href="assets/Yt Creator Icon.png">
-  <link rel="apple-touch-icon" href="assets/Yt Creator Icon.png">
+  <link rel="icon" type="image/webp" href="assets/Yt Creator Icon.webp">
+  <link rel="apple-touch-icon" href="assets/Yt Creator Icon.webp">
+
+  <!-- Third-party origins used on every page. Connecting early removes the
+       DNS + TLS wait from the critical path; the audit reported none of these
+       were preconnected. -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Icon fonts, referenced by the Font Awesome subset in styles.css.
+       Preloaded so they start downloading from the document itself rather
+       than after the stylesheet is parsed. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2">
+
+  <!-- Font Awesome's stylesheet is NOT loaded: 18.1 of its 18.3 KiB went
+       unused. The 39 icons this site uses are inlined in the site stylesheet
+       (see the subset at the end of styles.css). Only the font files below
+       are still fetched from the CDN. -->
+
+  <!-- Inter, the site's only typeface. Linked here rather than @import-ed from
+       styles.css: an @import is only discovered after that stylesheet is
+       fetched and parsed, which added a whole extra step to the chain. -->
   <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
   <!-- Google Tag Manager -->
   <!-- Google Tag Manager (moved to AppComponent to avoid SSR execution) -->
   <!-- GTM script will be injected in the browser only -->

@@ -12,9 +12,13 @@
   <app-footer class="scrollable-content"></app-footer>
 </div>-->
 
+<!-- First in the tab order: lets keyboard and screen-reader users jump past
+     the header nav, which is identical on every page. Visible only on focus. -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
 <app-header></app-header>
 <app-loader></app-loader>
-<main class="app-main">
+<main class="app-main" id="main-content" tabindex="-1">
   <router-outlet></router-outlet>
 </main>
 

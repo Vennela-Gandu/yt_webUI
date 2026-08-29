@@ -2,10 +2,13 @@
 /* Brand: Blue Glowing Theme - "Ignite Your Ideas. Amplify Your Influence." */
 
 /* CKEditor 5 (modular build) styles */
-@import 'ckeditor5/ckeditor5.css';
+/* CKEditor's CSS is NOT imported here on purpose: it is ~230 KB and only the
+   two admin editors need it. utils/editor-styles.ts loads it (and the editor
+   overrides) at runtime, so visitors never download it. */
 
-/* Import Inter Font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* Inter is linked from index.html, not @import-ed here: an @import is only
+   discovered once this stylesheet has been fetched and parsed, which put the
+   font one extra step down the critical request chain. */
 
 /* CSS Custom Properties - Design System */
 :root {
@@ -13,6 +16,10 @@
   --color-primary: #3B82F6;
   --color-primary-light: #60A5FA;
   --color-primary-deep: #2563EB;
+  /* The blue behind white text (header bar, buttons, hover states). Darkened
+     from var(--color-brand-blue), which only reached 4.02:1 with white and failed WCAG AA.
+     #0c70c8 is the same hue at 5.02:1 — keep any change above 4.5:1. */
+  --color-brand-blue: #0c70c8;
   --color-glow: #38BDF8;
   /* Dark Neutrals */
   --color-bg-dark: #0A0E1A;
@@ -30,8 +37,8 @@
   --color-error: #EF4444;
   /* Typography — ONE font for the whole site. Every rule and component reads
      this variable, so this line is the only place the typeface is chosen.
-     Inter is the face loaded by the @import above; the rest is fallback for
-     when that request fails. */
+     Inter is the face linked from index.html; the rest is fallback for when
+     that request fails. */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -468,9 +475,6 @@ html, body {
     .related-posts a:hover {
       text-decoration: underline;
     }
-.ck.ck-editor__editable_inline {
-    max-height:50vh;
-}
 /* FORM GROUP */
 .form-group {
   margin-bottom: 20px;
@@ -601,30 +605,6 @@ textarea {
   color: #777;
   margin-top: 4px;
   display: block;
-}
-
-/* ===== CKEDITOR FIX ===== */
-ckeditor {
-  display: block;
-}
-
-/* CKEditor ships its own Helvetica/Arial stack, so the admin would write in a
-   different font than the published page renders. Point it at the site font. */
-:root {
-  --ck-font-face: var(--font-family);         /* editor chrome */
-  --ck-content-font-family: var(--font-family); /* the content being written */
-}
-
-.ck.ck-content,
-.ck-editor__editable {
-  font-family: var(--font-family);
-}
-
-.ck-editor__editable {
-  border-radius: 8px;
-  min-height: 360px; /* ~15 lines */
-  max-height: 360px;
-  overflow-y: auto;
 }
 
 /* ===== ACTIONS ===== */
@@ -971,7 +951,7 @@ table {
 
 .copy-btn {
   padding: 8px 16px;
-  background: #667eea;
+  background: #4663e6;   /* darkened from #667eea: white text was 3.66:1 */
   color: white;
   border: none;
   border-radius: 8px;
@@ -1088,7 +1068,7 @@ button {
 }
 
   .faq-question:hover {
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     color: #ffffff;
   }
 
@@ -1128,7 +1108,7 @@ button {
 
 .view-faq-btn {
   display: inline-block;
-  background: #6b7a90; /* matches ytcreator.in soft blue-grey */
+  background: #627084; /* matches ytcreator.in soft blue-grey */
   color: #ffffff;
   padding: 14px 38px;
   font-size: 17px;
@@ -1139,7 +1119,7 @@ button {
 }
 
   .view-faq-btn:hover {
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     transform: translateY(-2px);
   }
 
@@ -1205,7 +1185,7 @@ button {
 }
 
 .faq-question:hover {
-  background: #0e80e4;
+  background: var(--color-brand-blue);
   color: #ffffff;
 }
 
@@ -1281,7 +1261,7 @@ button {
   padding: 16px 24px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;   /* was 90% alpha: 3.54:1 over the button blue */
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -1309,7 +1289,7 @@ button {
 
   .feature-btn:hover {
     border-color: rgba(59, 130, 246, 0.6);
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
   }
@@ -1326,13 +1306,13 @@ button {
 }
 
 .learn-more-btn {
-  background: #0e80e4;
+  background: var(--color-brand-blue);
   border: 2px solid rgba(59, 130, 246, 0.3);
   border-radius: 8px;
   padding: 12px 32px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;   /* was 90% alpha: only 3.54:1 over the button blue */
   cursor: pointer;
   transition: all 0.3s;
   backdrop-filter: blur(10px);
@@ -1340,7 +1320,7 @@ button {
 
   .learn-more-btn:hover {
     border-color: rgba(59, 130, 246, 0.6);
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
     transform: translateY(-2px);
   }
@@ -1380,7 +1360,7 @@ button {
 
   .feature-card:hover {
     border-color: rgba(59, 130, 246, 0.5);
-    background: #0e80e4;
+    background: var(--color-brand-blue);
     box-shadow: 0 0 30px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0, 0, 0, 0.3);
     transform: translateY(-4px);
   }
@@ -1400,7 +1380,7 @@ button {
 }
 
 .feature-card:hover .feature-icon {
-  background: #0e80e4;
+  background: var(--color-brand-blue);
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   transform: scale(1.1);
 }
@@ -1486,3 +1466,147 @@ button {
   .tool-content p {
     margin: 12px 0;
   }
+
+/* ===============================
+   Font Awesome 6.5.0 - subset
+================================ */
+/* Generated from Font Awesome's own stylesheet, containing ONLY the 40 icons
+   this site uses. The full CDN stylesheet was 18.3 KiB of which 18.1 KiB went
+   unused, and it was a render-blocking third-party request; these rules ride
+   along in the site stylesheet instead.
+
+   The font files still come from the CDN and are preloaded in index.html.
+   font-display is swap - Font Awesome's own CSS hardcodes block, which hides
+   icons for up to 3s.
+
+   To add an icon: use its class in the markup, then re-generate this block so
+   its codepoint is copied in. */
+
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2) format("woff2"),
+       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2) format("woff2"),
+       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.woff2) format("woff2"),
+       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.ttf) format("truetype");
+}
+
+/* Shared icon behaviour */
+.fa,
+.fas, .fa-solid,
+.far, .fa-regular,
+.fab, .fa-brands {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: var(--fa-display, inline-block);
+  font-style: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+}
+
+/* Which font each style class pulls from */
+.fa,
+.fas, .fa-solid {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.far, .fa-regular {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 400;
+}
+
+.fab, .fa-brands {
+  font-family: "Font Awesome 6 Brands";
+  font-weight: 400;
+}
+
+/* The icons in use */
+.fa-address-book::before { content: "\f2b9"; }
+.fa-ban::before { content: "\f05e"; }
+.fa-bullseye::before { content: "\f140"; }
+.fa-check-circle::before { content: "\f058"; }
+.fa-chevron-down::before { content: "\f078"; }
+.fa-child::before { content: "\f1ae"; }
+.fa-circle-exclamation::before { content: "\f06a"; }
+.fa-circle-info::before { content: "\f05a"; }
+.fa-circle-question::before { content: "\f059"; }
+.fa-circle-xmark::before { content: "\f057"; }
+.fa-cookie-bite::before { content: "\f564"; }
+.fa-copyright::before { content: "\f1f9"; }
+.fa-database::before { content: "\f1c0"; }
+.fa-envelope::before { content: "\f0e0"; }
+.fa-facebook-f::before { content: "\f39e"; }
+.fa-file-contract::before { content: "\f56c"; }
+.fa-gear::before { content: "\f013"; }
+.fa-globe::before { content: "\f0ac"; }
+.fa-headset::before { content: "\f590"; }
+.fa-instagram::before { content: "\f16d"; }
+.fa-layer-group::before { content: "\f5fd"; }
+.fa-link::before { content: "\f0c1"; }
+.fa-linkedin::before { content: "\f08c"; }
+.fa-linkedin-in::before { content: "\f0e1"; }
+.fa-location-dot::before { content: "\f3c5"; }
+.fa-pen-to-square::before { content: "\f044"; }
+.fa-rectangle-ad::before { content: "\f641"; }
+.fa-scale-balanced::before { content: "\f24e"; }
+.fa-screwdriver-wrench::before { content: "\f7d9"; }
+.fa-share-nodes::before { content: "\f1e0"; }
+.fa-shield-halved::before { content: "\f3ed"; }
+.fa-shield-heart::before { content: "\e574"; }
+.fa-sliders::before { content: "\f1de"; }
+.fa-triangle-exclamation::before { content: "\f071"; }
+.fa-user-shield::before { content: "\f505"; }
+.fa-user-tie::before { content: "\f508"; }
+.fa-users::before { content: "\f0c0"; }
+.fa-whatsapp::before { content: "\f232"; }
+.fa-x-twitter::before { content: "\e61b"; }
+.fa-youtube::before { content: "\f167"; }
+
+/* ===============================
+   Skip link
+================================ */
+/* Off-screen until focused, then pinned to the top-left so a keyboard user can
+   see where the jump goes. Never display:none — that removes it from the tab
+   order, which defeats the point. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  padding: 12px 18px;
+  background: var(--color-brand-blue);
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+}
+
+  .skip-link:focus {
+    left: 0;
+  }
+
+/* The main region takes focus programmatically after a skip; it should not
+   draw a focus ring of its own. */
+.app-main:focus {
+  outline: none;
+}

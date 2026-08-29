@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 import { PostService } from '../post.service';
 import { ServerImageUploadPlugin } from '../utils/image-upload.adapter';
 import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
 import { AuthorService } from '../services/author.service';
+import { ensureEditorStyles } from '../utils/editor-styles';
 
 
 @Component({
@@ -128,7 +129,8 @@ export class AdminPostComponent implements OnInit {
     private route: ActivatedRoute,
     private service: PostService,
     private authorService: AuthorService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.loadCategories();
     this.loadAuthors();
@@ -144,6 +146,10 @@ export class AdminPostComponent implements OnInit {
   ngOnInit(): void {
     // Load the CKEditor build only on browser to avoid SSR errors (window is not defined)
     if (isPlatformBrowser(this.platformId)) {
+      // The editor stylesheets are ~230 KB and only needed here, so they are
+      // fetched now rather than shipped in the global stylesheet.
+      ensureEditorStyles(this.document);
+
       // Load the modular CKEditor build only in the browser (it touches
       // `window`/`document` and would break server-side rendering).
       import('ckeditor5').then((CK: any) => {

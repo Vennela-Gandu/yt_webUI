@@ -1,0 +1,43 @@
+# YT Creator
+
+> YT Creator is an independent platform of free tools and practical guides for
+> YouTube and social media creators: video SEO, captions and hashtags, creator
+> equipment recommendations, and articles on growing a channel.
+
+All content is written and published by the YT Creator team. Pages are in
+English and cover YouTube, Instagram, and other social platforms, with an
+emphasis on creators in India.
+
+## Tools
+
+- [YouTube SEO Tool](https://www.ytcreator.in/youtubeseo): Generate optimized titles, descriptions, keywords, tags, and FAQs so videos rank better in YouTube search and suggested videos.
+- [Social Media Tools](https://www.ytcreator.in/socialmedia): Overview of the free tools for creators and businesses to improve organic reach.
+- [Caption & Hashtag Generator](https://www.ytcreator.in/socialmedia/captiongenerator): Create captions and relevant hashtags for Instagram, YouTube Shorts, Facebook, and Reels.
+
+## Guides and resources
+
+- [Creator Equipment](https://www.ytcreator.in/equipment): Reviews and buying guides for cameras, microphones, lighting, and accessories, organised by category and budget.
+- [Learning Hub](https://www.ytcreator.in/learninghub): Practical guides for creators, covering equipment choices and common questions.
+- [Creator FAQs](https://www.ytcreator.in/learninghub/faqs): Answers to common questions on channel growth, SEO, monetization, and YouTube issues.
+
+## Blog
+
+- [YT Creator Blog](https://www.ytcreator.in/blog): Articles on YouTube SEO, content strategy, video production, creator tools, and platform changes. Individual posts live at /blog/{slug}/{id}.
+
+## About
+
+- [About YT Creator](https://www.ytcreator.in/aboutus): What the platform is and who it is for.
+- [Authors](https://www.ytcreator.in/author): The writers behind the articles and equipment guides, with a page per author.
+- [Contact](https://www.ytcreator.in/contactus): How to reach the team.
+
+## Policies
+
+- [Privacy Policy](https://www.ytcreator.in/privacy-policy)
+- [Terms of Service](https://www.ytcreator.in/terms-conditions)
+- [Cookie Policy](https://www.ytcreator.in/cookiepolicy)
+- [Disclaimer](https://www.ytcreator.in/disclaimer)
+
+## Optional
+
+- [Sitemap index](https://www.ytcreator.in/sitemap.xml): Every indexable URL, split into page, tool, blog, and equipment sitemaps.
+- [robots.txt](https://www.ytcreator.in/robots.txt): Crawl rules. The /admin/, /api/, and /login/ paths are not for crawling or training.

@@ -27,25 +27,16 @@ import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { AuthorComponent } from './author/author.component';
 import { AuthorIndexComponent } from './author-index/author-index.component';
-import { AdminAuthorComponent } from './admin-author/admin-author.component';
-import { AdminAuthorListComponent } from './admin-author-list/admin-author-list.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
 import { YoutubeanalysisComponent } from './youtubeanalysis/youtubeanalysis.component';
 import { BlogComponent } from './blog/blog.component';
-import { AdminPostComponent } from './admin-post/admin-post.component';
-import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './Authguard';
 import { RegisterComponent } from './register/register.component';
 import { PostDetailComponent } from './post-detail/post-detail.component';
-import { AdminFaqComponent } from './admin-faq/admin-faq.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
-import { EquipmentFormComponent } from './equipment-form/equipment-form.component';
-import { EquipmentListComponent } from './equipment-list/equipment-list.component';
 import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.component';
-import { BlogListComponent } from './blog-list/blog-list.component';
 import { FaqResolver } from './services/faq.resolver';
 import { PostResolver } from './services/post.resolver';
 import { BlogListResolver } from './services/blog-list.resolver';
@@ -228,81 +219,23 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   {
     path: 'admin',
-
     children: [
-      
-      { path: '', redirectTo: 'login', pathMatch: 'full' },
-      // Login
-      {
-        path: 'login',
-        component: LoginComponent
-      },
-      // Admin blog list (edit enabled)
+      // These two reuse the PUBLIC components (AppModule declares them), so
+      // they stay eager. BlogComponent shows edit buttons when the URL starts
+      // with /admin.
       {
         path: 'blog',
         component: BlogComponent,
         canActivate: [AuthGuard]
       },
+      { path: 'faqs', component: FaqsComponent },
 
-      // Admin Dashboard
+      // Everything else behind /admin is loaded on demand — ~62 KB of screens
+      // no visitor can use. Paths are unchanged; see admin-routing.module.ts.
       {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [AuthGuard]
-      },
-
-      // Add new post
-      {
-        path: 'add-post',
-        component: AdminPostComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'blog-list',
-        component: BlogListComponent,
-        canActivate: [AuthGuard]
-      },
-      // Edit post
-      {
-        path: 'edit-post/:id',
-        component: AdminPostComponent,
-        canActivate: [AuthGuard]
-      },
-      // Equipment Form (add + edit)
-      {
-        path: 'equipment-form',
-        component: EquipmentFormComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'equipment-form/:id',
-        component: EquipmentFormComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'equipment-list',
-        component: EquipmentListComponent,
-        canActivate: [AuthGuard]
-      },
-      // Author details (add + edit). Saving one creates its public page.
-      {
-        path: 'author-form',
-        component: AdminAuthorComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'author-form/:id',
-        component: AdminAuthorComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'author-list',
-        component: AdminAuthorListComponent,
-        canActivate: [AuthGuard]
-      },
-      { path: 'faq', component: AdminFaqComponent },
-      { path: 'faq/:id', component: AdminFaqComponent },
-       { path: 'faqs', component: FaqsComponent }
+        path: '',
+        loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+      }
     ]
   }
 ];

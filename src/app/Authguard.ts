@@ -13,8 +13,10 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // On server or when no token, redirect to login (client-side will handle navigation).
-    this.router.navigate(['/login']);
+    // No token (or we are on the server): send them to the login screen. The
+    // route is /admin/login — there is no top-level /login, so the old target
+    // left an unauthenticated admin looking at a blank page.
+    this.router.navigate(['/admin/login']);
     return false;
   }
 }

@@ -1,0 +1,30 @@
+{
+  "//": "Copy this file to deploy.config.json and fill it in. Keep the real one off source control — it holds a password.",
+
+  "protocol": "sftp",
+  "//protocol": "sftp | ftp | ftps",
+
+  "host": "ytcreator.in",
+  "port": 22,
+  "//port": "22 for sftp, 21 for ftp/ftps",
+
+  "user": "your-login",
+  "password": "your-password",
+  "//password": "Leave empty and set privateKeyPath instead if the host uses key auth (sftp only).",
+  "privateKeyPath": "",
+
+  "hostKeyFingerprint": "",
+  "//hostKeyFingerprint": "sftp only, WinSCP format e.g. ssh-ed25519 255 xx:xx:... . Leave empty to accept any key (less safe).",
+
+  "remoteBrowserPath": "/httpdocs",
+  "//remoteBrowserPath": "Where the client bundle and assets go — the folder the web server serves.",
+
+  "remoteServerPath": "/httpdocs/server",
+  "//remoteServerPath": "Where the SSR bundle goes. Must match SERVER_DIST on the host.",
+
+  "remoteWebConfigPath": "/httpdocs/web.config",
+  "//remoteWebConfigPath": "Full remote path for web.config. Set to \"\" to skip uploading it.",
+
+  "removeStale": false,
+  "//removeStale": "true lets the upload DELETE remote files that are no longer in the build (clears old main-*.js). Only enable once you are certain the remote paths are right."
+}

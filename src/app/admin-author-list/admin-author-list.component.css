@@ -75,7 +75,7 @@
 
   .badge.inactive {
     background: #f1f5f9;
-    color: #64748b;
+    color: #606f85;   /* darkened from #64748b: was 4.34:1 on the chip */
   }
 
 .row-actions {

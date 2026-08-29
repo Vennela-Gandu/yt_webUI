@@ -15,7 +15,14 @@
 
     <div *ngFor="let post of posts" class="post-card" (click)="openPost(post.slug)">
 
-      <h2 class="post-title"><span [innerHTML]="post.title"></span></h2>
+      <!-- A real link, so the post is reachable by keyboard and by a crawler;
+           the whole card stays clickable for pointer users. -->
+      <h2 class="post-title">
+        <a [routerLink]="['/blog', post.slug, post.postID]"
+           (click)="$event.stopPropagation()">
+          <span [innerHTML]="post.title"></span>
+        </a>
+      </h2>
 
       <!-- Byline: date, author, and an "Updated" stamp once edited -->
       <div class="post-meta" (click)="$event.stopPropagation()">

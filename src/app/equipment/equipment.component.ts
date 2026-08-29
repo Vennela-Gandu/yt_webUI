@@ -21,7 +21,7 @@ export class EquipmentComponent implements OnInit {
 
   /* ---------------- PAGINATION ---------------- */
   currentPage = 1;
-  pageSize = 6; // number of cards per page
+  pageSize = 12; // number of cards per page
 
   /* ---------------- DATA (loaded from API) ---------------- */
   categories: any[] = [];   // [{ id, name, subs:[{id,name}] }]

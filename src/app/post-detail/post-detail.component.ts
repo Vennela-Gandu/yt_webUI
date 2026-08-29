@@ -1,7 +1,6 @@
 import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../post.service';
-import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { toSlug } from '../utils/slug.util';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
@@ -22,13 +21,11 @@ export class PostDetailComponent implements OnInit {
   content!: SafeHtml;
   copied: boolean | undefined;
   selectedCategoryId: number | null = null;
-  @Input() prevPost: any = { slug: 'old-post', title: 'Previous Post Title' };
-  @Input() nextPost: any = { slug: 'new-post', title: 'Next Post Title' };
-
-  latestPosts = [
-    { slug: 'latest-1', title: 'How to use Angular' },
-    { slug: 'latest-2', title: 'CSS Tips and Tricks' }
-  ];
+  // Related posts come from the API; prev/next and "latest" are not wired up
+  // yet, so they start empty rather than holding invented article titles.
+  @Input() prevPost: any = null;
+  @Input() nextPost: any = null;
+  latestPosts: any[] = [];
   relatedPosts: any[] = [];
 
  
@@ -92,10 +89,6 @@ export class PostDetailComponent implements OnInit {
      const resolvedPost = this.route.snapshot.data['post'];
      if (resolvedPost) {
        this.setPost(resolvedPost);
-      // If the resolver returned a prerender stub, and we're running in the browser, fetch the real post
-      if (isPlatformBrowser(this.platformId) && resolvedPost?.prerenderStub) {
-        this.getPostById(id);
-      }
        this.loadRelatedPosts(id);
      } else {
        // Fallback: fetch on client
@@ -145,16 +138,21 @@ export class PostDetailComponent implements OnInit {
 
     // The post supplies its own title and description, overriding the route
     // default AppComponent applied on navigation.
+    // Third argument is the bare topic title - what a shared link shows.
     this.seo.setPageMeta(
       `${this.post.title} | YT Creator`,
-      this.post.shortDescription
+      this.post.shortDescription,
+      this.post.title
     );
 
     // The editor saves HTML. Older posts were written as Markdown, so only
     // those go through marked — running HTML through it mangles tables and
-    // image figures.
+    // image figures. marked is 40 KB and almost every post is HTML now, so it
+    // is imported only when a Markdown post actually turns up.
     const raw = this.post.description || '';
-    const html = this.looksLikeHtml(raw) ? raw : await marked.parse(raw);
+    const html = this.looksLikeHtml(raw)
+      ? raw
+      : await import('marked').then(m => m.marked.parse(raw));
     this.content = this.sanitizer.bypassSecurityTrustHtml(html);
   }
 

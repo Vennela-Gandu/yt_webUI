@@ -23,19 +23,28 @@
   <div class="site-header header-inner">
     <!-- LOGO -->
     <div class="logo" routerLink="/">
-      <img src="assets/Yt Creator Icon.png" alt="YT Creator">
+      <img src="assets/Yt Creator Icon.webp" alt="YT Creator">
       <span>YT Creator</span>
     </div>
 
     <!-- HAMBURGER -->
-    <button class="hamburger" (click)="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
+    <button class="hamburger"
+            type="button"
+            (click)="toggleMenu()"
+            [attr.aria-expanded]="menuOpen"
+            aria-controls="site-nav"
+            aria-label="Menu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
     </button>
 
     <!-- NAVIGATION -->
-    <nav class="nav" [class.open]="menuOpen">
+    <!-- onNavClick closes the mobile panel the moment a link is tapped. -->
+    <nav class="nav"
+         id="site-nav"
+         [class.open]="menuOpen"
+         (click)="onNavClick($event)">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
       <a routerLink="/aboutus" routerLinkActive="active">About Us</a>
       <a routerLink="/youtubeseo" routerLinkActive="active">YouTube SEO</a>

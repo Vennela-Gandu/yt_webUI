@@ -1,51 +1,27 @@
-import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { PostService } from "../post.service";
-import { isPlatformServer } from '@angular/common';
 import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { SeoService } from '../services/seo.service';
+import { catchError, map } from 'rxjs/operators';
 
+/**
+ * FAQs for the /learninghub/faqs page, resolved before the route renders so
+ * the server-rendered HTML carries the real questions and the FAQ JSON-LD
+ * AppComponent builds from them.
+ */
 @Injectable({ providedIn: 'root' })
 export class FaqResolver {
-faqslist:any=[]
-  constructor(private service: PostService, @Inject(PLATFORM_ID) private platformId: Object,
-    private seo: SeoService) { }
+
+  constructor(private service: PostService) { }
 
   resolve() {
-    // During server-side rendering, backend APIs may not be reachable.
-    // Return a small static stub so prerender can generate FAQ schema into the HTML.
-    if (isPlatformServer(this.platformId)) {
-      // const sampleFaqs = [
-      //   { question: 'How do I get started with YouTube SEO?', answer: 'Start by researching keywords relevant to your niche, optimize your video titles, descriptions, and tags, create engaging thumbnails, and focus on viewer retention through quality content.' },
-      //   { question: 'What is the best time to post on social media?', answer: 'The best posting times vary by platform and audience. Generally, weekdays between 9 AM - 3 PM work well.' }
-      // ];
- this.service.getAllFAQs(1, 0, "", -1).subscribe(res => {
-      this.faqslist = res.faqs;
-      // Also set the FAQ JSON-LD during SSR so prerendered HTML contains it
-      // try {
-      //   const faqSchema = {
-      //     "@context": "https://schema.org",
-      //     "@type": "FAQPage",
-      //     "mainEntity": this.faqslist.map((f: any) => ({
-      //       "@type": "Question",
-      //       "name": f.question,
-      //       "acceptedAnswer": {
-      //         "@type": "Answer",
-      //         "text": f.answer
-      //       }
-      //     }))
-      //   };
-      //   this.seo.setSchema([faqSchema]);
-      // } catch (e) {
-      //   // ignore if seo service fails on server
-      // }
-
-      return of({ faqs: this.faqslist, totalCount: this.faqslist.length });
-    })
-    }
-
-    // On browser, call the real API but gracefully handle errors.
+    // pageSize 0 means "all" to sp_Post_ByCategory; categoryId -1 means "any".
     return this.service.getAllFAQs(1, 0, "", -1).pipe(
+      map(res => ({
+        faqs: res?.faqs || [],
+        totalCount: res?.totalCount || 0
+      })),
+      // An API failure leaves the page empty rather than publishing invented
+      // questions and answers into the FAQ structured data.
       catchError(() => of({ faqs: [], totalCount: 0 }))
     );
   }

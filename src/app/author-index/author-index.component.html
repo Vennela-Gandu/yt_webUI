@@ -13,7 +13,13 @@
        [routerLink]="['/author', author.slug]">
 
       <div class="avatar">
-        <img *ngIf="author.photoUrl" [src]="author.photoUrl" [alt]="author.name" />
+        <!-- Matches the .avatar box; the grid can run past the fold, so these
+             load lazily. -->
+        <img *ngIf="author.photoUrl"
+             [src]="author.photoUrl"
+             [alt]="author.name"
+             width="86" height="86"
+             loading="lazy" decoding="async" />
         <span *ngIf="!author.photoUrl" class="initials">{{ initials(author) }}</span>
       </div>
 

@@ -13,7 +13,13 @@
     <!-- PROFILE -->
     <header class="author-profile">
       <div class="avatar">
-        <img *ngIf="author.photoUrl" [src]="author.photoUrl" [alt]="author.name" />
+        <!-- Matches the .avatar box, so the header does not shift while an
+             author photo loads. -->
+        <img *ngIf="author.photoUrl"
+             [src]="author.photoUrl"
+             [alt]="author.name"
+             width="110" height="110"
+             decoding="async" />
         <span *ngIf="!author.photoUrl" class="initials">{{ initials }}</span>
       </div>
 
@@ -67,7 +73,12 @@
 
       <div class="card-list">
         <div *ngFor="let post of posts" class="content-card" (click)="openPost(post)">
-          <h3><span [innerHTML]="post.title"></span></h3>
+          <h3>
+            <a [routerLink]="['/blog', post.slug, post.postID]"
+               (click)="$event.stopPropagation()">
+              <span [innerHTML]="post.title"></span>
+            </a>
+          </h3>
 
           <div class="card-meta">
             <span>{{ post.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST</span>
@@ -89,7 +100,10 @@
 
       <div class="card-list">
         <div *ngFor="let item of equipment" class="content-card" (click)="openEquipment(item)">
-          <h3>{{ item.title }}</h3>
+          <h3>
+            <a [routerLink]="['/equipment-detail', item.slug]"
+               (click)="$event.stopPropagation()">{{ item.title }}</a>
+          </h3>
 
           <div class="card-meta">
             <span>{{ item.publishedDate | date:'dd MMM yyyy, hh:mm a':'+0530' }} IST</span>

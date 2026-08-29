@@ -1,0 +1,34 @@
+/*
+    Editor-only styles. Loaded at runtime by ensureEditorStyles() when an admin
+    opens the blog or equipment editor — never by a visitor.
+
+    Injected AFTER ckeditor5.css so these overrides win. Keep it that way: the
+    font-family rules below exist to beat CKEditor's own Helvetica stack.
+*/
+
+ckeditor {
+  display: block;
+}
+
+/* CKEditor ships its own Helvetica/Arial stack, so the admin would write in a
+   different font than the published page renders. Point it at the site font. */
+:root {
+  --ck-font-face: var(--font-family);           /* editor chrome */
+  --ck-content-font-family: var(--font-family);  /* the content being written */
+}
+
+.ck.ck-content,
+.ck-editor__editable {
+  font-family: var(--font-family);
+}
+
+.ck-editor__editable {
+  border-radius: 8px;
+  min-height: 360px; /* ~15 lines */
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.ck.ck-editor__editable_inline {
+  max-height: 50vh;
+}

@@ -63,7 +63,13 @@ app.use(express.static(distBrowser, {
       'Cache-Control',
       IMMUTABLE.test(filePath)
         ? 'public, max-age=31536000, immutable'
-        : 'public, max-age=86400'
+        // Everything else keeps its name when its contents change, so it must
+        // be revalidated rather than trusted for a day. A dev build emits
+        // unhashed bundles and renames its lazy chunks every time: a cached
+        // main.js then asks for a chunk that no longer exists, and the lazy
+        // route it points at silently fails to load. ETags make the
+        // revalidation a cheap 304.
+        : 'public, no-cache'
     );
   }
 }));
@@ -83,6 +89,10 @@ app.get('*', async (req, res) => {
       bootstrap: AppServerModule,
       url: req.url,
       documentFilePath: join(distServer, 'index.server.html'),
+      // Where the stylesheets the document links actually live. Without it the
+      // engine resolves them against the server folder, fails to find them, and
+      // silently skips inlining the critical CSS.
+      publicPath: distBrowser,
     });
 
     res.send(html);

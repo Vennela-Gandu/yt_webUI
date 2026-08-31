@@ -1,0 +1,18 @@
+<section class="teaser-section" *ngIf="items.length">
+  <h2>{{ heading }}</h2>
+  <p class="section-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+
+  <div class="teaser-list">
+    <a class="teaser-item"
+       *ngFor="let item of items"
+       [routerLink]="item.link">
+      <h3 [innerHTML]="item.title"></h3>
+    </a>
+  </div>
+
+  <div class="home-faq-btn-wrapper">
+    <a [routerLink]="moreLink" class="view-faq-btn">
+      {{ moreLabel }} &rarr;
+    </a>
+  </div>
+</section>

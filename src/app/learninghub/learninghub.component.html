@@ -56,6 +56,31 @@
       <li>Platform-specific FAQs and solutions</li>
     </ul>
   </section>
-  </div>
+  
+  <!-- Related reading, gear and answers — the same three sections that
+       close the home page. -->
+  <app-teaser-list
+    heading="Our Recent Blogs"
+    subtitle="The latest guides and updates from the blog."
+    [items]="latestPosts"
+    moreLink="/blog">
+  </app-teaser-list>
+
+  <app-teaser-list
+    heading="Know about Latest Gear"
+    subtitle="Gear guides to help you pick what you actually need."
+    [items]="latestEquipment"
+    moreLink="/equipment">
+  </app-teaser-list>
+
+  <app-faq-accordion
+    intro="Common questions from creators using the Learning Hub."
+    [faqs]="pageFaqs">
+  </app-faq-accordion>
+
+  <!-- Where to go next. The link to this page is dropped automatically. -->
+  <app-explore-links></app-explore-links>
+
+</div>
 
   <router-outlet></router-outlet>

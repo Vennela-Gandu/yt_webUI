@@ -136,3 +136,109 @@
     font-size: 20px;
   }
 }
+
+/* EDITORIAL POLICY — the closing block on the page. A single link, so the
+   whole block is clickable and reachable by keyboard. */
+.editorial-block {
+  display: block;
+  margin-top: 28px;
+  padding: 24px 26px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+  .editorial-block:hover {
+    transform: translateY(-2px);
+    border-color: #4f46e5;
+  }
+
+  .editorial-block h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+  }
+
+  .editorial-block p {
+    font-size: 15.5px;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+.editorial-link {
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+/* FOUNDER — a standard .about-box, plus the byline and the promise heading
+   that the other boxes have no equivalent of. */
+.founder-name {
+  font-size: 16px;
+  color: #4f46e5;
+  margin-bottom: 12px;
+}
+
+.founder-promise {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 14px 0 6px;
+}
+
+/* WHY WE BUILT — the six problems, as a two-column grid of icon + text so the
+   list scans quickly instead of reading as one long column of bullets. */
+.reason-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.reason-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+  .reason-item i {
+    font-size: 16px;
+    color: #4f46e5;
+    /* Hold the icon on the first line of text rather than centring it against
+       a block whose height varies with the copy. */
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  .reason-item h3 {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+  }
+
+  .reason-item p {
+    font-size: 14.5px;
+    color: #475569;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+@media (max-width: 768px) {
+  .reason-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* With an odd number of cards the last one would sit stranded in a half-width
+   column; let it span the row instead. Harmless on an even-numbered grid. */
+.reason-grid > .reason-item:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}

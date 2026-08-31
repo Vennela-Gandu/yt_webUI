@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SeoService } from '../services/seo.service';
+import { PostService } from '../post.service';
+import { EquipmentService } from '../services/equipment.service';
+import { toSlug } from '../utils/slug.util';
+import { HOME_FAQS } from '../utils/home-faqs';
+import { TeaserItem } from '../teaser-list/teaser-list.component';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 interface Feature {
   icon: string;
   title: string;
@@ -18,67 +25,79 @@ interface FAQ {
     styleUrls: ['./home.component.css'],
     standalone: false
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
-  constructor(private router: Router, private seo: SeoService) {
-  
+  /** The newest published posts, teased above the FAQ. */
+  latestPosts: TeaserItem[] = [];
+
+  /** The newest published equipment guides, teased below the posts. */
+  latestEquipment: TeaserItem[] = [];
+
+  /** How many of each the home page shows. */
+  private readonly latestCount = 5;
+
+  constructor(
+    private router: Router,
+    private seo: SeoService,
+    private posts: PostService,
+    private equipment: EquipmentService) {
+
+  }
+
+  ngOnInit(): void {
+    // categoryId -1 means "every category" to sp_Post_ByCategory — the same
+    // public, published-only list the blog page is built from.
+    this.posts.getPostsByCategory(1, this.latestCount, '', -1)
+      // A blog API hiccup must not take the home page down with it: the
+      // section hides itself when the list is empty.
+      .pipe(catchError(() => of({ posts: [] })))
+      .subscribe(res => {
+        this.latestPosts = (res?.posts || []).map((p: any) => ({
+          title: p.title,
+          // The list endpoint returns no slug — the blog page derives it from
+          // the title the same way, and the post route is keyed on it.
+          link: ['/blog', toSlug(p.title), p.postID]
+        }));
+      });
+
+    // publishedOnly, so a scheduled guide never surfaces on the home page.
+    this.equipment.getList(1, this.latestCount, '', null, true)
+      .pipe(catchError(() => of({ equipments: [] })))
+      .subscribe(res => {
+        this.latestEquipment = (res?.equipments || []).map((e: any) => ({
+          title: e.title,
+          // The detail route is keyed by the slug of the title, exactly as the
+          // equipment list page builds it.
+          link: ['/equipment-detail', toSlug(e.title)]
+        }));
+      });
   }
 
   features: Feature[] = [
     {
-      icon: '⚡',
-      title: 'Fast Performance',
-      description: 'Enjoy ultra-fast load times and immediate performance for the best user experience.'
+      icon: '🛠️',
+      title: 'Creator-focused tools',
+      description: 'Tools designed around YouTube and social media workflows.'
     },
     {
-      icon: '🔒',
-      title: 'Secure & Reliable',
-      description: 'Enterprise-grade security to keep your data safe and protected at all times.'
+      icon: '📘',
+      title: 'Practical resources',
+      description: 'Guides written to help creators solve real publishing and growth problems.'
     },
     {
-      icon: '📱',
-      title: 'Mobile Responsive',
-      description: 'Fully responsive design that works seamlessly across all devices and screen sizes.'
+      icon: '✍️',
+      title: 'Human-reviewed content',
+      description: 'Articles are reviewed and edited before publication.'
     },
     {
-      icon: '👥',
-      title: 'Team Collaboration',
-      description: 'Built-in collaboration tools to help your team work together more effectively.'
+      icon: '🎁',
+      title: 'Free creator resources',
+      description: 'Useful tools and educational resources without unnecessary complexity.'
     }
   ];
 
-  faqs: FAQ[] = [
-    {
-      question: 'How do I get started with YouTube SEO?',
-      answer: 'Start by researching keywords relevant to your niche, optimize your video titles, descriptions, and tags, create engaging thumbnails, and focus on viewer retention through quality content.',
-      isOpen: false
-    },
-    {
-      question: 'What is the best time to post on social media?',
-      answer: 'The best posting times vary by platform and audience. Generally, weekdays between 9 AM - 3 PM work well. Analyze your audience insights to find your optimal posting schedule.',
-      isOpen: false
-    },
-    {
-      question: 'How can I analyze my competitors on YouTube?',
-      answer: 'Use analytics tools to track competitor video performance, keywords, engagement rates, upload frequency, and content strategies. Identify gaps in their content you can fill.',
-      isOpen: false
-    },
-    {
-      question: 'Do I need special equipment to start creating content?',
-      answer: 'Not necessarily. You can start with a smartphone and basic editing software. As you grow, invest in better equipment like cameras, microphones, and lighting based on your needs.',
-      isOpen: false
-    },
-    {
-      question: 'How do I monetize my YouTube channel?',
-      answer: 'Join the YouTube Partner Program (requires 1,000 subscribers and 4,000 watch hours), enable ads, explore sponsorships, merchandise, channel memberships, and affiliate marketing.',
-      isOpen: false
-    },
-    {
-      question: 'What are YouTube Shorts and how do they work?',
-      answer: 'YouTube Shorts are vertical videos up to 60 seconds long. They appear in a dedicated Shorts feed and can help you reach new audiences quickly with engaging, snackable content.',
-      isOpen: false
-    }
-  ];
+  /** The shared list, plus the expand/collapse state the accordion needs. */
+  faqs: FAQ[] = HOME_FAQS.map(faq => ({ ...faq, isOpen: false }));
 
   toggleFAQ(faq: FAQ): void {
     faq.isOpen = !faq.isOpen;

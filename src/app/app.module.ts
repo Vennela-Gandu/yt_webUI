@@ -21,6 +21,10 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { TermsConditionsComponent } from './terms-conditions/terms-conditions.component';
 import { CookiepolicyComponent } from './cookiepolicy/cookiepolicy.component';
 import { AboutusComponent } from './aboutus/aboutus.component';
+import { EditorialPolicyComponent } from './editorial-policy/editorial-policy.component';
+import { TeaserListComponent } from './teaser-list/teaser-list.component';
+import { FaqAccordionComponent } from './faq-accordion/faq-accordion.component';
+import { ExploreLinksComponent } from './explore-links/explore-links.component';
 import { CaptiongeneratorComponent } from './captiongenerator/captiongenerator.component';
 import { TrendingmusicfinderComponent } from './trendingmusicfinder/trendingmusicfinder.component';
 import { SocialmediabiogeneratorComponent } from './socialmediabiogenerator/socialmediabiogenerator.component';
@@ -67,6 +71,10 @@ import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.co
         TermsConditionsComponent,
         CookiepolicyComponent,
         AboutusComponent,
+        EditorialPolicyComponent,
+        TeaserListComponent,
+        FaqAccordionComponent,
+        ExploreLinksComponent,
         CaptiongeneratorComponent,
         TrendingmusicfinderComponent,
         SocialmediabiogeneratorComponent,

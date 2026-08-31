@@ -9,6 +9,7 @@ import { AdminFaqComponent } from '../admin-faq/admin-faq.component';
 import { AdminAuthorComponent } from '../admin-author/admin-author.component';
 import { AdminAuthorListComponent } from '../admin-author-list/admin-author-list.component';
 import { BlogListComponent } from '../blog-list/blog-list.component';
+import { FaqListComponent } from '../faq-list/faq-list.component';
 import { EquipmentFormComponent } from '../equipment-form/equipment-form.component';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 
@@ -43,6 +44,7 @@ const routes: Routes = [
   { path: 'author-list', component: AdminAuthorListComponent, canActivate: [AuthGuard] },
 
   // FAQs
+  { path: 'faq-list', component: FaqListComponent, canActivate: [AuthGuard] },
   { path: 'faq', component: AdminFaqComponent },
   { path: 'faq/:id', component: AdminFaqComponent }
 ];

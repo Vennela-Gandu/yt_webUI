@@ -48,6 +48,15 @@ export class FaqsComponent implements OnInit {
   selectedCategoryId: number | null = null;
   selectedCategory: string = '';
   isAdmin: boolean = false;
+
+  /**
+   * Whether a load has finished — success or failure.
+   *
+   * The empty state must not appear while the questions are still on their
+   * way, and several categories currently answer 500, so the error path has to
+   * set this too or those pages would wait forever on a list that never comes.
+   */
+  faqsLoaded: boolean = false;
   constructor(private el: ElementRef, private postService: PostService,
     private route: ActivatedRoute,
 
@@ -71,22 +80,33 @@ export class FaqsComponent implements OnInit {
 
       }
     }
+    this.faqsLoaded = false;
+
     this.postService.getAllFAQs(this.currentPage,
       this.pageSize,
-      this.searchQuery, categoryID).subscribe(res => {
-      this.faqs = res.faqs;
-      this.totalCount = res.totalCount;
-      
-      setTimeout(() => {
-        const questions = this.el.nativeElement.querySelectorAll('.faq-question');
+      this.searchQuery, categoryID).subscribe({
+      next: res => {
+        this.faqs = res.faqs || [];
+        this.totalCount = res.totalCount || 0;
+        this.faqsLoaded = true;
 
-        questions.forEach((q: HTMLElement) => {
-          q.addEventListener('click', () => {
-            q.parentElement?.classList.toggle('active');
+        setTimeout(() => {
+          const questions = this.el.nativeElement.querySelectorAll('.faq-question');
+
+          questions.forEach((q: HTMLElement) => {
+            q.addEventListener('click', () => {
+              q.parentElement?.classList.toggle('active');
+            });
           });
-        });
-      }, 100)
-
+        }, 100)
+      },
+      // A category the API cannot serve reads the same as one with nothing in
+      // it yet: an empty list, and the "Coming Soon" note below it.
+      error: () => {
+        this.faqs = [];
+        this.totalCount = 0;
+        this.faqsLoaded = true;
+      }
     })
   }
 
@@ -102,18 +122,41 @@ export class FaqsComponent implements OnInit {
           if (params['slug']) {
             this.currentPage = 1;
             this.selectedCategory = params['slug'];
+            this.applyCategoryMeta(params['slug']);
             this.loadFAQs(params['slug']);
           }
           else {
+            this.selectedCategoryId = null;
             this.loadFAQs("-1");
           }
         });
       });
   }
+  /**
+   * Title and description for a category URL.
+   *
+   * Built from the category's real name rather than the slug, so "youtube-seo"
+   * is described as "YouTube SEO" and not "Youtube Seo". Also marks the
+   * category active in the sidebar — the highlight the template reads.
+   */
+  private applyCategoryMeta(slug: string) {
+    const category = this.categories.find(c => c.slug === slug);
+    if (!category) return;
+
+    this.selectedCategoryId = category.categoryID;
+
+    this.seo.setPageMeta(
+      `${category.name} FAQs for Creators | YT Creator`,
+      `Answers to common ${category.name} questions for YouTube and social media ` +
+      `creators, covering how it works and what to do when it does not.`,
+      `${category.name} FAQs`
+    );
+  }
+
   onCategoryClick(category: any) {
     this.selectedCategory = category;
     const slug = toSlug(category);
-    this.router.navigate(['learninghub/faqs/category', slug]);
+    this.router.navigate(['/learninghub/faqs', slug]);
   }
 
   onSearch() {

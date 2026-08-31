@@ -66,3 +66,13 @@
   color: #111827;
 }
 
+
+/* Shown in place of the list when a category has no questions yet — or when
+   the API could not return them. */
+.faq-empty {
+  text-align: center;
+  padding: 48px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #64748b;
+}

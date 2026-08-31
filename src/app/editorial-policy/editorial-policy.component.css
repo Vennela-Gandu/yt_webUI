@@ -1,0 +1,270 @@
+/* EDITORIAL POLICY
+   A long-form policy page: one centred reading column, numbered sections, and
+   each rule as its own card so the page can be scanned as well as read. */
+
+.ep-page {
+  /* ~70 characters per line at this font size — comfortable to read. The other
+     policy pages run to 1100px, which is wide for continuous prose. */
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  color: #334155;
+}
+
+/* HEADER */
+.ep-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.ep-header h1 {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+
+.ep-lede {
+  font-size: 16.5px;
+  line-height: 1.7;
+  color: #475569;
+  margin: 0;
+}
+
+/* ON THIS PAGE */
+.ep-toc {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  margin-bottom: 40px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.ep-toc a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.ep-toc a:hover {
+  color: #ffffff;
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.ep-toc a span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.ep-toc a:hover span {
+  color: #ffffff;
+}
+
+/* SECTION */
+.ep-section {
+  margin-bottom: 44px;
+  /* The site header is sticky, so an anchor jump must stop short of it. */
+  scroll-margin-top: 90px;
+}
+
+.ep-section-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #eef2ff;
+}
+
+.ep-num {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 10px;
+}
+
+.ep-section-head h2 {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.ep-section-sub {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.ep-intro {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #475569;
+  margin-bottom: 18px;
+}
+
+/* POINTS — one card per rule, stacked. Full width rather than a grid: these
+   run to several lines each, and two narrow columns would read worse. */
+.ep-points {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ep-point {
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  /* A coloured spine ties the cards in a section together. */
+  border-left: 4px solid #c7d2fe;
+  border-radius: 10px;
+  transition: border-color 0.25s;
+}
+
+.ep-point:hover {
+  border-left-color: #4f46e5;
+}
+
+.ep-point h3 {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+
+.ep-point p {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: #475569;
+  margin: 0;
+}
+
+/* The one absolute commitment on the page, marked as such. */
+.ep-point-flag {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  border-left-color: #4f46e5;
+}
+
+/* CONTACT */
+.ep-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.ep-contact-item {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.ep-contact-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.ep-contact-item a {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4f46e5;
+  text-decoration: none;
+  /* An email address must not overflow its card on a narrow screen. */
+  overflow-wrap: anywhere;
+}
+
+.ep-contact-item a:hover {
+  text-decoration: underline;
+}
+
+.ep-contact-item span:not(.ep-contact-label) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .ep-page {
+    padding: 28px 16px 60px;
+  }
+
+  .ep-header h1 {
+    font-size: 27px;
+  }
+
+  .ep-lede {
+    font-size: 15.5px;
+  }
+
+  .ep-toc {
+    /* Chips wrap to a readable left-aligned stack instead of a ragged centre. */
+    justify-content: flex-start;
+    padding: 12px;
+    margin-bottom: 30px;
+  }
+
+  .ep-toc a {
+    font-size: 13px;
+    padding: 7px 12px;
+  }
+
+  .ep-section {
+    margin-bottom: 34px;
+  }
+
+  .ep-section-head h2 {
+    font-size: 20px;
+  }
+
+  .ep-num {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .ep-point {
+    padding: 16px 16px;
+  }
+
+  .ep-point h3 {
+    font-size: 15.5px;
+  }
+
+  .ep-point p,
+  .ep-intro {
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,23 @@
+<section class="faq" *ngIf="items.length">
+  <h2>{{ heading }}</h2>
+  <p class="faq-intro" *ngIf="intro">{{ intro }}</p>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of items">
+      <button class="faq-question" (click)="toggle(faq)"
+              [attr.aria-expanded]="faq.isOpen">
+        <span><b>{{ faq.question }}</b></span>
+        <span class="faq-icon">{{ faq.isOpen ? '−' : '+' }}</span>
+      </button>
+      <div class="faq-answer" [class.open]="faq.isOpen">
+        <p>{{ faq.answer }}</p>
+      </div>
+    </div>
+
+    <div class="home-faq-btn-wrapper">
+      <a [routerLink]="moreLink" class="view-faq-btn">
+        {{ moreLabel }} &rarr;
+      </a>
+    </div>
+  </div>
+</section>

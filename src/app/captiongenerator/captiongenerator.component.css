@@ -42,6 +42,7 @@
     opacity: 0.3;
   }
 
+  .empty-state h2,
   .empty-state h3 {
     font-size: 20px;
     margin-bottom: 10px;
@@ -126,4 +127,17 @@
   max-width: 900px;
   margin: 0 auto;
   animation: fadeIn 1s ease;
+}
+
+/* The caveat about AI output. Set apart from the surrounding prose so it is
+   not read as another claim about what the tool does. */
+.tool-notice {
+  margin-top: 22px;
+  padding: 16px 20px;
+  background: #fff7ed;
+  border-left: 4px solid #f59e0b;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
 }

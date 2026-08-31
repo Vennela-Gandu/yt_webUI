@@ -39,26 +39,26 @@ export const PAGE_META: { [path: string]: PageMeta } = {
   },
 
   'youtubeseo': {
-    title: 'YouTube SEO Tool | Optimize Titles, Keywords & Videos',
+    title: 'YouTube SEO Tool & Video Optimization Guide | YT Creator',
     description:
-      'Optimize your YouTube videos with practical SEO tools for titles, ' +
-      'descriptions, keywords, tags, and content visibility. Improve your ' +
-      'video optimization strategy.'
+      'Generate SEO-optimized YouTube titles, descriptions, tags, hashtags, ' +
+      'and FAQs with our free YouTube SEO tool. Improve discoverability and ' +
+      'reach more viewers.'
   },
 
   'socialmedia': {
-    title: 'Social Media Tools for Creators & Businesses | YT Creator',
+    title: 'Social Media Growth Tools for Creators',
     description:
-      'Free social media tools for creators and businesses, including caption, ' +
-      'hashtag, bio, and content tools to create better posts and improve organic reach.'
+      'Free social media tools for creators, including caption, hashtag and bio ' +
+      'generators. Create platform-specific content and improve your social media workflow.'
   },
 
   'socialmedia/captiongenerator': {
-    title: 'Free Caption & Hashtag Generator | YT Creator',
+    title: 'Free Caption & Hashtag Generator for Social Media | YT Creator',
     description:
-      'Generate engaging social media captions and relevant hashtags for ' +
-      'Instagram, YouTube Shorts, Facebook, Reels, posts, and other content ' +
-      'with YT Creator.'
+      'Generate captivating social media captions instantly with YTCreator. ' +
+      'Save time, craft tone-matched posts, and boost engagement across all ' +
+      'platforms for free.'
   },
 
   'learninghub': {
@@ -68,19 +68,26 @@ export const PAGE_META: { [path: string]: PageMeta } = {
       'content creation, equipment, common YouTube issues, and creator growth strategies.'
   },
 
-  'equipment': {
-    title: 'Creator Equipment Reviews & Guides | Cameras, Mics & More',
+  'aboutus/editorial-policy': {
+    title: 'Editorial & Publishing Policy | YT Creator',
     description:
-      'Explore creator equipment guides and reviews covering cameras, ' +
-      'microphones, lighting, and accessories to help YouTubers choose the ' +
-      'right gear for their content.'
+      'How YT Creator researches, fact-checks, reviews and publishes: our ' +
+      'editorial standards for articles, equipment reviews, creator tools, ' +
+      'and our responsible AI policy.'
+  },
+
+  'equipment': {
+    title: 'Best Creator Equipment for YouTube & Video Production',
+    description:
+      'We help creators and educators choose cameras, microphones, lighting, ' +
+      'and production gear based on their content, budget, and practical needs.'
   },
 
   'learninghub/faqs': {
-    title: 'YouTube Creator FAQs | SEO, Growth & Monetization',
+    title: 'Content Creator FAQs – YouTube, Social Media & Monetization',
     description:
-      'Find answers to common YouTube creator questions about channel growth, ' +
-      'SEO, monetization, content creation, and common YouTube issues.'
+      'Get answers to YouTube and social media questions covering monetization, ' +
+      'SEO, views, copyright, policies, account issues, content creation, and creator growth.'
   },
 
   'blog': {

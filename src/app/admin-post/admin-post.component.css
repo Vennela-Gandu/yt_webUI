@@ -7,3 +7,54 @@
 
 
 
+
+/* FEATURED IMAGE FIELD */
+.field-hint {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.image-error {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  color: #dc2626;
+}
+
+.image-status {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  color: #64748b;
+}
+
+.image-preview {
+  margin-top: 12px;
+}
+
+  .image-preview img {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+
+.remove-image {
+  margin-top: 8px;
+  padding: 8px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #dc2626;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+  .remove-image:hover {
+    background: #fef2f2;
+  }

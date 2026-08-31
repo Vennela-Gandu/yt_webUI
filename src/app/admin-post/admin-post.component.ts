@@ -7,6 +7,7 @@ import { ServerImageUploadPlugin } from '../utils/image-upload.adapter';
 import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
 import { AuthorService } from '../services/author.service';
 import { ensureEditorStyles } from '../utils/editor-styles';
+import { ImageUploadService } from '../services/image-upload.service';
 
 
 @Component({
@@ -109,6 +110,8 @@ export class AdminPostComponent implements OnInit {
     keywords: '',
     authorName: null,
     categoryIDs: [] as number[],
+    // Optional: null means the article renders with no image under its title.
+    featuredImage: null as string | null,
     // Empty means publish immediately - see saveButtonLabel().
     publishedDate: null
   };
@@ -129,6 +132,7 @@ export class AdminPostComponent implements OnInit {
     private route: ActivatedRoute,
     private service: PostService,
     private authorService: AuthorService,
+    private images: ImageUploadService,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -298,11 +302,59 @@ export class AdminPostComponent implements OnInit {
     });
   }
 
+  /* ================= Featured image ================= */
+
+  imageUploading = false;
+  imageError = '';
+
+  /** Validates the chosen file, then uploads it and keeps the URL on the post. */
+  onFeaturedImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.imageError = '';
+
+    if (!file) return;
+
+    this.images.validate(file).then(problem => {
+      if (problem) {
+        this.imageError = problem;
+        input.value = '';
+        return;
+      }
+
+      this.imageUploading = true;
+
+      this.images.upload(file).subscribe({
+        next: res => {
+          this.imageUploading = false;
+          if (res?.url) {
+            this.post.featuredImage = res.url;
+          } else {
+            this.imageError = 'Upload succeeded but no image URL came back.';
+            input.value = '';
+          }
+        },
+        error: () => {
+          this.imageUploading = false;
+          this.imageError = 'Upload failed. Please try again.';
+          input.value = '';
+        }
+      });
+    });
+  }
+
+  removeFeaturedImage(input: HTMLInputElement): void {
+    this.post.featuredImage = null;
+    this.imageError = '';
+    input.value = '';
+  }
+
   /* ================= Reset ================= */
   resetForm(): void {
     this.post = {
       postID: null,
       title: '',
+      featuredImage: null,
       description: '',
       shortDescription: '',
       keywords: '',

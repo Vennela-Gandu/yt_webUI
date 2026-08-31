@@ -12,6 +12,7 @@ import { AdminFaqComponent } from '../admin-faq/admin-faq.component';
 import { AdminAuthorComponent } from '../admin-author/admin-author.component';
 import { AdminAuthorListComponent } from '../admin-author-list/admin-author-list.component';
 import { BlogListComponent } from '../blog-list/blog-list.component';
+import { FaqListComponent } from '../faq-list/faq-list.component';
 import { EquipmentFormComponent } from '../equipment-form/equipment-form.component';
 import { EquipmentListComponent } from '../equipment-list/equipment-list.component';
 
@@ -33,6 +34,7 @@ import { EquipmentListComponent } from '../equipment-list/equipment-list.compone
     AdminAuthorComponent,
     AdminAuthorListComponent,
     BlogListComponent,
+    FaqListComponent,
     EquipmentFormComponent,
     EquipmentListComponent
   ],

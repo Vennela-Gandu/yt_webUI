@@ -29,6 +29,15 @@
         <button class="feature-btn" (click)="navigateTo('/youtubeseo')">
           YouTube SEO
         </button>
+        <button class="feature-btn" (click)="navigateTo('/socialmedia/captiongenerator')">
+          Caption &amp; Hashtag Generator
+        </button>
+        <button class="feature-btn" (click)="navigateTo('/blog')">
+          Blog
+        </button>
+        <button class="feature-btn" (click)="navigateTo('/equipment')">
+          Creator Equipment
+        </button>
         <button class="feature-btn" (click)="navigateTo('socialmedia')">
           Social Media
         </button>
@@ -38,7 +47,7 @@
       <button class="feature-btn" (click)="navigateTo('content-ideas')">
         Content Idea Generator
       </button>-->
-        <button class="feature-btn" (click)="navigateTo('earning-hub')">
+        <button class="feature-btn" (click)="navigateTo('/learninghub')">
           Learning Hub
         </button>
         <!--<button class="feature-btn" (click)="navigateTo('analyze')">
@@ -66,6 +75,21 @@
         </div>
       </div>
     </section>
+
+    <!-- Recent blogs and latest gear: same shared list, different source. -->
+    <app-teaser-list
+      heading="Our Recent Blogs"
+      subtitle="Fresh guides, tips and updates from the blog."
+      [items]="latestPosts"
+      moreLink="/blog">
+    </app-teaser-list>
+
+    <app-teaser-list
+      heading="Know about Latest Gear"
+      subtitle="Gear guides to help you pick what you actually need."
+      [items]="latestEquipment"
+      moreLink="/equipment">
+    </app-teaser-list>
 
     <!-- FAQ Section -->
     <section class="faq">

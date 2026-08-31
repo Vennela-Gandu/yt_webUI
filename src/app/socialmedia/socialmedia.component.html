@@ -1,7 +1,7 @@
 <div class="container" *ngIf="!isChildRouteActive">
   <!-- Hero Section -->
   <section class="hero">
-    <h1>Best Social Media Growth Tools for Organic Reach</h1>
+    <h1>Social Media Growth Tools for Creators</h1>
     <p class="subtitle">
       <strong>Social Media Tools page on YTcreator.in</strong> is designed for
       social media managers, creators, and businesses who want to grow their
@@ -25,7 +25,7 @@
 
   </section>
   <section class="social-media-tools">
-    <h2 class="section-title">Best Social Media Growth Tools for Organic Reach</h2>
+    <h2 class="section-title">Social Media Growth Tools for Creators</h2>
 
     <p>
       The <strong>Social Media Tools page on YTcreator.in</strong> is designed for
@@ -51,6 +51,12 @@
       to interact with your content.
     </p>
 
+    <div class="tool-action">
+      <a routerLink="/socialmedia/captiongenerator" class="tool-btn">
+        Caption &amp; Hashtag Generator
+      </a>
+    </div>
+
     <h2>Hashtag Generator for Social Media</h2>
     <p>
       The <strong>Hashtag Generator</strong> provides trending and topic-based
@@ -67,6 +73,12 @@
       and improves chances of going viral organically.
     </p>
 
+    <div class="tool-action">
+      <!-- Not a link: the tool does not exist yet, so the button says so
+           rather than leading somewhere empty. -->
+      <span class="tool-btn coming-soon">Coming Soon</span>
+    </div>
+
     <h2>Social Media Bio Generator</h2>
     <p>
       The <strong>Social Media Bio Generator</strong> helps you create professional,
@@ -74,6 +86,10 @@
       builds trust, clearly communicates your brand, and encourages visitors
       to follow your account.
     </p>
+
+    <div class="tool-action">
+      <span class="tool-btn coming-soon">Coming Soon</span>
+    </div>
 
     <ul>
       <p>✔ Organic social media growth tools</p>
@@ -83,5 +99,30 @@
       <p>✔ Professional social media bio creation</p>
     </ul>
   </section>
+
+  <!-- Related reading, gear and answers — the same three sections that
+       close the home page. -->
+  <app-teaser-list
+    heading="Our Recent Blogs"
+    subtitle="The latest from our social media writing."
+    [items]="latestPosts"
+    moreLink="/blog">
+  </app-teaser-list>
+
+  <app-teaser-list
+    heading="Know about Latest Gear"
+    subtitle="Gear guides to help you pick what you actually need."
+    [items]="latestEquipment"
+    moreLink="/equipment">
+  </app-teaser-list>
+
+  <app-faq-accordion
+    intro="Common questions about social media tools, captions and hashtags."
+    [faqs]="pageFaqs">
+  </app-faq-accordion>
+
+  <!-- Where to go next. The link to this page is dropped automatically. -->
+  <app-explore-links></app-explore-links>
+
 </div>
 <router-outlet></router-outlet>

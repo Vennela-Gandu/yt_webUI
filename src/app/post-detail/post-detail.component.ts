@@ -28,6 +28,26 @@ export class PostDetailComponent implements OnInit {
   latestPosts: any[] = [];
   relatedPosts: any[] = [];
 
+  /** The single article suggested to read next, from the related list. */
+  readNext: any = null;
+
+  /** The newest published article, whichever category it belongs to. */
+  latestPost: any = null;
+
+  /** Newest-first candidates for that slot, minus the article being read. */
+  private latestCandidates: any[] = [];
+
+  /* ---------------- REACTIONS ---------------- */
+
+  likes = 0;
+  dislikes = 0;
+
+  /** This viewer's own choice, remembered so they cannot vote twice. */
+  myReaction: 'like' | 'dislike' | null = null;
+
+  /** Dislike counts are for the admin only; likes are public. */
+  isAdmin = false;
+
  
  
   constructor(
@@ -95,6 +115,107 @@ export class PostDetailComponent implements OnInit {
        this.getPostById(id);
        this.loadRelatedPosts(id);
      }
+
+     this.loadLatestPost(id);
+
+     // Browser only: the counts are per-visitor state, and SSR has neither a
+     // localStorage to read the previous vote from nor a reason to fetch them.
+     if (isPlatformBrowser(this.platformId) && id) {
+       this.isAdmin = !!localStorage.getItem('token');
+       this.myReaction = this.storedReaction(id);
+       this.loadReactions(id);
+     }
+  }
+
+  /**
+   * The newest article on the site, skipping this one so the suggestion never
+   * points at the page the reader is already on.
+   */
+  private loadLatestPost(currentId: number) {
+    // categoryId -1 means "every category" to sp_Post_ByCategory.
+    this.service.getPostsByCategory(1, 5, '', -1).subscribe({
+      next: res => {
+        this.latestCandidates = (res?.posts || [])
+          .filter((p: any) => p.postID !== currentId)
+          .map((p: any) => ({ ...p, slug: toSlug(p.title) }));
+
+        this.pickLatestPost();
+      },
+      // A failure leaves the suggestion out; it is not worth an error message.
+      error: () => { this.latestCandidates = []; this.latestPost = null; }
+    });
+  }
+
+  /**
+   * The newest article that "Read Next" is not already offering.
+   *
+   * Called from both loads because either can finish first: the newest post is
+   * frequently the top related one too, and showing it twice side by side
+   * wastes one of the two suggestions.
+   */
+  private pickLatestPost() {
+    this.latestPost = this.latestCandidates
+      .find(p => p.postID !== this.readNext?.postID) || null;
+  }
+
+  private loadReactions(id: number) {
+    this.service.getReactions(id).subscribe({
+      next: res => {
+        this.likes = res?.likes || 0;
+        this.dislikes = res?.dislikes || 0;
+      },
+      // The counts stay at their starting value, so the tally beside the Like
+      // button still renders rather than vanishing on a failed request.
+      error: () => { }
+    });
+  }
+
+  /** Records a like or dislike, or withdraws one already given. */
+  react(type: 'like' | 'dislike') {
+    const id = this.post?.postID;
+    if (!id || !isPlatformBrowser(this.platformId)) return;
+
+    // Clicking the same button again withdraws the vote.
+    const next = this.myReaction === type ? null : type;
+
+    this.applyLocally(this.myReaction, next);
+    this.myReaction = next;
+    this.storeReaction(id, next);
+
+    if (next) {
+      this.service.react(id, next).subscribe({ error: () => { } });
+    }
+  }
+
+  /** Moves the counts from the previous choice to the new one. */
+  private applyLocally(from: 'like' | 'dislike' | null, to: 'like' | 'dislike' | null) {
+    if (from === 'like') this.likes = Math.max(0, this.likes - 1);
+    if (from === 'dislike') this.dislikes = Math.max(0, this.dislikes - 1);
+    if (to === 'like') this.likes++;
+    if (to === 'dislike') this.dislikes++;
+  }
+
+  private reactionKey(id: number) {
+    return `post-reaction-${id}`;
+  }
+
+  private storedReaction(id: number): 'like' | 'dislike' | null {
+    try {
+      const value = localStorage.getItem(this.reactionKey(id));
+      return value === 'like' || value === 'dislike' ? value : null;
+    } catch {
+      // Private browsing and blocked site data both throw here.
+      return null;
+    }
+  }
+
+  private storeReaction(id: number, value: 'like' | 'dislike' | null) {
+    try {
+      if (value) localStorage.setItem(this.reactionKey(id), value);
+      else localStorage.removeItem(this.reactionKey(id));
+    } catch {
+      // Not being able to remember the vote is not worth breaking the page.
+    }
   }
 
   loadRelatedPosts(id:any) {
@@ -109,6 +230,12 @@ export class PostDetailComponent implements OnInit {
           ...c,
           slug: toSlug(c.title)
         }));
+
+        // The first related article is promoted to "Read Next" and dropped
+        // from the list below, so the same post is never offered twice.
+        this.readNext = this.relatedPosts[0] || null;
+        this.relatedPosts = this.relatedPosts.slice(1);
+        this.pickLatestPost();
       });
   }
   openRelatedPost(name: any) {
@@ -180,7 +307,7 @@ export class PostDetailComponent implements OnInit {
   loadPosts(cname?: string) {
     cname = cname ?? "-1";
     if (cname) {
-      this.router.navigate(['/blog/category', cname]);
+      this.router.navigate(['/blog', cname]);
 
     }
   }

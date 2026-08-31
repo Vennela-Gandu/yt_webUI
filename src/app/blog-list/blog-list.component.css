@@ -75,3 +75,53 @@
     font-size: 14px;
     font-weight: 500;
   }
+
+/* MOBILE — below 900px the table becomes a stack of cards, using the
+   data-label on each cell as its heading. The markup already carried those
+   labels; only the rule that uses them was missing, so these lists could
+   previously only be read by scrolling sideways.
+   Shared with the FAQ list, which imports this stylesheet. */
+@media (max-width: 900px) {
+  .table thead {
+    display: none;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 4px;
+    border: none;
+    text-align: right;
+  }
+
+    /* The column name, so a stacked cell still says what it is. */
+    .table td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #64748b;
+      text-align: left;
+      flex-shrink: 0;
+    }
+
+    /* The actions row reads better as buttons on one line. */
+    .table td.row-actions {
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+}

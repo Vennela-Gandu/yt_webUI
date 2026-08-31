@@ -1,0 +1,57 @@
+/* A vertical list of title rows, styled like the FAQ items these sections sit
+   beside, so a page carrying both reads as one consistent stack rather than
+   switching between cards and rows. */
+.teaser-section {
+  padding: 30px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+  .teaser-section h2 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* Matches .faq-intro, so the gap under the subtitle is the same one the
+     FAQ list sits below. */
+  .teaser-section .section-subtitle {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+.teaser-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Each row is a single link, so the whole row is clickable and reachable by
+   keyboard without any click handler. */
+.teaser-item {
+  display: block;
+  width: 100%;
+  padding: 20px 24px;
+  background: #ffffff;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  color: #000000;
+  text-align: left;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+  .teaser-item:hover {
+    background: var(--color-brand-blue);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #ffffff;
+  }
+
+  /* A heading for the page outline, sized like a FAQ question rather than
+     like a section title. Colour is inherited so the hover state applies. */
+  .teaser-item h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    color: inherit;
+    overflow-wrap: break-word;
+  }

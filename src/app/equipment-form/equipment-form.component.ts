@@ -6,6 +6,7 @@ import { EquipmentService } from '../services/equipment.service';
 import { istInputToUtcIso, utcToIstInputValue } from '../utils/date.util';
 import { AuthorService } from '../services/author.service';
 import { ensureEditorStyles } from '../utils/editor-styles';
+import { ImageUploadService } from '../services/image-upload.service';
 
 @Component({
   selector: 'app-equipment-form',
@@ -122,6 +123,8 @@ export class EquipmentFormComponent implements OnInit {
 
   equipment: any = {
     equipmentID: null,
+    // Optional: null means the guide renders with no image under its title.
+    featuredImage: null as string | null,
     title: '',
     keywords: '',
     shortDescription: '',
@@ -199,7 +202,55 @@ export class EquipmentFormComponent implements OnInit {
     return this.isScheduled() ? 'Schedule Equipment' : 'Publish Now';
   }
 
+  /* ================= Featured image ================= */
+
+  imageUploading = false;
+  imageError = '';
+
+  /** Validates the chosen file, then uploads it and keeps the URL on the guide. */
+  onFeaturedImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.imageError = '';
+
+    if (!file) return;
+
+    this.images.validate(file).then(problem => {
+      if (problem) {
+        this.imageError = problem;
+        input.value = '';
+        return;
+      }
+
+      this.imageUploading = true;
+
+      this.images.upload(file).subscribe({
+        next: res => {
+          this.imageUploading = false;
+          if (res?.url) {
+            this.equipment.featuredImage = res.url;
+          } else {
+            this.imageError = 'Upload succeeded but no image URL came back.';
+            input.value = '';
+          }
+        },
+        error: () => {
+          this.imageUploading = false;
+          this.imageError = 'Upload failed. Please try again.';
+          input.value = '';
+        }
+      });
+    });
+  }
+
+  removeFeaturedImage(input: HTMLInputElement): void {
+    this.equipment.featuredImage = null;
+    this.imageError = '';
+    input.value = '';
+  }
+
   constructor(
+    private images: ImageUploadService,
     @Inject(PLATFORM_ID) private platformId: Object,
     private service: EquipmentService,
     private authorService: AuthorService,
@@ -280,6 +331,7 @@ export class EquipmentFormComponent implements OnInit {
   resetForm() {
     this.equipment = {
       equipmentID: null,
+      featuredImage: null,
       title: '',
       keywords: '',
       shortDescription: '',
@@ -308,6 +360,7 @@ export class EquipmentFormComponent implements OnInit {
       shortDescription: this.equipment.shortDescription,
       description: this.equipment.description,
       keywords: this.equipment.keywords,
+      featuredImage: this.equipment.featuredImage,
       authorName: this.equipment.authorName,
       // The picked time is IST; the API stores the matching UTC instant.
       publishedDate: istInputToUtcIso(this.equipment.publishedDate),

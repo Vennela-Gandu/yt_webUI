@@ -1,0 +1,6 @@
+/* Layout, rows and the button all come from the global .faq styles, so this
+   block sits identically wherever it is used. Only the vertical rhythm is set
+   here, to match the teaser sections it usually follows. */
+.faq {
+  padding-top: 30px;
+}

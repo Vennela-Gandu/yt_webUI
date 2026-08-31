@@ -1,0 +1,89 @@
+<div class="list-header">
+  <h1 class="page-title">FAQ List</h1>
+  <button class="btn btn-primary" (click)="addFaq()">Add FAQ</button>
+</div>
+
+<div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+
+  <input type="text"
+         placeholder="Search by Question"
+         [(ngModel)]="searchQuestion"
+         (input)="applyFilters()" />
+
+  <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+    <option value="">All Categories</option>
+    <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+  </select>
+
+  <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+    <option value="">All Status</option>
+    <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+  </select>
+
+  <button class="btn secondary" (click)="clearFilters()">Clear</button>
+
+</div>
+
+<p class="state" *ngIf="isLoading">Loading FAQs...</p>
+
+<!-- TABLE -->
+<div class="table-wrap" *ngIf="!isLoading">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th width="210">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let faq of paginatedFaqs">
+        <td data-label="Question">{{ faq.question }}</td>
+        <td data-label="Category">{{ faq.categoryLabel || '—' }}</td>
+        <td data-label="Status">
+          <span [ngClass]="{
+              'status-published': statusOf(faq) === 'Published',
+              'status-draft': statusOf(faq) === 'Draft'
+            }">
+            {{ statusOf(faq) || '—' }}
+          </span>
+        </td>
+        <td data-label="Actions" class="row-actions">
+          <button class="btn btn-primary btn-sm" (click)="editFaq(faq)">
+            Edit
+          </button>
+          <a class="btn secondary btn-sm"
+             [routerLink]="viewUrl(faq)"
+             target="_blank">
+            View
+          </a>
+          <button class="btn btn-danger btn-sm" (click)="deleteFaq(faq)">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <tr *ngIf="filteredFaqs.length === 0">
+        <td colspan="4" class="state">No FAQs match these filters.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination" *ngIf="totalPages > 1">
+  <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+
+  <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+    Next
+  </button>
+</div>

@@ -225,3 +225,20 @@
     font-weight: 600;
     color: #15803d;
   }
+
+/* FEATURED IMAGE — between the title and the body, only when the guide has one.
+   The element is absent otherwise (*ngIf), so no gap is left behind. */
+.featured-image {
+  margin: 0 0 24px;
+}
+
+  .featured-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* The stored size, so the browser reserves the right space before the
+       image arrives and the text below does not jump when it loads. */
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border-radius: 12px;
+  }

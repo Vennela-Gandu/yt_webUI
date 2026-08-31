@@ -11,7 +11,9 @@
 }
 
 .login-card {
-  width: 380px;
+  /* was a fixed 380px, which is wider than a 360px phone */
+  width: 100%;
+  max-width: 380px;
   padding: 35px;
   background: #ffffff;
   border-radius: 14px;

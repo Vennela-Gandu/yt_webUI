@@ -8,6 +8,13 @@
   <link rel="icon" type="image/webp" href="assets/Yt Creator Icon.webp">
   <link rel="apple-touch-icon" href="assets/Yt Creator Icon.webp">
 
+  <!-- The name search results show above the URL, and the name social
+       platforms show beside a shared link. Google reads og:site_name as one of
+       its site-name signals; without it the domain (ytcreator.in) is used
+       instead. Static because it is the same on every page — only the WebSite
+       schema in AppComponent carries the matching name. -->
+  <meta property="og:site_name" content="YT Creator">
+
   <!-- Third-party origins used on every page. Connecting early removes the
        DNS + TLS wait from the critical path; the audit reported none of these
        were preconnected. -->
@@ -46,6 +53,11 @@
       "url": "https://ytcreator.in"
     }
   </script> -->
+  <!-- Browsers restore the previous scroll offset on a reload or a back
+       navigation. Turning that off here — before the document body is parsed —
+       means every page load starts at the top. In-app navigation is handled by
+       the router's scrollPositionRestoration setting. -->
+  <script>history.scrollRestoration = 'manual';</script>
 </head>
 <body>
   <!-- GTM (noscript) -->

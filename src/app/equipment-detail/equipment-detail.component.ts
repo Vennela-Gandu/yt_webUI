@@ -67,7 +67,10 @@ export class EquipmentDetailComponent implements OnInit {
         this.equipment = withPostDates({
           ...res,
           category: main?.name || '',
-          subCategory: sub?.name || '',
+          // "Others" alone is meaningless, so it takes its parent's name.
+          subCategory: sub
+            ? this.service.subCategoryName(sub.name, main?.name || '')
+            : '',
           // Description is HTML from the editor — trust it so it renders formatted.
           content: this.sanitizer.bypassSecurityTrustHtml(res.description || '')
         });

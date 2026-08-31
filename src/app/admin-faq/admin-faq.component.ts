@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { PostService } from '../post.service';
 import { ActivatedRoute } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Base64UploadPlugin } from '../utils/base64-upload.adapter';
+import { ensureEditorStyles } from '../utils/editor-styles';
 
 @Component({
   selector: 'app-admin-faq',
@@ -36,7 +37,8 @@ export class AdminFaqComponent implements OnInit {
   constructor(
     private service: PostService,
     private route: ActivatedRoute,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.loadCategories()
     const id = this.route.snapshot.paramMap.get('id');
@@ -61,6 +63,11 @@ export class AdminFaqComponent implements OnInit {
   }
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      // The editor stylesheets are ~230 KB and only needed here, so they are
+      // fetched now rather than shipped in the global stylesheet. Without
+      // this the toolbar renders completely unstyled.
+      ensureEditorStyles(this.document);
+
       import('ckeditor5').then((CK: any) => {
         const {
           ClassicEditor, Essentials, Paragraph, Heading,

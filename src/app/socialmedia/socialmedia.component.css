@@ -2,14 +2,16 @@
 /* Hero Section */
 .hero {
   text-align: center;
-  padding: 40px 20px 60px;
+  /* Trimmed bottom padding: the hero button and the section heading below it
+     were separated by this 60px plus the next section's 40px. */
+  padding: 40px 20px 24px;
   max-width: 900px;
   margin: 0 auto;
   animation: fadeIn 1s ease;
 }
 .social-media-tools {
   text-align: center;
-  padding: 40px 20px 60px;
+  padding: 16px 20px 60px;
   max-width: 900px;
   margin: 0 auto;
   animation: fadeIn 1s ease;
@@ -211,4 +213,92 @@
 h2.section-title {
   font-size: 3rem;
   font-weight: var(--font-weight-black);
+}
+
+/* HERO BUTTON — only the caption generator is live, so the grid holds a single
+   button. Centred rather than left in the first of three grid columns. */
+.hero .button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+  /* The page's primary action. The shared .feature-btn is sized for a grid of
+     several buttons; standing alone it needs to carry the hero on its own. */
+  .hero .feature-btn {
+    padding: 18px 44px;
+    font-size: 17px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+    border-radius: 14px;
+    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.38);
+  }
+
+    .hero .feature-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(79, 70, 229, 0.48);
+    }
+
+@media (max-width: 600px) {
+  .hero .feature-btn {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+/* TOOL BUTTONS — one under each tool description. */
+.tool-action {
+  display: flex;
+  justify-content: center;
+  margin: 22px 0 34px;
+}
+
+.tool-btn {
+  display: inline-block;
+  padding: 16px 40px;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border: none;
+  border-radius: 14px;
+  text-align: center;
+  text-decoration: none;
+  /* A deeper, tinted shadow lifts the button off the prose around it. */
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.38);
+  transition: all 0.3s ease;
+}
+
+  .tool-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(79, 70, 229, 0.48);
+    color: #ffffff;
+  }
+
+/* A label, not a control — it reads as a status, and nothing happens on click. */
+.tool-btn.coming-soon {
+  color: #475569;
+  background: #e2e8f0;
+  border: 1px dashed #94a3b8;
+  box-shadow: none;
+  cursor: default;
+}
+
+  .tool-btn.coming-soon:hover {
+    transform: none;
+    box-shadow: none;
+    color: #475569;
+  }
+
+@media (max-width: 600px) {
+  .tool-btn {
+    /* Full width on a phone rather than a wide pill with cramped margins. */
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 15.5px;
+  }
 }

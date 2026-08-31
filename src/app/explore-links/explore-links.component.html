@@ -1,0 +1,5 @@
+<nav class="explore-links" aria-label="Explore YT Creator">
+  <a *ngFor="let link of links" [routerLink]="link.path">
+    {{ link.label }}
+  </a>
+</nav>

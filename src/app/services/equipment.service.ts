@@ -52,7 +52,24 @@ export class EquipmentService {
         name: main.name,
         subs: (flat || [])
           .filter(s => s.parentCategoryID === main.categoryID)
-          .map(s => ({ id: s.categoryID, name: s.name }))
+          .map(s => ({
+            id: s.categoryID,
+            name: this.subCategoryName(s.name, main.name)
+          }))
       }));
+  }
+
+  /**
+   * The display name for a sub-category.
+   *
+   * Every main category has one called "Others", so on their own the four are
+   * indistinguishable in the sidebar — and they all slug to /equipment/others,
+   * which left three of the four unreachable by URL. Naming them after their
+   * parent makes both the label and the URL unique.
+   */
+  subCategoryName(name: string, parentName: string): string {
+    return /^others?$/i.test((name || '').trim())
+      ? `Other ${parentName}`
+      : name;
   }
 }

@@ -2,7 +2,7 @@
  * Loads the editor's stylesheets on demand.
  *
  * CKEditor's CSS is ~230 KB — about 90% of what the global stylesheet used to
- * be — and only the two admin editors need it. Importing it into styles.css
+ * be — and only the admin editors need it. Importing it into styles.css
  * meant every visitor downloaded it as a render-blocking request. It is now
  * fetched here, when an editor actually opens.
  *
@@ -16,7 +16,7 @@ const SHEETS = [
 
 export function ensureEditorStyles(document: Document): void {
   for (const sheet of SHEETS) {
-    // Both editors call this; only the first call adds anything.
+    // Every editor screen calls this; only the first call adds anything.
     if (document.getElementById(sheet.id)) continue;
 
     const link = document.createElement('link');

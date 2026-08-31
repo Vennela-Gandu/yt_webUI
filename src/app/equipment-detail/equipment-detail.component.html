@@ -42,6 +42,13 @@
     </div>
 
     <!-- MAIN CONTENT -->
+    <figure class="featured-image" *ngIf="equipment.featuredImage">
+      <img [src]="equipment.featuredImage"
+           [alt]="equipment.title"
+           width="1200" height="630"
+           fetchpriority="high" />
+    </figure>
+
     <div class="content"
          [innerHTML]="equipment.content">
     </div>

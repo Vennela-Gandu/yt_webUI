@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../post.service';
 import { toSlug } from '../utils/slug.util';
+import { SeoService } from '../services/seo.service';
 import { withPostDates } from '../utils/date.util';
 import { AuthorService } from '../services/author.service';
 
@@ -26,7 +27,8 @@ export class BlogComponent {
     private service: PostService,
     private router: Router,
     private authorService: AuthorService
-  ) {
+  ,
+    private seo: SeoService) {
     // Loads (and caches) the name-to-slug map the bylines link with.
     this.authorService.names().subscribe();
 
@@ -60,6 +62,7 @@ export class BlogComponent {
           if (params['slug']) {
             this.currentPage = 1;
             this.selectedCategory = params['slug'];
+            this.applyCategoryMeta(params['slug']);
             this.loadPosts(params['slug']);
           }
           else {
@@ -67,6 +70,25 @@ export class BlogComponent {
           }
         });
       });
+  }
+
+  /**
+   * Title and description for a category page.
+   *
+   * Built from the category's real name rather than the slug, so
+   * "youtube-seo" reads as "YouTube SEO". Without this these pages fell
+   * back to the site-wide default, which described none of them.
+   */
+  private applyCategoryMeta(slug: string) {
+    const category = this.categories.find(c => c.slug === slug);
+    if (!category) return;
+
+    this.seo.setPageMeta(
+      `${category.name} Articles & Guides | YT Creator`,
+      `${category.name} articles for creators: practical guides, updates and ` +
+      `tips you can act on, written from hands-on experience.`,
+      category.name
+    );
   }
 
   loadPosts(slug?: string) {
@@ -106,7 +128,7 @@ export class BlogComponent {
   onCategoryClick(category: any) {
     this.selectedCategory = category;
     const slug = toSlug(category);
-    this.router.navigate(['/blog/category', slug]);
+    this.router.navigate(['/blog', slug]);
   }
 
   editPost(postId: number) {

@@ -175,3 +175,41 @@
   .equipment-title a:hover {
     text-decoration: underline;
   }
+
+/* ADMIN EDIT BUTTON — only rendered when this page is opened from /admin.
+   Matches the button on the admin blog page so the two screens behave alike. */
+.edit-btn {
+  margin-left: auto;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #2563eb;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+  .edit-btn:hover {
+    background: #1d4ed8;
+  }
+
+/* Sidebar entries are links now, so the whole row stays clickable and the
+   colour still comes from the shared .blog-sidebar rules. */
+.blog-sidebar li a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Collapsed sub-lists stay in the markup rather than being removed by *ngIf:
+   each category is its own URL now, and with them absent the page linked to
+   none of them, leaving those pages undiscoverable. The accordion looks and
+   behaves exactly the same. */
+.category-subs {
+  display: none;
+}
+
+  .category-subs.open {
+    display: block;
+  }

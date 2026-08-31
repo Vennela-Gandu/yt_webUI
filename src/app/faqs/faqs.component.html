@@ -55,11 +55,15 @@
         </button>
       </div>
     </div>
+
+    <p class="faq-empty" *ngIf="faqsLoaded && !faqs.length">
+      Coming Soon
+    </p>
   </section>
   <aside class="blog-sidebar">
 
 
-    <h3>Categories</h3>
+    <h2>Categories</h2>
 
     <ul>
       <li *ngFor="let c of categories"
@@ -101,3 +105,5 @@
   </a>
 </div>
 
+<!-- Where to go next. The link to this page is dropped automatically. -->
+<app-explore-links></app-explore-links>

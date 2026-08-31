@@ -169,3 +169,10 @@
     padding: 1rem 0.75rem;
   }
 }
+
+/* Trim the top of the FAQ block to match, so the gap above it is the same as
+   the one between the two teasers. Scoped to this component, so the .faq
+   padding every other page uses is untouched. */
+.faq {
+  padding-top: 30px;
+}

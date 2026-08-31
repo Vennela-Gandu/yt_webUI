@@ -46,6 +46,13 @@
           {{ name }}
         </span>
 
+        <!-- ADMIN EDIT BUTTON -->
+        <button *ngIf="isAdmin"
+                class="edit-btn"
+                (click)="$event.stopPropagation(); editEquipment(item.equipmentID)">
+          ✏ Edit
+        </button>
+
         <!-- A real link, so the guide is reachable without JavaScript -->
         <a class="read-more"
            [routerLink]="['/equipment-detail', item.slug]"
@@ -65,7 +72,7 @@
   <!-- RIGHT: CATEGORIES -->
   <aside class="equipment-sidebar blog-sidebar">
 
-    <h3>Categories</h3>
+    <h2>Categories</h2>
 
     <div class="category-block"
          *ngFor="let cat of categories">
@@ -77,12 +84,13 @@
               [class.open]="selectedMainCategoryId === cat.id"></span>
       </div>
 
-      <ul *ngIf="selectedMainCategoryId === cat.id">
+      <ul class="category-subs" [class.open]="selectedMainCategoryId === cat.id">
 
         <li *ngFor="let sub of cat.subs"
-            (click)="selectSubCategory(sub.id)"
             [class.active]="selectedSubCategoryId === sub.id">
-          {{ sub.name }}
+          <a [routerLink]="['/equipment', categorySlugOf(sub.name)]">
+            {{ sub.name }}
+          </a>
         </li>
 
       </ul>
@@ -118,3 +126,6 @@
     Next
   </button>
 </div>
+
+<!-- Where to go next. The link to this page is dropped automatically. -->
+<app-explore-links></app-explore-links>

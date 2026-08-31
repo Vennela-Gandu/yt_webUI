@@ -6,6 +6,7 @@ import { SeoService } from './services/seo.service';
 import { filter } from 'rxjs';
 import { SOCIAL_PROFILE_URLS } from './utils/social-links';
 import { DEFAULT_PAGE_META, pageMetaFor } from './utils/page-meta';
+import { HOME_FAQS } from './utils/home-faqs';
 
 const SITE_URL = 'https://www.ytcreator.in/';
 const SITE_NAME = 'YT Creator';
@@ -94,6 +95,24 @@ export class AppComponent implements OnInit {
   private applyPageMeta() {
     const meta = pageMetaFor(this.router.url) || DEFAULT_PAGE_META;
     this.seo.setPageMeta(meta.title, meta.description);
+    this.seo.setCanonical(this.canonicalUrl());
+  }
+
+  /**
+   * The absolute URL for the route just navigated to.
+   *
+   * Set here rather than per page because a canonical follows the route, not
+   * the record a page loads — so the pages that publish their own title and
+   * description (a post, an equipment guide, an author) need nothing extra.
+   *
+   * Query strings and fragments are dropped: they select a view of a page — a
+   * filter, a page number, a campaign tag — rather than a different page, and
+   * a canonical that carried them would defeat the point of having one.
+   */
+  private canonicalUrl(): string {
+    const path = this.router.url.split('#')[0].split('?')[0];
+    // SITE_URL already ends in a slash, so the leading one is dropped here.
+    return SITE_URL + path.replace(/^\/+/, '');
   }
 
   handleRoute(current: ActivatedRoute) {
@@ -108,6 +127,9 @@ export class AppComponent implements OnInit {
 
     switch (type) {
       case 'home':
+        // Built from the same list the home page renders, so the markup can
+        // never advertise a question the page does not actually answer.
+        pageEntities = this.faqSchema(HOME_FAQS);
         break;
 
       case 'bloglist':
@@ -165,6 +187,9 @@ export class AppComponent implements OnInit {
         "@type": "WebSite",
         "@id": `${SITE_URL}#website`,
         "name": SITE_NAME,
+        // The domain spelling, declared as an alternate so Google can tie it to
+        // the name above rather than falling back to showing 'ytcreator.in'.
+        "alternateName": "ytcreator.in",
         "url": SITE_URL,
         "description": SITE_DESCRIPTION,
         "inLanguage": "en",

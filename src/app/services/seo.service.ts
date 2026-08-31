@@ -64,6 +64,28 @@ export class SeoService {
     this.upsertMeta('name', 'twitter:title', text);
   }
 
+  /**
+   * Declares the single URL that represents this page.
+   *
+   * The site answers on both www and non-www, and any route can be reached
+   * with a tracking or filter query string appended. To a crawler each of
+   * those is a separate page, which splits the ranking signals for one piece
+   * of content across duplicates; this tag names the one that counts.
+   */
+  setCanonical(url: string) {
+    if (!url) return;
+
+    let tag = this.document.querySelector('link[rel="canonical"]');
+
+    if (!tag) {
+      tag = this.document.createElement('link');
+      tag.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(tag);
+    }
+
+    tag.setAttribute('href', url);
+  }
+
   private upsertMeta(attr: string, key: string, value: string) {
     let tag = this.document.querySelector(`meta[${attr}="${key}"]`);
 

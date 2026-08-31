@@ -1,0 +1,3 @@
+/* This screen is the blog list with different columns, so it uses that
+   stylesheet rather than a near-identical copy. Only what differs lives here. */
+@import '../blog-list/blog-list.component.css';

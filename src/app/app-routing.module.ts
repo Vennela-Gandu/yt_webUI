@@ -36,6 +36,7 @@ import { AuthGuard } from './Authguard';
 import { RegisterComponent } from './register/register.component';
 import { PostDetailComponent } from './post-detail/post-detail.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
+import { EditorialPolicyComponent } from './editorial-policy/editorial-policy.component';
 import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.component';
 import { FaqResolver } from './services/faq.resolver';
 import { PostResolver } from './services/post.resolver';
@@ -123,8 +124,14 @@ const routes: Routes = [
         component: CommunityComponent
       },
       {
-        path: 'faqs/category/:slug',
-        component: FaqsComponent
+        // Each FAQ category is its own indexable page: resolved server-side so
+        // the HTML carries that category's questions and their JSON-LD.
+        // /learninghub/faqs/<category>. One segment, so it cannot be
+        // confused with the unfiltered /learninghub/faqs above.
+        path: 'faqs/:slug',
+        component: FaqsComponent,
+        resolve: { faqs: FaqResolver },
+        data: { schema: 'faq' }
       },
       {
         path: 'faqs',
@@ -141,6 +148,15 @@ const routes: Routes = [
   },
   {
     path: 'equipment',
+    component: EquipmentComponent,
+    // 'full' so /equipment/<category> reaches the route below instead of
+    // matching here with an unconsumed segment.
+    pathMatch: 'full'
+  },
+  {
+    // One equipment category, e.g. /equipment/dslr-mirrorless-cameras.
+    // Same component: the slug just narrows what it lists.
+    path: 'equipment/:category',
     component: EquipmentComponent
   },
   {
@@ -196,6 +212,13 @@ const routes: Routes = [
     path: 'aboutus',
     component: AboutusComponent
   },
+  {
+    // Linked from the block at the foot of About Us, and nested under it.
+    // A sibling path rather than a child route: About Us has no router-outlet,
+    // and this page replaces it rather than rendering inside it.
+    path: 'aboutus/editorial-policy',
+    component: EditorialPolicyComponent
+  },
 
   {
     path: 'blog',
@@ -204,7 +227,9 @@ const routes: Routes = [
     resolve: { blogs: BlogListResolver }
   },
   {
-    path: 'blog/category/:slug',
+    // /blog/<category>. A post is /blog/<title>/<id>, one segment longer,
+    // so the two never match the same URL.
+    path: 'blog/:slug',
     component: BlogComponent,
     resolve: { blogs: BlogListResolver }
   },
@@ -230,6 +255,16 @@ const routes: Routes = [
       },
       { path: 'faqs', component: FaqsComponent },
 
+      // The equipment page with edit buttons, the counterpart of /admin/blog.
+      // pathMatch 'full' so it cannot swallow /admin/equipment-form or
+      // /admin/equipment-list, which live in the lazy admin module.
+      {
+        path: 'equipment',
+        component: EquipmentComponent,
+        pathMatch: 'full',
+        canActivate: [AuthGuard]
+      },
+
       // Everything else behind /admin is loaded on demand — ~62 KB of screens
       // no visitor can use. Paths are unchanged; see admin-routing.module.ts.
       {
@@ -241,7 +276,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      // Every navigation lands at the top of the new page rather than keeping
+      // the scroll offset of the page being left.
+      scrollPositionRestoration: 'top'
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

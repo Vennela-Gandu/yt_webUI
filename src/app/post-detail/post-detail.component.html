@@ -34,6 +34,13 @@
     <div class="divider"></div>
 
     <!-- CONTENT -->
+    <figure class="featured-image" *ngIf="post.featuredImage">
+      <img [src]="post.featuredImage"
+           [alt]="post.title"
+           width="1200" height="630"
+           fetchpriority="high" />
+    </figure>
+
     <div class="blog-content"
          [innerHTML]="content">
     </div>
@@ -76,6 +83,51 @@
       </button>
     </div>
 
+    <!-- Reactions. The like count sits beside the Like button and is public,
+         appearing once there is at least one; the dislike count is admin-only,
+         so a visitor sees the button but never the tally. -->
+    <div class="post-reactions">
+      <button type="button"
+              class="reaction-btn"
+              [class.active]="myReaction === 'like'"
+              (click)="react('like')"
+              [attr.aria-pressed]="myReaction === 'like'"
+              aria-label="Like this post">
+        <i class="fas fa-thumbs-up" aria-hidden="true"></i>
+        <span>Like</span>
+        <span class="reaction-count" *ngIf="likes > 0">{{ likes }}</span>
+      </button>
+
+      <button type="button"
+              class="reaction-btn"
+              [class.active]="myReaction === 'dislike'"
+              (click)="react('dislike')"
+              [attr.aria-pressed]="myReaction === 'dislike'"
+              aria-label="Dislike this post">
+        <i class="fas fa-thumbs-down" aria-hidden="true"></i>
+        <span>Dislike</span>
+        <span class="reaction-count" *ngIf="isAdmin && dislikes > 0">{{ dislikes }}</span>
+      </button>
+    </div>
+
+    <!-- Where to go next: one suggestion from the same subject, one that is
+         simply the newest. Side by side on one line. -->
+    <div class="next-reads" *ngIf="readNext || latestPost">
+
+      <a class="next-read" *ngIf="readNext"
+         [routerLink]="['/blog', readNext.slug, readNext.postID]">
+        <span class="next-read-label">Read Next</span>
+        <span class="next-read-title">{{ readNext.title }}</span>
+      </a>
+
+      <a class="next-read" *ngIf="latestPost"
+         [routerLink]="['/blog', latestPost.slug, latestPost.postID]">
+        <span class="next-read-label">Latest Article</span>
+        <span class="next-read-title">{{ latestPost.title }}</span>
+      </a>
+
+    </div>
+
     <div class="related-posts" *ngIf="relatedPosts.length">
       <h3>Related Posts</h3>
 
@@ -112,7 +164,7 @@
   <!-- RIGHT: CATEGORIES -->
   <aside class="blog-sidebar">
 
-    <h3>Categories</h3>
+    <h2>Categories</h2>
 
     <ul>
       <li *ngFor="let c of categories"

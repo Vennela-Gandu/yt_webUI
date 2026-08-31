@@ -17,7 +17,8 @@ export class EquipmentListComponent implements OnInit {
   selectedStatus = '';
 
   /* ================= PAGINATION ================= */
-  pageSize = 5;
+  // Ten per page, matching the blog and FAQ lists.
+  pageSize = 10;
   currentPage = 1;
 
   /* ================= DATA (loaded from API) ================= */

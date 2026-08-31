@@ -1,18 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TeaserService, BLOG_CATEGORY } from '../services/teaser.service';
+import { TeaserItem } from '../teaser-list/teaser-list.component';
+import { CAPTION_GENERATOR_FAQS } from '../utils/page-faqs';
 import { ContentService } from '../services/content.service';
 import { ContentRequest } from '../models/content.model';
-interface FAQ {
-  question: string;
-  answer: string;
-  isOpen: boolean;
-}
 @Component({
     selector: 'app-captiongenerator',
     templateUrl: './captiongenerator.component.html',
     styleUrls: ['./captiongenerator.component.css'],
     standalone: false
 })
-export class CaptiongeneratorComponent {
+export class CaptiongeneratorComponent implements OnInit {
   topic = '';
   isLoading = false;
   errorMessage = '';
@@ -20,7 +18,15 @@ export class CaptiongeneratorComponent {
   captions: string[] = [];
   hashtags: string[] = [];
 
-  constructor(private contentService: ContentService) { }
+  constructor(private contentService: ContentService, private teasers: TeaserService) { }
+
+  ngOnInit(): void {
+    this.teasers.postsIn(BLOG_CATEGORY.socialMedia)
+      .subscribe(items => this.latestPosts = items);
+
+    this.teasers.latestEquipment()
+      .subscribe(items => this.latestEquipment = items);
+  }
   copy(text: string) {
     navigator.clipboard.writeText(text);
   }
@@ -60,19 +66,12 @@ export class CaptiongeneratorComponent {
     });
   }
 
-  faqs: FAQ[] = [
-    {
-      question: 'What is the best time to post on social media?',
-      answer: 'The best posting times vary by platform and audience. Generally, weekdays between 9 AM - 3 PM work well. Analyze your audience insights to find your optimal posting schedule.',
-      isOpen: false
-    },
-    {
-      question: 'Do I need special equipment to start creating content?',
-      answer: 'Not necessarily. You can start with a smartphone and basic editing software. As you grow, invest in better equipment like cameras, microphones, and lighting based on your needs.',
-      isOpen: false
-    },
-  ];
-  toggleFAQ(faq: FAQ): void {
-    faq.isOpen = !faq.isOpen;
-  }
+  /** Questions shown in the FAQ block at the foot of the page. */
+  pageFaqs = CAPTION_GENERATOR_FAQS;
+
+  /** Blog posts relevant to this page, teased below the content. */
+  latestPosts: TeaserItem[] = [];
+
+  /** The newest published equipment guides. */
+  latestEquipment: TeaserItem[] = [];
 }

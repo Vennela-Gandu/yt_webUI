@@ -57,6 +57,9 @@ export class FaqsComponent implements OnInit {
    * set this too or those pages would wait forever on a list that never comes.
    */
   faqsLoaded: boolean = false;
+
+  /** True while the list on screen is the one the route resolver provided. */
+  private showingResolved = false;
   constructor(private el: ElementRef, private postService: PostService,
     private route: ActivatedRoute,
 
@@ -64,8 +67,18 @@ export class FaqsComponent implements OnInit {
     this.isAdmin = this.router.url.startsWith('/admin')
   }
   ngOnInit(): void {
-    this.loadCategories()
-    //this.loadFAQs("-1");
+    // The route resolver has already fetched this page of FAQs for the
+    // server render. Using it avoids fetching the same rows a second time
+    // and re-rendering the list underneath the reader.
+    const resolved = this.route.snapshot.data['faqs'];
+    if (resolved?.faqs?.length) {
+      this.faqs = resolved.faqs;
+      this.totalCount = resolved.totalCount || this.faqs.length;
+      this.faqsLoaded = true;
+      this.showingResolved = true;
+    }
+
+    this.loadCategories();
   }
 
   toggleFAQ(faq: FAQ): void {
@@ -119,16 +132,24 @@ export class FaqsComponent implements OnInit {
           slug: toSlug(c.name)
         }));
         this.route.params.subscribe(params => {
-          if (params['slug']) {
+          const slug = params['slug'];
+
+          if (slug) {
             this.currentPage = 1;
-            this.selectedCategory = params['slug'];
-            this.applyCategoryMeta(params['slug']);
-            this.loadFAQs(params['slug']);
-          }
-          else {
+            this.selectedCategory = slug;
+            this.applyCategoryMeta(slug);
+          } else {
             this.selectedCategoryId = null;
-            this.loadFAQs("-1");
           }
+
+          // Already showing exactly this page from the resolver; later
+          // category changes, searches and page turns still load normally.
+          if (this.showingResolved) {
+            this.showingResolved = false;
+            return;
+          }
+
+          this.loadFAQs(slug || "-1");
         });
       });
   }

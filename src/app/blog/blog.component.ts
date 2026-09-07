@@ -17,8 +17,14 @@ export class BlogComponent {
   currentPage = 1;
   pageSize = 10;
   totalCount = 0;
+
+  /** True while the list on screen is the one the route resolver provided. */
+  private showingResolved = false;
   searchQuery: string = '';
   posts: any[] = [];
+
+  /** True until a load finishes; "No posts found" is only true after. */
+  isLoading = true;
   categories: any[] = [];
   isAdmin = false;
   selectedCategoryId: number | null = null;
@@ -40,6 +46,13 @@ export class BlogComponent {
     if (resolved && resolved.posts) {
       this.posts = resolved.posts.map((c: any) => withPostDates({ ...c, slug: toSlug(c.title) }));
       this.totalCount = resolved.totalCount || this.posts.length;
+      this.isLoading = false;
+
+      // The resolver has already fetched exactly this view. Without this the
+      // page fetched the same posts a second time on load and swapped the
+      // rendered list for an identical one, costing a request and a layout
+      // shift on every visit.
+      this.showingResolved = true;
     }
 
     this.loadCategories();
@@ -59,15 +72,23 @@ export class BlogComponent {
           }))
         ];
         this.route.params.subscribe(params => {
-          if (params['slug']) {
+          const slug = params['slug'];
+
+          if (slug) {
             this.currentPage = 1;
-            this.selectedCategory = params['slug'];
-            this.applyCategoryMeta(params['slug']);
-            this.loadPosts(params['slug']);
+            this.selectedCategory = slug;
+            this.applyCategoryMeta(slug);
           }
-          else {
-            this.loadPosts("-1");
+
+          // The resolver runs for this route and is category-aware, so the
+          // list is already correct on first render. Later category changes,
+          // searches and page turns all come through loadPosts as before.
+          if (this.showingResolved) {
+            this.showingResolved = false;
+            return;
           }
+
+          this.loadPosts(slug || "-1");
         });
       });
   }

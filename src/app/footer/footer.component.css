@@ -26,6 +26,8 @@
 
 .footer-brand img {
   height: 36px;
+  /* Same reason as the header: let the ratio size it, not the attribute. */
+  width: auto;
 }
 
 .footer-brand span {

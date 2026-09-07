@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorService, Author } from '../services/author.service';
 import { SeoService } from '../services/seo.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 /**
  * /author — everyone who writes for the site. Each card links through to that
@@ -10,7 +12,8 @@ import { SeoService } from '../services/seo.service';
   selector: 'app-author-index',
   templateUrl: './author-index.component.html',
   styleUrls: ['./author-index.component.css'],
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, RouterModule],
 })
 export class AuthorIndexComponent implements OnInit {
 

@@ -8,11 +8,6 @@ import { ContentideasComponent } from './contentideas/contentideas.component';
 import { LearninghubComponent } from './learninghub/learninghub.component';
 import { AnalysisComponent } from './analysis/analysis.component';
 import { FaqsComponent } from './faqs/faqs.component';
-import { ContactusComponent } from './contactus/contactus.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { TermsConditionsComponent } from './terms-conditions/terms-conditions.component';
-import { CookiepolicyComponent } from './cookiepolicy/cookiepolicy.component';
-import { AboutusComponent } from './aboutus/aboutus.component';
 import { SocialmediabiogeneratorComponent } from './socialmediabiogenerator/socialmediabiogenerator.component';
 import { TrendingmusicfinderComponent } from './trendingmusicfinder/trendingmusicfinder.component';
 import { CaptiongeneratorComponent } from './captiongenerator/captiongenerator.component';
@@ -25,8 +20,6 @@ import { YoutubestrategysuggestionsComponent } from './youtubestrategysuggestion
 import { ShortvideossuggestionsComponent } from './shortvideossuggestions/shortvideossuggestions.component';
 import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
-import { AuthorComponent } from './author/author.component';
-import { AuthorIndexComponent } from './author-index/author-index.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
@@ -35,8 +28,6 @@ import { BlogComponent } from './blog/blog.component';
 import { AuthGuard } from './Authguard';
 import { RegisterComponent } from './register/register.component';
 import { PostDetailComponent } from './post-detail/post-detail.component';
-import { DisclaimerComponent } from './disclaimer/disclaimer.component';
-import { EditorialPolicyComponent } from './editorial-policy/editorial-policy.component';
 import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.component';
 import { FaqResolver } from './services/faq.resolver';
 import { PostResolver } from './services/post.resolver';
@@ -162,13 +153,13 @@ const routes: Routes = [
   {
     // Everyone who writes for the site.
     path: 'author',
-    component: AuthorIndexComponent
+    loadComponent: () => import('./author-index/author-index.component').then(m => m.AuthorIndexComponent)
   },
   {
     // One author: profile plus everything they published. Linked from the
     // byline on the blog list, a post, and an equipment guide.
     path: 'author/:name',
-    component: AuthorComponent
+    loadComponent: () => import('./author/author.component').then(m => m.AuthorComponent)
   },
   {
     path: 'equipment-detail/:title',
@@ -190,34 +181,34 @@ const routes: Routes = [
   },
   {
     path: 'contactus',
-    component: ContactusComponent
+    loadComponent: () => import('./contactus/contactus.component').then(m => m.ContactusComponent)
   },
   {
     path: 'privacy-policy',
-    component: PrivacyPolicyComponent
+    loadComponent: () => import('./privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
   },
   {
     path: 'terms-conditions',
-    component: TermsConditionsComponent
+    loadComponent: () => import('./terms-conditions/terms-conditions.component').then(m => m.TermsConditionsComponent)
   },
   {
     path: 'cookiepolicy',
-    component: CookiepolicyComponent
+    loadComponent: () => import('./cookiepolicy/cookiepolicy.component').then(m => m.CookiepolicyComponent)
   },
   {
     path: 'disclaimer',
-    component: DisclaimerComponent
+    loadComponent: () => import('./disclaimer/disclaimer.component').then(m => m.DisclaimerComponent)
   },
   {
     path: 'aboutus',
-    component: AboutusComponent
+    loadComponent: () => import('./aboutus/aboutus.component').then(m => m.AboutusComponent)
   },
   {
     // Linked from the block at the foot of About Us, and nested under it.
     // A sibling path rather than a child route: About Us has no router-outlet,
     // and this page replaces it rather than rendering inside it.
     path: 'aboutus/editorial-policy',
-    component: EditorialPolicyComponent
+    loadComponent: () => import('./editorial-policy/editorial-policy.component').then(m => m.EditorialPolicyComponent)
   },
 
   {

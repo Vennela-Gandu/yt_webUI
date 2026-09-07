@@ -67,10 +67,9 @@
 
     <ul>
       <li *ngFor="let c of categories"
-          [class.active]="c.categoryID === selectedCategoryId"
-          (click)="onCategoryClick(c.slug)">
-        {{ c.name }}
-      </li>
+          [class.active]="c.categoryID === selectedCategoryId">
+          <a [routerLink]="['/learninghub/faqs', c.slug]">{{ c.name }}</a>
+        </li>
     </ul>
 
   </aside>

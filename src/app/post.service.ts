@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -8,8 +10,26 @@ export class PostService {
 
   constructor(private http: HttpClient) { }
 
-  getCategories(type:any) {
-    return this.http.get<any[]>(`${this.api}/post/getAllCategories?type=` + type);
+  /**
+   * Category list, cached for the session.
+   *
+   * The blog list, every category page, each article and the FAQ pages all
+   * show the same sidebar, so this was re-requested on every navigation.
+   * shareReplay keeps the first response and hands it to later callers.
+   */
+  private categoryCache = new Map<string, Observable<any[]>>();
+
+  getCategories(type: any) {
+    const key = String(type);
+
+    if (!this.categoryCache.has(key)) {
+      this.categoryCache.set(key,
+        this.http.get<any[]>(`${this.api}/post/getAllCategories?type=` + key).pipe(
+          shareReplay({ bufferSize: 1, refCount: false })
+        ));
+    }
+
+    return this.categoryCache.get(key)!;
   }
 
   addPost(data: any) {

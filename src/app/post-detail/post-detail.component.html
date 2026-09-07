@@ -1,5 +1,7 @@
 
 <div class="blog-layout">
+  <app-inline-loader *ngIf="isLoading && !post" text="Loading article…"></app-inline-loader>
+
   <div class="blog-detail-wrapper" *ngIf="post">
 
     <!-- TITLE -->

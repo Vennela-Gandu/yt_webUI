@@ -5,8 +5,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { EquipmentService } from '../services/equipment.service';
 import { SeoService } from '../services/seo.service';
 import { AuthorService } from '../services/author.service';
+import { ReactionsService, ReactionType } from '../services/reactions.service';
 import { toSlug } from '../utils/slug.util';
 import { withPostDates } from '../utils/date.util';
+import { prepareArticleBody } from '../utils/article-html.util';
+import { shareImageFor } from '../utils/share-image';
 
 @Component({
   selector: 'app-equipment-detail',
@@ -18,11 +21,31 @@ export class EquipmentDetailComponent implements OnInit {
 
   equipment: any = null;
 
+  /**
+   * True until the lookup finishes, either way.
+   *
+   * Without it the template's *ngIf="!equipment" was true from the first
+   * frame, so every visitor saw "Equipment not found" flash before the
+   * guide arrived.
+   */
+  isLoading = true;
+
   /** Other guides in the same categories, shown under the article. */
   relatedEquipment: any[] = [];
 
   /** Shows "Copied!" for a moment after the copy-link button is used. */
   copied = false;
+
+  /* ---------------- REACTIONS ---------------- */
+
+  likes = 0;
+  dislikes = 0;
+
+  /** This viewer's own choice, remembered so they cannot vote twice. */
+  myReaction: ReactionType | null = null;
+
+  /** Dislike counts are for the admin only; likes are public. */
+  isAdmin = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,9 +54,43 @@ export class EquipmentDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private seo: SeoService,
     private authorService: AuthorService,
+    private reactions: ReactionsService,
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) private document: Document
   ) { }
+
+  private loadReactions(id: number) {
+    this.reactions.counts('equipment', id).subscribe({
+      next: res => {
+        this.likes = res?.likes || 0;
+        this.dislikes = res?.dislikes || 0;
+      },
+      // The counts keep their starting value rather than vanishing when the
+      // request fails.
+      error: () => { }
+    });
+  }
+
+  /** Records a like or dislike, or withdraws one already given. */
+  react(type: ReactionType) {
+    const id = this.equipment?.equipmentID;
+    if (!id || !isPlatformBrowser(this.platformId)) return;
+
+    // Clicking the same button again withdraws the vote.
+    const next = this.myReaction === type ? null : type;
+
+    const counts = this.reactions.applyChange(
+      { likes: this.likes, dislikes: this.dislikes }, this.myReaction, next);
+    this.likes = counts.likes;
+    this.dislikes = counts.dislikes;
+
+    this.myReaction = next;
+    this.reactions.remember('equipment', id, next);
+
+    if (next) {
+      this.reactions.submit('equipment', id, next).subscribe({ error: () => { } });
+    }
+  }
 
   /** URL segment of the author page for the byline. */
   authorSlug(name: string): string {
@@ -45,25 +102,66 @@ export class EquipmentDetailComponent implements OnInit {
     this.authorService.names().subscribe();
 
     const slug = this.route.snapshot.paramMap.get('title');
-    if (!slug) { return; }
+    if (!slug) { this.isLoading = false; return; }
 
-    // The API has no "get by slug", so resolve the slug to an ID via the list,
-    // then load the full record (which includes the description) by that ID.
+    // The API has no "get by slug", so the slug is resolved against the list.
+    // Fetching all 75 published guides to do it cost ~99 KB and over a second
+    // before anything could render, so the first word of the slug is passed as
+    // a search term: the same lookup against a handful of rows instead.
     // publishedOnly: a scheduled guide must not be readable by URL before its
     // time — the list page hides it, so the detail page has to as well.
-    this.service.getList(1, 1000, '', null, true).subscribe(list => {
+    const searchTerm = slug.split('-')[0] || '';
+
+    this.service.getList(1, 50, searchTerm, null, true).subscribe({
+      error: () => { this.isLoading = false; },
+      next: list => {
       const match = (list.equipments || [])
         .find((e: any) => toSlug(e.title) === slug);
-      if (!match) { return; }
 
-      this.service.getById(match.equipmentID).subscribe(res => {
-        if (!res) { return; }
+      // The narrowed search missed it — a title whose first word differs from
+      // the slug's. Fall back to the full list rather than claiming the guide
+      // does not exist.
+      if (!match) { this.resolveFromFullList(slug); return; }
+
+      this.loadGuide(match.equipmentID, slug);
+      }
+    });
+  }
+
+  /**
+   * The unnarrowed lookup, used only when the search term missed.
+   *
+   * Rare, so it is worth the larger request rather than telling a visitor a
+   * guide is missing when it is not.
+   */
+  private resolveFromFullList(slug: string): void {
+    this.service.getList(1, 1000, '', null, true).subscribe({
+      error: () => { this.isLoading = false; },
+      next: list => {
+        const match = (list.equipments || [])
+          .find((e: any) => toSlug(e.title) === slug);
+
+        if (!match) { this.isLoading = false; return; }
+
+        this.loadGuide(match.equipmentID, slug);
+      }
+    });
+  }
+
+  /** Loads one guide by id and renders it. */
+  private loadGuide(id: number, slug: string): void {
+    this.service.getById(id).subscribe({
+      error: () => { this.isLoading = false; },
+      next: res => {
+        if (!res) { this.isLoading = false; return; }
+
         const cats = res.categories || [];
         const main = cats.find((c: any) => !c.parentCategoryID);
         const sub = cats.find((c: any) => c.parentCategoryID);
 
         // withPostDates turns the API's zone-less UTC values into real Dates
         // and works out whether an "Updated" stamp is worth showing.
+        this.isLoading = false;
         this.equipment = withPostDates({
           ...res,
           category: main?.name || '',
@@ -72,7 +170,7 @@ export class EquipmentDetailComponent implements OnInit {
             ? this.service.subCategoryName(sub.name, main?.name || '')
             : '',
           // Description is HTML from the editor — trust it so it renders formatted.
-          content: this.sanitizer.bypassSecurityTrustHtml(res.description || '')
+          content: this.sanitizer.bypassSecurityTrustHtml(prepareArticleBody(res.description || ''))
         });
 
         // The guide supplies its own title and description, overriding the
@@ -83,11 +181,23 @@ export class EquipmentDetailComponent implements OnInit {
           res.shortDescription,
           res.title
         );
-      });
 
-      this.loadRelated(match.equipmentID, slug);
+        // A shared link carries the guide's picture.
+        this.seo.setShareImage(shareImageFor(res, res.description));
+
+        // Browser only: the vote is per-visitor state, and SSR has no
+        // localStorage to read a previous choice from.
+        if (isPlatformBrowser(this.platformId)) {
+          this.isAdmin = this.reactions.isAdmin();
+          this.myReaction = this.reactions.remembered('equipment', id);
+          this.loadReactions(id);
+        }
+
+        this.loadRelated(id, slug);
+      }
     });
   }
+
   /** Same shape as the blog's related-posts list: five title links. */
   loadRelated(id: number, currentSlug: string): void {
     if (!id) { return; }

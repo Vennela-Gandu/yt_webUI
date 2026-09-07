@@ -1488,8 +1488,7 @@ button {
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2) format("woff2"),
-       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.ttf) format("truetype");
+  src: url(assets/fonts/fa-brands-400.woff2) format("woff2");
 }
 
 @font-face {
@@ -1497,8 +1496,7 @@ button {
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2) format("woff2"),
-       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.ttf) format("truetype");
+  src: url(assets/fonts/fa-solid-900.woff2) format("woff2");
 }
 
 @font-face {
@@ -1506,8 +1504,7 @@ button {
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.woff2) format("woff2"),
-       url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-regular-400.ttf) format("truetype");
+  src: url(assets/fonts/fa-regular-400.woff2) format("woff2");
 }
 
 /* Shared icon behaviour */
@@ -1583,6 +1580,24 @@ button {
 .fa-x-twitter::before { content: "\e61b"; }
 .fa-youtube::before { content: "\f167"; }
 
+/* Icons added for the About Us, editorial policy and article-reaction work.
+   They render from the local subset in assets/fonts: listing a class here is
+   what pulls its glyph into that subset when the fonts are re-generated. */
+.fa-arrows-rotate:before { content: "\f021"; }
+.fa-award:before { content: "\f559"; }
+.fa-book-open:before { content: "\f518"; }
+.fa-camera-retro:before { content: "\f083"; }
+.fa-chart-line:before { content: "\f201"; }
+.fa-graduation-cap:before { content: "\f19d"; }
+.fa-hourglass-end:before { content: "\f253"; }
+.fa-lightbulb:before { content: "\f0eb"; }
+.fa-mobile-screen-button:before { content: "\f3cd"; }
+.fa-seedling:before { content: "\f4d8"; }
+.fa-thumbs-down:before { content: "\f165"; }
+.fa-thumbs-up:before { content: "\f164"; }
+.fa-user-pen:before { content: "\f4ff"; }
+.fa-users-gear:before { content: "\f509"; }
+
 /* ===============================
    Skip link
 ================================ */
@@ -1651,4 +1666,26 @@ button {
   .coming-soon-text {
     font-size: 1.6rem;
   }
+}
+
+/* Navigation styled as a button is still a link, so it opens in a new tab on
+   ctrl/cmd-click and middle-click. These reset the anchor defaults the
+   original <button> markup did not have to think about. */
+a.feature-btn,
+a.learn-more-btn {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+  a.feature-btn:hover,
+  a.learn-more-btn:hover {
+    text-decoration: none;
+  }
+
+/* Sidebar category rows are links now; the row keeps its own padding, so the
+   anchor fills it rather than leaving a small click target in the corner. */
+.blog-sidebar li > a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }

@@ -56,13 +56,6 @@ app-content-results {
     gap: 1rem;
   }
 }
-.youtube-seo-tool {
-  text-align: center;
-  /*padding: 40px 20px 60px;*/
-  max-width: 900px;
-  margin: 0 auto;
-  animation: fadeIn 1s ease;
-}
 .hero {
   text-align: center;
   /*padding: 40px 20px 60px;*/
@@ -115,29 +108,6 @@ app-content-results {
 
   .youtube-seo-content strong {
     color: #000;
-  }
-
-  .youtube-seo-content .highlight {
-    background: #f5f7ff;
-    border-left: 4px solid #4f46e5;
-    padding: 12px 14px;
-    font-weight: 500;
-  }
-
-  .youtube-seo-content .note {
-    background: #f9fafb;
-    border-left: 4px solid #10b981;
-    padding: 12px 14px;
-  }
-
-  .youtube-seo-content .cta {
-    margin-top: 16px;
-    padding: 14px;
-    background: #111827;
-    color: #ffffff;
-    font-weight: 600;
-    text-align: center;
-    border-radius: 6px;
   }
 .seo-split-wrapper {
   max-width: 1100px;
@@ -201,7 +171,6 @@ app-content-results {
     font-size: 22px;
   }
 }
-
 
 /* WHAT THIS TOOL CANNOT DO — the caveat block. Deliberately quieter than the
    feature sections above it, but set off by a rule so it is not skimmed past. */

@@ -36,35 +36,7 @@
 
     .search-box button:hover {
       opacity: 0.9;
-    }*/
-
-/* ===== DROPDOWN ===== */
-.has-mega {
-  position: relative;
-}
-
-.mega {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #ffffff;
-  min-width: 240px;
-  padding: 14px 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  z-index: 999;
-}
-
-.has-mega:hover .mega {
-  display: block;
-}
-
-.mega a {
-  display: block;
-  padding: 6px 0;
-  font-size: 0.95rem;
-  color: #111827;
-}
+    }
 
 
 /* Shown in place of the list when a category has no questions yet — or when

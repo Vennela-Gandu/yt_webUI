@@ -86,6 +86,38 @@ export class SeoService {
     tag.setAttribute('href', url);
   }
 
+  /**
+   * The picture a platform shows beside a shared link.
+   *
+   * Passing null removes the tags, which matters in a single-page app: the
+   * head persists across navigation, so without this the previous article's
+   * image would stay attached to the next page shared.
+   *
+   * The URL must be absolute — a crawler has no page to resolve a relative
+   * path against.
+   */
+  setShareImage(url: string | null) {
+    if (!url) {
+      this.removeMeta('property', 'og:image');
+      this.removeMeta('name', 'twitter:image');
+      // Back to a plain card: a large-image card with no image renders badly.
+      this.upsertMeta('name', 'twitter:card', 'summary');
+      return;
+    }
+
+    this.upsertMeta('property', 'og:image', url);
+    this.upsertMeta('name', 'twitter:image', url);
+
+    // Without this Twitter/X shows a thumbnail beside the text rather than
+    // the wide preview the image is worth.
+    this.upsertMeta('name', 'twitter:card', 'summary_large_image');
+  }
+
+  private removeMeta(attr: string, key: string) {
+    const tag = this.document.querySelector(`meta[${attr}="${key}"]`);
+    if (tag) tag.remove();
+  }
+
   private upsertMeta(attr: string, key: string, value: string) {
     let tag = this.document.querySelector(`meta[${attr}="${key}"]`);
 

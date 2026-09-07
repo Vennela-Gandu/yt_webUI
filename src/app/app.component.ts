@@ -76,13 +76,25 @@ export class AppComponent implements OnInit {
       this.document.head.appendChild(script);
     };
 
-    const idle = (window as any).requestIdleCallback;
-    if (typeof idle === 'function') {
-      // Cap the wait so the container still loads on a busy page.
-      idle(load, { timeout: 4000 });
+    // Wait for the page to finish loading before even looking for idle time.
+    // requestIdleCallback alone can fire while the page is still rendering,
+    // and on a mid-range phone the container is heavy enough to show up as a
+    // long main-thread task competing with first paint.
+    const whenIdle = () => {
+      const idle = (window as any).requestIdleCallback;
+      if (typeof idle === 'function') {
+        // Cap the wait so the container still loads on a busy page.
+        idle(load, { timeout: 4000 });
+      } else {
+        // Safari and older browsers have no idle callback; yield a tick.
+        setTimeout(load, 1200);
+      }
+    };
+
+    if (this.document.readyState === 'complete') {
+      whenIdle();
     } else {
-      // Safari and older browsers: wait for load, then yield a tick.
-      window.addEventListener('load', () => setTimeout(load, 1200), { once: true });
+      window.addEventListener('load', whenIdle, { once: true });
     }
   }
 
@@ -96,6 +108,11 @@ export class AppComponent implements OnInit {
     const meta = pageMetaFor(this.router.url) || DEFAULT_PAGE_META;
     this.seo.setPageMeta(meta.title, meta.description);
     this.seo.setCanonical(this.canonicalUrl());
+
+    // Cleared on every navigation so a previous article's picture is not
+    // still attached when the next page is shared. An article page sets
+    // its own once its record loads.
+    this.seo.setShareImage(null);
   }
 
   /**

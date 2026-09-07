@@ -16,15 +16,10 @@ import { CompetitoranalysisComponent } from './competitoranalysis/competitoranal
 import { ContentideasComponent } from './contentideas/contentideas.component';
 import { LearninghubComponent } from './learninghub/learninghub.component';
 import { AnalysisComponent } from './analysis/analysis.component';
-import { ContactusComponent } from './contactus/contactus.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { TermsConditionsComponent } from './terms-conditions/terms-conditions.component';
-import { CookiepolicyComponent } from './cookiepolicy/cookiepolicy.component';
-import { AboutusComponent } from './aboutus/aboutus.component';
-import { EditorialPolicyComponent } from './editorial-policy/editorial-policy.component';
 import { TeaserListComponent } from './teaser-list/teaser-list.component';
 import { FaqAccordionComponent } from './faq-accordion/faq-accordion.component';
 import { ExploreLinksComponent } from './explore-links/explore-links.component';
+import { InlineLoaderComponent } from './inline-loader/inline-loader.component';
 import { CaptiongeneratorComponent } from './captiongenerator/captiongenerator.component';
 import { TrendingmusicfinderComponent } from './trendingmusicfinder/trendingmusicfinder.component';
 import { SocialmediabiogeneratorComponent } from './socialmediabiogenerator/socialmediabiogenerator.component';
@@ -37,8 +32,6 @@ import { YoutubestrategysuggestionsComponent } from './youtubestrategysuggestion
 import { ShortvideossuggestionsComponent } from './shortvideossuggestions/shortvideossuggestions.component';
 import { MonetizationComponent } from './monetization/monetization.component';
 import { EquipmentComponent } from './equipment/equipment.component';
-import { AuthorComponent } from './author/author.component';
-import { AuthorIndexComponent } from './author-index/author-index.component';
 import { CommunityComponent } from './community/community.component';
 import { YoutubeissuesComponent } from './youtubeissues/youtubeissues.component';
 import { SocialmediastatsComponent } from './socialmediastats/socialmediastats.component';
@@ -66,15 +59,10 @@ import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.co
         ContentideasComponent,
         LearninghubComponent,
         AnalysisComponent,
-        ContactusComponent,
-        PrivacyPolicyComponent,
-        TermsConditionsComponent,
-        CookiepolicyComponent,
-        AboutusComponent,
-        EditorialPolicyComponent,
         TeaserListComponent,
         FaqAccordionComponent,
         ExploreLinksComponent,
+        InlineLoaderComponent,
         CaptiongeneratorComponent,
         TrendingmusicfinderComponent,
         SocialmediabiogeneratorComponent,
@@ -87,8 +75,6 @@ import { EquipmentDetailComponent } from './equipment-detail/equipment-detail.co
         ShortvideossuggestionsComponent,
         MonetizationComponent,
         EquipmentComponent,
-        AuthorComponent,
-        AuthorIndexComponent,
         CommunityComponent,
         YoutubeissuesComponent,
         SocialmediastatsComponent,

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'app-terms-conditions',
     templateUrl: './terms-conditions.component.html',
     styleUrls: ['./terms-conditions.component.css'],
-    standalone: false
+    standalone: true,
 })
 export class TermsConditionsComponent {
 

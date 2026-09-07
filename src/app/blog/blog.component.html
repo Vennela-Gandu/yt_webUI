@@ -60,7 +60,9 @@
 
     </div>
 
-    <p *ngIf="posts.length === 0" class="empty">
+    <app-inline-loader *ngIf="isLoading" text="Loading articles…"></app-inline-loader>
+
+    <p *ngIf="!isLoading && posts.length === 0" class="empty">
       No posts found for this category
     </p>
 
@@ -75,10 +77,9 @@
 
     <ul>
       <li *ngFor="let c of categories"
-          [class.active]="c.categoryID === selectedCategoryId"
-          (click)="onCategoryClick(c.slug)">
-        {{ c.name }}
-      </li>
+          [class.active]="c.categoryID === selectedCategoryId">
+          <a [routerLink]="['/blog', c.slug]">{{ c.name }}</a>
+        </li>
     </ul>
 
   </aside>

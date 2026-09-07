@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-editorial-policy',
   templateUrl: './editorial-policy.component.html',
   styleUrls: ['./editorial-policy.component.css'],
-  standalone: false
+  standalone: true,
 })
 export class EditorialPolicyComponent {
 

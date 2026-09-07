@@ -85,6 +85,9 @@
 }
   .logo img {
     height: 32px;
+    /* The width attribute would otherwise size this flex item, stretching
+       the logo; auto lets the intrinsic ratio decide. */
+    width: auto;
   }
   .logo span {
     font-weight: 700;
@@ -169,15 +172,6 @@
     visibility: visible;
     transform: translateY(0);
   }
- .nav-item.align-right .submenu {
-  right: 0;
-  left: auto;
- }
-.nav-item.dropdown-left .submenu {
-  left: auto;
-  right: 0;
-}
-
 
 /* ===== HAMBURGER ===== */
 .hamburger {

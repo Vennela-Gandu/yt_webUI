@@ -24,7 +24,9 @@ export const DEFAULT_PAGE_META: PageMeta = {
 
 export const PAGE_META: { [path: string]: PageMeta } = {
   '': {
-    title: 'YouTube Tools & Creator Resources | YT Creator',
+    // The site name on its own: it is what Google reads the home page title
+    // as when working out the name to show above search results.
+    title: 'YT Creator',
     description:
       'YouTube tools, SEO resources, and creator guides to help you optimize ' +
       'videos, improve discoverability, and grow your channel with practical strategies.'

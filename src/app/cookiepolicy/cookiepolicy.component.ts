@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'app-cookiepolicy',
     templateUrl: './cookiepolicy.component.html',
     styleUrls: ['./cookiepolicy.component.css'],
-    standalone: false
+    standalone: true,
 })
 export class CookiepolicyComponent {
 

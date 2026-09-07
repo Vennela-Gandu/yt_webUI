@@ -242,3 +242,51 @@
     object-fit: cover;
     border-radius: 12px;
   }
+
+/* REACTIONS — directly under the share row, matching the blog post page. */
+.post-reactions {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0 26px;
+}
+
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+  .reaction-btn:hover {
+    border-color: #4f46e5;
+    color: #4f46e5;
+  }
+
+  /* The viewer's own choice, so a repeat visit shows what they picked. */
+  .reaction-btn.active {
+    color: #ffffff;
+    background: #4f46e5;
+    border-color: #4f46e5;
+  }
+
+.reaction-count {
+  padding-left: 8px;
+  margin-left: 2px;
+  border-left: 1px solid currentColor;
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .post-reactions {
+    flex-wrap: wrap;
+  }
+}

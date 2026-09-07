@@ -4,7 +4,8 @@
 <div class="search-box">
   <input type="text"
          placeholder="Search equipment..."
-         [(ngModel)]="searchText" />
+         [(ngModel)]="searchText"
+         (input)="onSearchChange()" />
   <button (click)="clearFilters()">Clear</button>
 </div>
 
@@ -63,7 +64,9 @@
 
     </div>
 
-    <p *ngIf="paginatedEquipments.length === 0" class="empty">
+    <app-inline-loader *ngIf="isLoading" text="Loading guides…"></app-inline-loader>
+
+    <p *ngIf="!isLoading && paginatedEquipments.length === 0" class="empty">
       No equipment found.
     </p>
 

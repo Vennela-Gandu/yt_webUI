@@ -5,8 +5,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { toSlug } from '../utils/slug.util';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { withPostDates } from '../utils/date.util';
+import { prepareArticleBody } from '../utils/article-html.util';
+import { shareImageFor } from '../utils/share-image';
 import { SeoService } from '../services/seo.service';
 import { AuthorService } from '../services/author.service';
+import { ReactionsService, ReactionType } from '../services/reactions.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -16,6 +19,9 @@ import { AuthorService } from '../services/author.service';
 })
 export class PostDetailComponent implements OnInit {
   post: any;
+
+  /** True until the article arrives, so the page shows a spinner not a blank. */
+  isLoading = true;
   categories: any[] = [];
   searchQuery: string = '';
   content!: SafeHtml;
@@ -43,10 +49,11 @@ export class PostDetailComponent implements OnInit {
   dislikes = 0;
 
   /** This viewer's own choice, remembered so they cannot vote twice. */
-  myReaction: 'like' | 'dislike' | null = null;
+  myReaction: ReactionType | null = null;
 
   /** Dislike counts are for the admin only; likes are public. */
   isAdmin = false;
+
 
  
  
@@ -56,7 +63,8 @@ export class PostDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,@Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) private document: Document,
     private seo: SeoService,
-    private authorService: AuthorService
+    private authorService: AuthorService,
+    private reactions: ReactionsService
   ) {
     // Loads (and caches) the name-to-slug map the byline links with.
     this.authorService.names().subscribe();
@@ -121,8 +129,8 @@ export class PostDetailComponent implements OnInit {
      // Browser only: the counts are per-visitor state, and SSR has neither a
      // localStorage to read the previous vote from nor a reason to fetch them.
      if (isPlatformBrowser(this.platformId) && id) {
-       this.isAdmin = !!localStorage.getItem('token');
-       this.myReaction = this.storedReaction(id);
+       this.isAdmin = this.reactions.isAdmin();
+       this.myReaction = this.reactions.remembered('post', id);
        this.loadReactions(id);
      }
   }
@@ -159,7 +167,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   private loadReactions(id: number) {
-    this.service.getReactions(id).subscribe({
+    this.reactions.counts('post', id).subscribe({
       next: res => {
         this.likes = res?.likes || 0;
         this.dislikes = res?.dislikes || 0;
@@ -171,50 +179,23 @@ export class PostDetailComponent implements OnInit {
   }
 
   /** Records a like or dislike, or withdraws one already given. */
-  react(type: 'like' | 'dislike') {
+  react(type: ReactionType) {
     const id = this.post?.postID;
     if (!id || !isPlatformBrowser(this.platformId)) return;
 
     // Clicking the same button again withdraws the vote.
     const next = this.myReaction === type ? null : type;
 
-    this.applyLocally(this.myReaction, next);
+    const counts = this.reactions.applyChange(
+      { likes: this.likes, dislikes: this.dislikes }, this.myReaction, next);
+    this.likes = counts.likes;
+    this.dislikes = counts.dislikes;
+
     this.myReaction = next;
-    this.storeReaction(id, next);
+    this.reactions.remember('post', id, next);
 
     if (next) {
-      this.service.react(id, next).subscribe({ error: () => { } });
-    }
-  }
-
-  /** Moves the counts from the previous choice to the new one. */
-  private applyLocally(from: 'like' | 'dislike' | null, to: 'like' | 'dislike' | null) {
-    if (from === 'like') this.likes = Math.max(0, this.likes - 1);
-    if (from === 'dislike') this.dislikes = Math.max(0, this.dislikes - 1);
-    if (to === 'like') this.likes++;
-    if (to === 'dislike') this.dislikes++;
-  }
-
-  private reactionKey(id: number) {
-    return `post-reaction-${id}`;
-  }
-
-  private storedReaction(id: number): 'like' | 'dislike' | null {
-    try {
-      const value = localStorage.getItem(this.reactionKey(id));
-      return value === 'like' || value === 'dislike' ? value : null;
-    } catch {
-      // Private browsing and blocked site data both throw here.
-      return null;
-    }
-  }
-
-  private storeReaction(id: number, value: 'like' | 'dislike' | null) {
-    try {
-      if (value) localStorage.setItem(this.reactionKey(id), value);
-      else localStorage.removeItem(this.reactionKey(id));
-    } catch {
-      // Not being able to remember the vote is not worth breaking the page.
+      this.reactions.submit('post', id, next).subscribe({ error: () => { } });
     }
   }
 
@@ -238,6 +219,7 @@ export class PostDetailComponent implements OnInit {
         this.pickLatestPost();
       });
   }
+
   openRelatedPost(name: any) {
     if (name != "-1") {
       const postdetail = this.relatedPosts.find(c => c.slug === name);
@@ -249,6 +231,7 @@ export class PostDetailComponent implements OnInit {
       }
     }
   }
+
    getPostById(id: number) {
     this.service.getPostById(id)
       .subscribe(async res => {
@@ -257,6 +240,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   private async setPost(res: any) {
+    this.isLoading = false;
     if (!res) return;
 
     // Real Date objects (the API sends UTC without a suffix) plus the
@@ -272,6 +256,10 @@ export class PostDetailComponent implements OnInit {
       this.post.title
     );
 
+    // A shared link carries the article's picture, the way a video link
+    // carries its thumbnail.
+    this.seo.setShareImage(shareImageFor(res, res.description));
+
     // The editor saves HTML. Older posts were written as Markdown, so only
     // those go through marked — running HTML through it mangles tables and
     // image figures. marked is 40 KB and almost every post is HTML now, so it
@@ -280,10 +268,9 @@ export class PostDetailComponent implements OnInit {
     const html = this.looksLikeHtml(raw)
       ? raw
       : await import('marked').then(m => m.marked.parse(raw));
-    this.content = this.sanitizer.bypassSecurityTrustHtml(html);
+    this.content = this.sanitizer.bypassSecurityTrustHtml(prepareArticleBody(html));
   }
 
-  /** URL segment of the author page for the byline. */
   authorSlug(name: string): string {
     return this.authorService.slugFor(name);
   }
@@ -291,6 +278,7 @@ export class PostDetailComponent implements OnInit {
   private looksLikeHtml(content: string): boolean {
     return /<(p|div|h[1-6]|ul|ol|li|table|figure|img|blockquote|span|strong|em)\b/i.test(content);
   }
+
   loadCategories() {
     this.service.getCategories('blog')
       .subscribe(res => {

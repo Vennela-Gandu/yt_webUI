@@ -16,6 +16,16 @@ import { toSlug } from "../utils/slug.util";
 @Injectable({ providedIn: 'root' })
 export class FaqResolver {
 
+  /**
+   * Matches FaqsComponent.pageSize.
+   *
+   * This used to request every FAQ (pageSize 0) — 465 rows and 302 KB —
+   * to render a page showing 30, which the server had to wait for before
+   * it could respond at all. It also meant the FAQ structured data
+   * advertised hundreds of questions that were not on the page.
+   */
+  private readonly pageSize = 30;
+
   constructor(private service: PostService) { }
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -32,8 +42,8 @@ export class FaqResolver {
       : of(-1);
 
     return categoryId$.pipe(
-      // pageSize 0 means "all" to sp_Post_ByCategory.
-      switchMap(categoryId => this.service.getAllFAQs(1, 0, "", categoryId)),
+      switchMap(categoryId =>
+        this.service.getAllFAQs(1, this.pageSize, "", categoryId)),
       map(res => ({
         faqs: res?.faqs || [],
         totalCount: res?.totalCount || 0

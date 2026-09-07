@@ -27,6 +27,9 @@
 
   .brand img {
     width: 60px;
+    /* Width is set here, so height must follow the ratio rather than the
+       height attribute. */
+    height: auto;
     margin-bottom: 12px;
   }
 
@@ -88,19 +91,3 @@ button {
     background: #ff9aac;
     cursor: not-allowed;
   }
-
-.extra-links {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-  .extra-links a {
-    font-size: 12px;
-    color: #ff0033;
-    text-decoration: none;
-  }
-
-    .extra-links a:hover {
-      text-decoration: underline;
-    }

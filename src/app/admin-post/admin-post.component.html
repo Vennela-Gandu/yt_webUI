@@ -106,7 +106,8 @@
       <p class="image-status" *ngIf="imageUploading">Uploading…</p>
 
       <div class="image-preview" *ngIf="post.featuredImage && !imageUploading">
-        <img [src]="post.featuredImage" alt="Featured image preview" />
+        <img [src]="post.featuredImage" alt="Featured image preview"
+             width="1200" height="630" />
         <button type="button" class="remove-image"
                 (click)="removeFeaturedImage(imageInput)">
           Remove image

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PostService } from '../post.service';
 import { EquipmentService } from '../services/equipment.service';
 import { AuthorService, Author } from '../services/author.service';
 import { SeoService } from '../services/seo.service';
 import { toSlug } from '../utils/slug.util';
 import { withPostDates } from '../utils/date.util';
+import { CommonModule } from '@angular/common';
 
 /**
  * One author's public page at /author/<slug>: their profile, then everything
@@ -16,7 +17,8 @@ import { withPostDates } from '../utils/date.util';
   selector: 'app-author',
   templateUrl: './author.component.html',
   styleUrls: ['./author.component.css'],
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, RouterModule],
 })
 export class AuthorComponent implements OnInit {
 

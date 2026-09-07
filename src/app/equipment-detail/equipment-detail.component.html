@@ -92,6 +92,33 @@
     </div>
 
     <!-- Related guides, same as the blog shows under a post -->
+    <!-- Reactions. The like count sits beside the Like button and is public,
+         appearing once there is at least one; the dislike count is admin-only,
+         so a visitor sees the button but never the tally. -->
+    <div class="post-reactions">
+      <button type="button"
+              class="reaction-btn"
+              [class.active]="myReaction === 'like'"
+              (click)="react('like')"
+              [attr.aria-pressed]="myReaction === 'like'"
+              aria-label="Like this guide">
+        <i class="fas fa-thumbs-up" aria-hidden="true"></i>
+        <span>Like</span>
+        <span class="reaction-count" *ngIf="likes > 0">{{ likes }}</span>
+      </button>
+
+      <button type="button"
+              class="reaction-btn"
+              [class.active]="myReaction === 'dislike'"
+              (click)="react('dislike')"
+              [attr.aria-pressed]="myReaction === 'dislike'"
+              aria-label="Dislike this guide">
+        <i class="fas fa-thumbs-down" aria-hidden="true"></i>
+        <span>Dislike</span>
+        <span class="reaction-count" *ngIf="isAdmin && dislikes > 0">{{ dislikes }}</span>
+      </button>
+    </div>
+
     <div class="related-posts" *ngIf="relatedEquipment.length">
       <h3>Related Equipment</h3>
 
@@ -110,7 +137,12 @@
 </div>
 
 <!-- NOT FOUND -->
-<div class="not-found" *ngIf="!equipment">
+<!-- Loading, then either the guide above or this. The not-found message
+     waits for isLoading so it is never shown about a guide that is simply
+     still on its way. -->
+<app-inline-loader *ngIf="isLoading" text="Loading guide…"></app-inline-loader>
+
+<div class="not-found" *ngIf="!isLoading && !equipment">
   <h2>Equipment not found</h2>
   <a routerLink="/equipment">← Back to Equipment</a>
 </div>

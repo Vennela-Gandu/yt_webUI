@@ -382,39 +382,6 @@ select {
   font-style: italic;
 }
 
-/* Not Supported Message */
-.not-supported-message {
-  text-align: center;
-  padding: 2rem;
-  animation: fadeInUp 0.5s ease;
-}
-
-.not-supported-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  filter: grayscale(0.2);
-}
-
-.not-supported-message h3 {
-  color: #F59E0B;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-}
-
-.not-supported-message p {
-  color: #D1D5DB;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-}
-
-.not-supported-message .hint {
-  color: #9CA3AF;
-  font-size: 0.9rem;
-  margin-top: 1rem;
-}
-
 /* Success Message */
 .success-message {
   text-align: center;

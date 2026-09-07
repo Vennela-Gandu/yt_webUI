@@ -6,7 +6,9 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/webp" href="assets/Yt Creator Icon.webp">
-  <link rel="apple-touch-icon" href="assets/Yt Creator Icon.webp">
+  <!-- The touch icon is shown at ~180px on a home screen, so it needs its
+       own file: the logo below is 96px, sized for where it is displayed. -->
+  <link rel="apple-touch-icon" href="assets/Yt Creator Icon 180.webp">
 
   <!-- The name search results show above the URL, and the name social
        platforms show beside a shared link. Google reads og:site_name as one of
@@ -18,17 +20,12 @@
   <!-- Third-party origins used on every page. Connecting early removes the
        DNS + TLS wait from the critical path; the audit reported none of these
        were preconnected. -->
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Icon fonts, referenced by the Font Awesome subset in styles.css.
-       Preloaded so they start downloading from the document itself rather
-       than after the stylesheet is parsed. -->
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-brands-400.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/webfonts/fa-solid-900.woff2">
+  <!-- The icon fonts are self-hosted and subset to the ~54 glyphs this site
+       uses (9 KB rather than 292 KB), so they no longer need preloading from
+       a third-party origin and are off the critical path entirely. -->
 
   <!-- Font Awesome's stylesheet is NOT loaded: 18.1 of its 18.3 KiB went
        unused. The 39 icons this site uses are inlined in the site stylesheet

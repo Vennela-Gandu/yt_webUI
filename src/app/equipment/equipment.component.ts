@@ -27,6 +27,15 @@ export class EquipmentComponent implements OnInit {
   currentPage = 1;
   pageSize = 12; // number of cards per page
 
+  /** How many guides match the current filters, as reported by the API. */
+  totalCount = 0;
+
+  /** True while a page is in flight, so the list can say so. */
+  isLoading = true;
+
+  /** Debounce handle: a keystroke must not mean a request. */
+  private searchTimer: any = null;
+
   /* ---------------- DATA (loaded from API) ---------------- */
   categories: any[] = [];   // [{ id, name, subs:[{id,name}] }]
   equipments: any[] = [];   // [{ equipmentID, title, shortDescription, slug, categoryIDs, ... }]
@@ -63,8 +72,30 @@ export class EquipmentComponent implements OnInit {
       this.applyCategoryFromUrl();
     });
 
-    // Published items only; load all and paginate client-side (same UX as before).
-    this.service.getList(1, 1000, '', null, true).subscribe(res => {
+    this.loadPage();
+  }
+
+  /**
+   * Fetches one page of guides.
+   *
+   * Previously the page pulled all 75 published guides (99 KB) and sliced 12
+   * out of them in the browser, which on a phone meant waiting on a request
+   * seven times larger than the page needed. The API already accepts page,
+   * search and category, so the filtering happens there and only the rows
+   * being shown come down the wire.
+   */
+  private loadPage(): void {
+    this.isLoading = true;
+
+    // publishedOnly: a scheduled guide must not appear before its time.
+    this.service
+      .getList(this.currentPage, this.pageSize, this.searchText,
+               this.selectedSubCategoryId, true)
+      .subscribe({
+        error: () => { this.isLoading = false; },
+        next: res => {
+      this.isLoading = false;
+      this.totalCount = res?.totalCount || 0;
       this.equipments = (res.equipments || []).map((e: any) =>
         withPostDates({
           equipmentID: e.equipmentID,
@@ -87,32 +118,25 @@ export class EquipmentComponent implements OnInit {
                 (p: any) => p.categoryID === c.parentCategoryID)?.name || ''))
         })
       );
-    });
+        }
+      });
   }
 
-  /* ---------------- FILTERED DATA ---------------- */
-  get filteredEquipments() {
-    return this.equipments.filter(e =>
-      (!this.searchText ||
-        e.title.toLowerCase().includes(this.searchText.toLowerCase())) &&
-      (!this.selectedSubCategoryId ||
-        e.categoryIDs.includes(this.selectedSubCategoryId))
-    );
-  }
+  /* ---------------- CURRENT PAGE ---------------- */
 
-  /* ---------------- PAGINATED DATA ---------------- */
+  /** The rows the API returned: already filtered and already this page. */
   get paginatedEquipments() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredEquipments.slice(start, start + this.pageSize);
+    return this.equipments;
   }
 
   get totalPages() {
-    return Math.ceil(this.filteredEquipments.length / this.pageSize);
+    return Math.ceil(this.totalCount / this.pageSize);
   }
 
   changePage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
+      this.loadPage();
       if (isPlatformBrowser(this.platformId)) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -150,6 +174,7 @@ export class EquipmentComponent implements OnInit {
     if (!this.categorySlug) {
       this.selectedSubCategoryId = null;
       this.selectedMainCategoryId = null;
+      this.loadPage();
       return;
     }
 
@@ -164,6 +189,7 @@ export class EquipmentComponent implements OnInit {
         // Open the parent so the selected entry is visible in the sidebar.
         this.selectedMainCategoryId = cat.id;
         this.applyCategoryMeta(sub.name);
+        this.loadPage();
         return;
       }
 
@@ -171,6 +197,7 @@ export class EquipmentComponent implements OnInit {
         this.selectedSubCategoryId = cat.id;
         this.selectedMainCategoryId = cat.id;
         this.applyCategoryMeta(cat.name);
+        this.loadPage();
         return;
       }
     }
@@ -184,6 +211,20 @@ export class EquipmentComponent implements OnInit {
       `what each option is good at, and which suits your budget and content.`,
       name
     );
+  }
+
+  /**
+   * Runs the search after a short pause.
+   *
+   * The filtering happens on the server now, so firing on every keystroke
+   * would mean a request per character.
+   */
+  onSearchChange(): void {
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => {
+      this.currentPage = 1;
+      this.loadPage();
+    }, 350);
   }
 
   /* ---------------- CATEGORY TOGGLE ---------------- */
